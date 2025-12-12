@@ -1,0 +1,193 @@
+/* SkillBreakdown.css */
+
+.skill-breakdown {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.skill-header {
+  margin-bottom: 2rem;
+}
+
+.skill-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0 0 0.5rem 0;
+}
+
+.skill-subtitle {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.skill-radar {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.radar-svg {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+}
+
+.radar-circle {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 1;
+}
+
+.radar-axis {
+  stroke: #f3f4f6;
+  stroke-width: 1;
+}
+
+.radar-polygon {
+  fill: rgba(147, 112, 219, 0.3);
+  stroke: #7c3aed;
+  stroke-width: 2;
+}
+
+.radar-label {
+  font-size: 12px;
+  fill: #6b7280;
+  font-weight: 500;
+}
+
+/* LAPTOP (1024px and above) */
+@media (min-width: 1024px) {
+  .skill-breakdown {
+    padding: 2rem;
+  }
+
+  .skill-title {
+    font-size: 20px;
+  }
+
+  .skill-subtitle {
+    font-size: 14px;
+  }
+
+  .radar-svg {
+    max-width: 300px;
+  }
+
+  .radar-label {
+    font-size: 12px;
+  }
+}
+
+/* TABLET (768px to 1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .skill-breakdown {
+    padding: 1.5rem;
+  }
+
+  .skill-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .skill-title {
+    font-size: 18px;
+  }
+
+  .skill-subtitle {
+    font-size: 13px;
+  }
+
+  .skill-radar {
+    margin-top: 1.5rem;
+  }
+
+  .radar-svg {
+    max-width: 280px;
+  }
+
+  .radar-label {
+    font-size: 11px;
+  }
+
+  .radar-circle {
+    stroke-width: 0.8;
+  }
+
+  .radar-axis {
+    stroke-width: 0.8;
+  }
+
+  .radar-polygon {
+    stroke-width: 1.5;
+  }
+}
+
+/* PHONE (below 768px) */
+@media (max-width: 767px) {
+  .skill-breakdown {
+    padding: 1rem;
+  }
+
+  .skill-header {
+    margin-bottom: 1.25rem;
+  }
+
+  .skill-title {
+    font-size: 16px;
+  }
+
+  .skill-subtitle {
+    font-size: 12px;
+  }
+
+  .skill-radar {
+    margin-top: 1.25rem;
+  }
+
+  .radar-svg {
+    max-width: 250px;
+  }
+
+  .radar-label {
+    font-size: 10px;
+  }
+
+  .radar-circle {
+    stroke-width: 0.8;
+  }
+
+  .radar-axis {
+    stroke-width: 0.8;
+  }
+
+  .radar-polygon {
+    stroke-width: 1.5;
+  }
+}
+
+/* Extra small (below 480px) */
+@media (max-width: 479px) {
+  .skill-breakdown {
+    padding: 0.75rem;
+  }
+
+  .skill-title {
+    font-size: 14px;
+  }
+
+  .skill-subtitle {
+    font-size: 11px;
+  }
+
+  .radar-svg {
+    max-width: 200px;
+  }
+
+  .radar-label {
+    font-size: 9px;
+  }
+}

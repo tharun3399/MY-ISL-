@@ -1,0 +1,251 @@
+topic_id,lesson_id,lesson_name,topic_name
+1,1,Introduction to ISL,Overview of ISL
+2,1,Introduction to ISL,Why ISL is important
+3,1,Introduction to ISL,Visual communication basics
+4,1,Introduction to ISL,Understanding gestures
+5,1,Introduction to ISL,Introduction to facial expressions
+6,1,Introduction to ISL,Role of body language
+7,1,Introduction to ISL,How signing works
+8,1,Introduction to ISL,Basic ISL flow
+9,1,Introduction to ISL,Common beginner mistakes
+10,1,Introduction to ISL,First signing practice
+11,2,Hand Shapes,Basic hand shapes
+12,2,Hand Shapes,Open hand vs closed hand
+13,2,Hand Shapes,Flat hand forms
+14,2,Hand Shapes,Curved hand shapes
+15,2,Hand Shapes,Fist variations
+16,2,Hand Shapes,Thumb positioning
+17,2,Hand Shapes,Correct hand formation
+18,2,Hand Shapes,Hand relaxation techniques
+19,2,Hand Shapes,Hand shape accuracy tips
+20,2,Hand Shapes,Practice drills for hand shapes
+21,3,Movements Basics,Directional movements
+22,3,Movements Basics,Vertical vs horizontal movement
+23,3,Movements Basics,Circular motions
+24,3,Movements Basics,Wrist flexibility
+25,3,Movements Basics,Speed control in signing
+26,3,Movements Basics,Repeated movements
+27,3,Movements Basics,Movement clarity
+28,3,Movements Basics,Flowing motion practice
+29,3,Movements Basics,Common movement errors
+30,3,Movements Basics,Movement combinations
+31,4,Greetings Basics,Signing Hello
+32,4,Greetings Basics,Asking How are you?
+33,4,Greetings Basics,Good morning/afternoon/night
+34,4,Greetings Basics,Signing thank you
+35,4,Greetings Basics,Signing sorry
+36,4,Greetings Basics,Friendly gestures
+37,4,Greetings Basics,Formal greetings
+38,4,Greetings Basics,Casual greetings
+39,4,Greetings Basics,Meeting someone new
+40,4,Greetings Basics,Goodbye variations
+41,5,Daily Greetings,Common daily greetings
+42,5,Daily Greetings,Responding politely
+43,5,Daily Greetings,Asking about someone's day
+44,5,Daily Greetings,Expressing moods
+45,5,Daily Greetings,Greeting elders
+46,5,Daily Greetings,Greeting friends
+47,5,Daily Greetings,Formal greeting situations
+48,5,Daily Greetings,Casual greeting style
+49,5,Daily Greetings,Group greetings
+50,5,Daily Greetings,Daily greeting practice
+51,6,Asking Questions,Question facial expression rules
+52,6,Asking Questions,Yes/No questions
+53,6,Asking Questions,WH-questions basics
+54,6,Asking Questions,Asking who/what/where
+55,6,Asking Questions,Asking why/how
+56,6,Asking Questions,Clarification questions
+57,6,Asking Questions,Polite questioning
+58,6,Asking Questions,Common question mistakes
+59,6,Asking Questions,Practice question signing
+60,6,Asking Questions,Conversational questioning
+61,7,Simple Conversations,Starting a conversation
+62,7,Simple Conversations,Basic conversation flow
+63,7,Simple Conversations,Introducing yourself
+64,7,Simple Conversations,Talking about family
+65,7,Simple Conversations,Simple daily talk
+66,7,Simple Conversations,Asking simple information
+67,7,Simple Conversations,Responding clearly
+68,7,Simple Conversations,Conversation closings
+69,7,Simple Conversations,Conversation practice
+70,7,Simple Conversations,Common beginner dialogues
+71,8,Polite Expressions,Thanking someone
+72,8,Polite Expressions,Apologizing correctly
+73,8,Polite Expressions,Showing respect
+74,8,Polite Expressions,Formal politeness rules
+75,8,Polite Expressions,Casual politeness
+76,8,Polite Expressions,Polite refusals
+77,8,Polite Expressions,Polite agreements
+78,8,Polite Expressions,Polite disagreements
+79,8,Polite Expressions,Positive expressions
+80,8,Polite Expressions,Politeness practice
+81,9,Numbers 1-20,Numbers 1–5
+82,9,Numbers 1-20,Numbers 6–10
+83,9,Numbers 1-20,Numbers 11–15
+84,9,Numbers 1-20,Numbers 16–20
+85,9,Numbers 1-20,Number clarity tips
+86,9,Numbers 1-20,Counting practice
+87,9,Numbers 1-20,Fast number signing
+88,9,Numbers 1-20,Common mistakes with numbers
+89,9,Numbers 1-20,Hand shapes for numbers
+90,9,Numbers 1-20,Basic math with numbers
+91,10,Counting Objects,Counting everyday objects
+92,10,Counting Objects,Using classifiers
+93,10,Counting Objects,Counting people
+94,10,Counting Objects,Counting animals
+95,10,Counting Objects,Counting shapes
+96,10,Counting Objects,Counting items in motion
+97,10,Counting Objects,Counting with expressions
+98,10,Counting Objects,Common counting errors
+99,10,Counting Objects,Counting speed practice
+100,10,Counting Objects,Counting scenarios
+101,11,Ordinal Numbers,Introduction to ordinals
+102,11,Ordinal Numbers,First–Fifth
+103,11,Ordinal Numbers,Sixth–Tenth
+104,11,Ordinal Numbers,Eleventh–Twentieth
+105,11,Ordinal Numbers,Using ordinals in sentences
+106,11,Ordinal Numbers,Ordinal gesture accuracy
+107,11,Ordinal Numbers,Common mistakes
+108,11,Ordinal Numbers,Ordinal practice drill
+109,11,Ordinal Numbers,Ordinal storytelling
+110,11,Ordinal Numbers,Ordinal examples
+111,12,Math Basics,Adding numbers
+112,12,Math Basics,Subtracting numbers
+113,12,Math Basics,Multiplication basics
+114,12,Math Basics,Division basics
+115,12,Math Basics,Math gestures
+116,12,Math Basics,Using numbers in context
+117,12,Math Basics,Math problems in ISL
+118,12,Math Basics,Math vocabulary
+119,12,Math Basics,Math practice
+120,12,Math Basics,Common math mistakes
+121,13,Daily Vocabulary,Household signs
+122,13,Daily Vocabulary,School-related signs
+123,13,Daily Vocabulary,Outdoor vocabulary
+124,13,Daily Vocabulary,Time-related signs
+125,13,Daily Vocabulary,Weather vocabulary
+126,13,Daily Vocabulary,Basic verbs
+127,13,Daily Vocabulary,Common nouns
+128,13,Daily Vocabulary,Daily objects
+129,13,Daily Vocabulary,Vocabulary practice
+130,13,Daily Vocabulary,Daily usage examples
+131,14,Food Vocabulary,Fruit signs
+132,14,Food Vocabulary,Vegetable signs
+133,14,Food Vocabulary,Meal-related signs
+134,14,Food Vocabulary,Drinks signs
+135,14,Food Vocabulary,Taste descriptions
+136,14,Food Vocabulary,Food preferences
+137,14,Food Vocabulary,Restaurant vocabulary
+138,14,Food Vocabulary,Cooking-related signs
+139,14,Food Vocabulary,Food categories
+140,14,Food Vocabulary,Food signing practice
+141,15,Emotions Vocabulary,"Happy, sad, angry"
+142,15,Emotions Vocabulary,"Fear, surprise"
+143,15,Emotions Vocabulary,Confidence expressions
+144,15,Emotions Vocabulary,Showing doubt
+145,15,Emotions Vocabulary,Excitement signs
+146,15,Emotions Vocabulary,Disappointment signs
+147,15,Emotions Vocabulary,Calm vs stressed
+148,15,Emotions Vocabulary,Emotional intensity
+149,15,Emotions Vocabulary,Emotional context usage
+150,15,Emotions Vocabulary,Emotion practice
+151,16,Travel Vocabulary,Transportation signs
+152,16,Travel Vocabulary,Directions and maps
+153,16,Travel Vocabulary,Hotel-related vocabulary
+154,16,Travel Vocabulary,Airport signs
+155,16,Travel Vocabulary,Travel questions
+156,16,Travel Vocabulary,Travel safety signs
+157,16,Travel Vocabulary,Ticket & booking signs
+158,16,Travel Vocabulary,Travel problems vocabulary
+159,16,Travel Vocabulary,Packing essentials
+160,16,Travel Vocabulary,Travel practice
+161,17,Advanced Sentences,Sentence structure rules
+162,17,Advanced Sentences,Complex conversation flow
+163,17,Advanced Sentences,Topic–comment patterns
+164,17,Advanced Sentences,Conditional sentences
+165,17,Advanced Sentences,Comparisons
+166,17,Advanced Sentences,Describing situations
+167,17,Advanced Sentences,Telling short stories
+168,17,Advanced Sentences,Advanced grammar
+169,17,Advanced Sentences,Sentence clarity tips
+170,17,Advanced Sentences,Advanced practice
+171,18,Storytelling Basics,Story flow structure
+172,18,Storytelling Basics,Role shifting
+173,18,Storytelling Basics,Character expressions
+174,18,Storytelling Basics,Setting a scene
+175,18,Storytelling Basics,Using classifiers in stories
+176,18,Storytelling Basics,Story pacing
+177,18,Storytelling Basics,Expressing emotions in stories
+178,18,Storytelling Basics,Creative narration
+179,18,Storytelling Basics,Storytelling mistakes
+180,18,Storytelling Basics,Story practice
+181,19,Descriptive Signs,Describing people
+182,19,Descriptive Signs,Describing objects
+183,19,Descriptive Signs,Describing places
+184,19,Descriptive Signs,Describing actions
+185,19,Descriptive Signs,Detail accuracy
+186,19,Descriptive Signs,Visual details
+187,19,Descriptive Signs,Size and shape descriptions
+188,19,Descriptive Signs,Texture descriptions
+189,19,Descriptive Signs,Color descriptions
+190,19,Descriptive Signs,Descriptive practice
+191,20,Expressive Signing,Facial expression mastery
+192,20,Expressive Signing,Body movement coordination
+193,20,Expressive Signing,Emotional expression
+194,20,Expressive Signing,Intensity control
+195,20,Expressive Signing,Non-manual signals
+196,20,Expressive Signing,Rhythm in signing
+197,20,Expressive Signing,Expressive storytelling
+198,20,Expressive Signing,Dynamic movements
+199,20,Expressive Signing,Expressive clarity tips
+200,20,Expressive Signing,Expression practice
+201,21,Deaf Culture Overview,History of Deaf culture
+202,21,Deaf Culture Overview,Community values
+203,21,Deaf Culture Overview,Cultural etiquette
+204,21,Deaf Culture Overview,Identity and pride
+205,21,Deaf Culture Overview,Schools for the Deaf
+206,21,Deaf Culture Overview,Important contributions
+207,21,Deaf Culture Overview,Deaf arts
+208,21,Deaf Culture Overview,Deaf technology
+209,21,Deaf Culture Overview,Community interaction
+210,21,Deaf Culture Overview,Cultural respect
+211,22,Communication Etiquette,Attention-getting methods
+212,22,Communication Etiquette,Proper eye contact
+213,22,Communication Etiquette,Appropriate distance
+214,22,Communication Etiquette,Respectful gestures
+215,22,Communication Etiquette,Interrupting politely
+216,22,Communication Etiquette,Clarifying politely
+217,22,Communication Etiquette,Ending conversations
+218,22,Communication Etiquette,Smooth transitions
+219,22,Communication Etiquette,Etiquette mistakes
+220,22,Communication Etiquette,Etiquette practice
+221,23,History of ISL,Origins of ISL
+222,23,History of ISL,Key contributors
+223,23,History of ISL,Evolution of signs
+224,23,History of ISL,ISL in education
+225,23,History of ISL,Modern ISL changes
+226,23,History of ISL,Historical milestones
+227,23,History of ISL,ISL documentation
+228,23,History of ISL,ISL community development
+229,23,History of ISL,Timeline study
+230,23,History of ISL,History practice
+231,24,Community Practices,Community gatherings
+232,24,Community Practices,Events and festivals
+233,24,Community Practices,Deaf clubs
+234,24,Community Practices,Inclusion practices
+235,24,Community Practices,Supporting each other
+236,24,Community Practices,Volunteering
+237,24,Community Practices,Social rules
+238,24,Community Practices,Community leadership
+239,24,Community Practices,Community etiquette
+240,24,Community Practices,Community examples
+241,25,TEST Lesson,Test topic 1
+242,25,TEST Lesson,Test topic 2
+243,25,TEST Lesson,Test topic 3
+244,25,TEST Lesson,Test topic 4
+245,25,TEST Lesson,Test topic 5
+246,25,TEST Lesson,Test topic 6
+247,25,TEST Lesson,Test topic 7
+248,25,TEST Lesson,Test topic 8
+249,25,TEST Lesson,Test topic 9
+250,25,TEST Lesson,Test topic 10

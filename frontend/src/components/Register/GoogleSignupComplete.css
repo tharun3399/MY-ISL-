@@ -1,0 +1,265 @@
+/* GoogleSignupComplete.css - Google Sign-Up Completion Form */
+
+.google-complete-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.google-complete-container::before {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(0,217,255,0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  top: -100px;
+  left: -100px;
+  pointer-events: none;
+}
+
+.google-complete-container::after {
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255,0,110,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  bottom: -100px;
+  right: -100px;
+  pointer-events: none;
+}
+
+.google-complete-box {
+  background: rgba(15, 20, 40, 0.8);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 217, 255, 0.15);
+  border-radius: 16px;
+  padding: 40px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.google-complete-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.google-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 217, 255, 0.3);
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(0, 217, 255, 0.15);
+}
+
+.google-complete-title {
+  margin: 0 0 8px;
+  font-size: 28px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ffffff 0%, #00ff7f 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.google-complete-subtitle {
+  margin: 0;
+  color: rgba(200, 220, 255, 0.8);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.google-complete-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(200, 220, 255, 0.9);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input {
+  background: rgba(0, 217, 255, 0.04);
+  border: 1px solid rgba(0, 217, 255, 0.2);
+  border-radius: 10px;
+  padding: 12px 16px;
+  color: #fff;
+  font-size: 15px;
+  transition: all 0.2s;
+  font-family: inherit;
+  outline: none;
+}
+
+.form-input:focus {
+  background: rgba(0, 217, 255, 0.08);
+  border-color: rgba(0, 217, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+}
+
+.form-input::placeholder {
+  color: rgba(200, 220, 255, 0.4);
+}
+
+.form-input.disabled-input {
+  background: rgba(0, 217, 255, 0.02);
+  color: rgba(200, 220, 255, 0.6);
+  cursor: not-allowed;
+  border-color: rgba(0, 217, 255, 0.1);
+}
+
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper .form-input {
+  padding-right: 44px;
+  width: 100%;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 6px;
+  color: rgba(200, 220, 255, 0.6);
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.password-toggle-btn:hover {
+  color: rgba(0, 217, 255, 0.8);
+}
+
+.form-hint {
+  font-size: 12px;
+  color: rgba(200, 220, 255, 0.5);
+  margin-top: 6px;
+  font-style: italic;
+}
+
+.info-box {
+  background: rgba(0, 217, 255, 0.08);
+  border-left: 3px solid rgba(0, 217, 255, 0.5);
+  padding: 14px 16px;
+  border-radius: 8px;
+  gap: 0;
+}
+
+.info-text {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(200, 220, 255, 0.85);
+  line-height: 1.5;
+}
+
+.error-message {
+  background: rgba(255, 0, 110, 0.1);
+  border-left: 3px solid rgba(255, 0, 110, 0.6);
+  color: rgba(255, 100, 150, 0.95);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin: 12px 0;
+}
+
+.complete-btn {
+  background: linear-gradient(135deg, rgba(0, 217, 255, 0.9) 0%, rgba(0, 150, 200, 0.9) 100%);
+  border: 1px solid rgba(0, 217, 255, 0.5);
+  color: var(--bg-dark-secondary, #0a0e1b);
+  padding: 14px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  outline: none;
+  margin-top: 12px;
+}
+
+.complete-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(0, 217, 255, 1) 0%, rgba(0, 150, 200, 1) 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 217, 255, 0.3);
+}
+
+.complete-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.complete-footer {
+  text-align: center;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(0, 217, 255, 0.1);
+}
+
+.complete-footer p {
+  margin: 0;
+  color: rgba(200, 220, 255, 0.8);
+  font-size: 14px;
+}
+
+.back-link {
+  background: none;
+  border: none;
+  color: rgba(0, 217, 255, 0.9);
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+  transition: color 0.2s;
+  padding: 0;
+  font-size: 14px;
+}
+
+.back-link:hover {
+  color: rgba(0, 217, 255, 1);
+}
+
+@media (max-width: 480px) {
+  .google-complete-box {
+    padding: 30px;
+    max-width: 100%;
+  }
+
+  .google-complete-title {
+    font-size: 24px;
+  }
+
+  .google-complete-form {
+    gap: 16px;
+  }
+
+  .google-avatar {
+    width: 70px;
+    height: 70px;
+  }
+}

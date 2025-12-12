@@ -1,0 +1,30 @@
+{
+  "name": "premium-login-ui",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@react-oauth/google": "^0.12.1",
+    "@tailwindcss/postcss": "^4.1.17",
+    "axios": "^1.13.2",
+    "jwt-decode": "^4.0.0",
+    "lucide-react": "^0.555.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^5.5.0",
+    "react-router-dom": "^6.30.2",
+    "recharts": "^3.5.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^5.0.0",
+    "autoprefixer": "^10.4.22",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
+    "vite": "^5.0.0"
+  }
+}

@@ -1,0 +1,116 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap');
+
+:root{
+  /* White Modern Theme */
+  --bg1: #f5f7fa;
+  --bg2: #ffffff;
+  --card: #ffffff;
+  --glass: rgba(255,255,255,0.95);
+  --accent: #6c47ff;
+  --muted: #2d3748;
+}
+
+*{box-sizing:border-box}
+html,body,#root{height:100%; width: 100%; margin: 0; padding: 0;}
+body{
+  margin:0;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  color: #2d3748;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+.page-bg{display:flex;align-items:center;justify-content:center;height:100vh;padding:20px;overflow:hidden}
+.container{margin-top: 100px;width:100%;max-width:1100px;height:100%;display:flex;flex-direction:column}
+.vidcontainer{margin-top:130px;margin-bottom: 50px;width:100%;max-width:1100px;height:100%;display:flex;flex-direction:column}
+
+
+.card{display:flex;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(2,6,23,0.6);}
+.card-left{padding:48px;flex:1;min-width:380px}
+.card-right{width:360px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;padding:36px}
+
+.brand{font-weight:800;font-size:20px;color:transparent;background:var(--accent);-webkit-background-clip:text;background-clip:text}
+.title{margin:8px 0 6px;font-size:28px;color:var(--muted)}
+.subtitle{margin:0 0 22px;color:rgba(200,220,255,0.8)}
+
+.form{display:flex;flex-direction:column;gap:12px}
+.label{font-size:13px;color:white;margin-bottom:6px}
+/* Underline-style inputs (clean, modern) */
+.input{background:transparent;border:none;border-bottom:1px solid rgba(0,217,255,0.2);padding:10px 6px;color:var(--muted);outline:none;border-radius:0;transition:border-color .14s, box-shadow .14s}
+.input:focus{border-bottom-color:rgba(0,217,255,0.95);box-shadow:0 12px 36px rgba(0,217,255,0.15)}
+.input::placeholder{color:rgba(200,220,255,0.4)}
+
+/* Small helper text under inputs */
+.input-help{font-size:12px;color:rgba(200,220,255,0.65);margin-top:6px}
+
+/* Slightly lower opacity for password input to indicate privacy hint */
+.password-input{opacity:0.75}
+
+.pw-row{display:flex;align-items:flex-end;gap:12px}
+.forgot{color:rgba(0,217,255,0.8);font-size:13px;text-decoration:none}
+.forgot:hover{text-decoration:underline;color:rgba(255,0,110,0.9)}
+
+.primary{margin-top:8px;background:var(--accent);border:none;color:#0a0e27;padding:12px;border-radius:12px;font-weight:700;cursor:pointer;box-shadow:0 12px 40px rgba(0,217,255,0.25);transition:transform .12s}
+.primary:hover{transform:translateY(-2px)}
+
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:rgba(0,217,255,0.6);font-size:13px}
+.divider:before,.divider:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(0,217,255,0.15),transparent)}
+.divider span{padding:0 8px}
+
+.social-row{display:flex;gap:10px}
+.social-btn{display:inline-flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid rgba(0,217,255,0.3);background:rgba(0,217,255,0.08);cursor:pointer;flex:1;color:rgba(200,220,255,0.95);font-weight:600;transition:transform .12s, box-shadow .12s}
+.social-btn:hover{transform:translateY(-4px);box-shadow:0 16px 38px rgba(0,217,255,0.2)}
+.social-btn .icon{width:18px;height:18px}
+
+.social-btn.google{background:linear-gradient(180deg, rgba(0,217,255,0.12), rgba(0,217,255,0.06));}
+.social-btn.github{background:linear-gradient(180deg, rgba(255,0,110,0.08), rgba(0,217,255,0.06));}
+.social-btn.facebook{background:linear-gradient(90deg,rgba(255,0,110,0.08), rgba(0,217,255,0.06));}
+
+.card-right .right-inner{color:rgba(200,220,255,0.9);text-align:center}
+.card-right h2{margin:0 0 8px}
+.ghost{margin-top:10px;background:transparent;border:1px solid rgba(0,217,255,0.3);color:rgba(0,217,255,0.9);padding:10px 16px;border-radius:10px;cursor:pointer}
+
+.footer{margin-top:18px;color:rgba(0,217,255,0.6);font-size:13px;text-align:center}
+.footer a{color:rgba(0,217,255,0.9);text-decoration:underline}
+
+/* Video Page Styles */
+.video-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(2,6,23,0.6);padding:24px;max-width:1000px;width:100%;margin:auto;margin-top:-40px;display:flex;flex-direction:column;height:100%}
+
+.video-header{margin-bottom:16px;text-align:center}
+.nav-link-btn{padding:10px 24px;border-radius:10px;border:1px solid rgba(0,217,255,0.3);background:rgba(0,217,255,0.08);color:rgba(0,217,255,0.95);font-weight:600;cursor:pointer;font-size:14px;transition:transform .12s, box-shadow .12s}
+.nav-link-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,217,255,0.15)}
+
+.video-player-container{position:relative;width:100%;flex:1;overflow:hidden;min-height:0}
+
+.video-player{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+
+.video-info-box{
+  margin-top:12px;
+  padding:8px 18px;
+  background:rgba(0,217,255,0.08);
+  border:1px solid rgba(0,217,255,0.25);
+  border-radius:18px;
+  box-shadow:0 8px 24px rgba(0,217,255,0.05);
+  display:inline-block;
+  width:auto;
+  max-width:80vw;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+.video-info{text-align:center;color:rgba(200,220,255,0.9)}
+.video-info h2{margin:0 0 6px;font-size:32px;font-weight:700;color:rgba(0,217,255,0.95)}
+.video-info p{margin:0;font-size:12px;color:rgba(200,220,255,0.75);line-height:1.4}
+
+.navigation-buttons{display:flex;gap:16px;margin-top:28px;justify-content:center}
+.nav-btn{padding:12px 32px;border-radius:10px;border:1px solid rgba(0,217,255,0.3);background:rgba(0,217,255,0.08);color:rgba(0,217,255,0.95);font-weight:600;cursor:pointer;transition:transform .12s, box-shadow .12s}
+.nav-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,217,255,0.15)}
+
+@media (max-width:900px){
+  .card{flex-direction:column}
+  .card-right{width:100%}
+  .card-left{padding:28px}
+  .video-card{padding:24px}
+  .video-player-container{aspect-ratio:4/3}
+}

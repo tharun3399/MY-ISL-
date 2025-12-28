@@ -132,7 +132,7 @@ router.post('/register', registerLimiter, async (req, res) => {
     if (isGoogleAuth) {
       insertQ += `, $${paramIndex}, $${paramIndex + 1}, $${paramIndex + 2}`;
     }
-    insertQ += `) RETURNING name, email, phone;`;
+    insertQ += `) RETURNING id, name, email, phone;`;
 
     const result = await db.query(insertQ, values);
 
@@ -185,7 +185,9 @@ router.post('/login', loginLimiter, async (req, res) => {
           return res.status(401).json({ message: 'Google account mismatch' });
         }
 
-        const payload = { email: user.email, name: user.name, phone: user.phone };
+        const userWithId = await db.query('SELECT id FROM "userinfo" WHERE LOWER(email) = LOWER($1)', [email]);
+        const userId = userWithId.rows[0]?.id;
+        const payload = { id: userId, email: user.email, name: user.name, phone: user.phone };
         const token = createToken(payload);
 
         res.cookie('token', token, {
@@ -195,7 +197,7 @@ router.post('/login', loginLimiter, async (req, res) => {
           maxAge: 60 * 60 * 1000,
         });
 
-        return res.json({ message: 'Logged in successfully with Google', token,user: payload });
+        return res.json({ message: 'Logged in successfully with Google', token, user: payload });
       } catch (dbErr) {
         console.error('Google login DB error:', dbErr.message);
         // If column doesn't exist, treat as user not found
@@ -210,7 +212,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     if (!email || !password) return res.status(400).json({ message: 'Email and password required' });
     if (!validateEmail(email)) return res.status(400).json({ message: 'Invalid email format' });
 
-    const q = 'SELECT name, email, phone, password_hash FROM "userinfo" WHERE LOWER(email) = LOWER($1)';
+    const q = 'SELECT id, name, email, phone, password_hash FROM "userinfo" WHERE LOWER(email) = LOWER($1)';
     const r = await db.query(q, [email]);
     if (!r.rows.length) return res.status(401).json({ message: 'Invalid credentials' });
 
@@ -218,7 +220,7 @@ router.post('/login', loginLimiter, async (req, res) => {
     const ok = await bcrypt.compare(password, user.password_hash || '');
     if (!ok) return res.status(401).json({ message: 'Invalid credentials' });
 
-    const payload = { email: user.email, name: user.name, phone: user.phone };
+    const payload = { id: user.id, email: user.email, name: user.name, phone: user.phone };
     const token = createToken(payload);
 
     res.cookie('token', token, {
@@ -247,8 +249,8 @@ router.get('/profile', async (req, res) => {
     } catch (err) {
       return res.status(401).json({ message: 'Invalid or expired token' });
     }
-    // Fetch user info from DB
-    const q = 'SELECT name, email, phone FROM "userinfo" WHERE LOWER(email) = LOWER($1)';
+    // Fetch user info from DB - include id
+    const q = 'SELECT id, name, email, phone FROM "userinfo" WHERE LOWER(email) = LOWER($1)';
     const r = await db.query(q, [decoded.email]);
     if (!r.rows.length) return res.status(404).json({ message: 'User not found' });
     const user = r.rows[0];

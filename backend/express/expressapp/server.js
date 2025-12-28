@@ -7,6 +7,8 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
+const http = require('http');
+const socketIO = require('socket.io');
 
 const db = require('./db'); // shared pool (expressapp/db.js)
 const lessonFetchRoute = require('./APIs/lesssonfetch');
@@ -73,8 +75,72 @@ async function start() {
     `);
     console.log("START(): schema update success");
 
-    app.listen(PORT, () => {
+    // Create HTTP server for Socket.io
+    const server = http.createServer(app);
+    
+    // Initialize Socket.io with CORS
+    const io = socketIO(server, {
+      cors: {
+        origin: [
+          'http://localhost:5173',
+          'http://localhost:5174',
+          'http://localhost:5175',
+          'http://localhost:3000',
+          FRONTEND
+        ],
+        credentials: true,
+        methods: ['GET', 'POST']
+      }
+    });
+
+    // Socket.io middleware for authentication
+    io.use((socket, next) => {
+      const token = socket.handshake.auth.token;
+      
+      if (token) {
+        try {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+          socket.userId = decoded.id || decoded.userId;
+          socket.user = decoded;
+          console.log(`Socket authenticated for user ${socket.userId}`);
+          next();
+        } catch (err) {
+          console.log('Socket auth error:', err.message);
+          // Allow connection but mark as unauthenticated
+          socket.userId = null;
+          socket.user = null;
+          next();
+        }
+      } else {
+        // Allow connection without token but mark as unauthenticated
+        socket.userId = null;
+        socket.user = null;
+        next();
+      }
+    });
+
+    // Initialize socket handlers
+    require('./sockets/duel')(io, db);
+    require('./sockets/games')(io, db);
+    require('./sockets/battles')(io, db);
+    require('./sockets/matchmaker')(io, db);
+
+    // Handle socket connections
+    io.on('connection', (socket) => {
+      console.log(`User ${socket.userId} connected with socket ID ${socket.id}`);
+
+      socket.on('disconnect', () => {
+        console.log(`User ${socket.userId} disconnected`);
+      });
+
+      socket.on('error', (error) => {
+        console.log(`Socket error for user ${socket.userId}:`, error);
+      });
+    });
+
+    server.listen(PORT, () => {
       console.log(`SERVER RUNNING at http://localhost:${PORT}`);
+      console.log(`Socket.io initialized and ready for connections`);
     });
 
   } catch (err) {

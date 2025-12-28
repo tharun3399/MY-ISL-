@@ -27,7 +27,15 @@ export default function ModuleDetail() {
           try {
             const topicsResponse = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/topics/lesson/${moduleId}`, { withCredentials: true })
             if (topicsResponse.data.ok) {
+              console.log('Topics response from API:', topicsResponse.data.topics)
               setTopics(topicsResponse.data.topics || [])
+              
+              // Initialize completed topics from API response
+              const completedMap = {}
+              topicsResponse.data.topics.forEach(topic => {
+                completedMap[topic.id] = topic.completed || false
+              })
+              setCompletedTopics(completedMap)
             } else {
               console.warn('No topics found for this lesson')
               setTopics([])
@@ -52,11 +60,39 @@ export default function ModuleDetail() {
     }
   }, [moduleId])
 
-  const handleTopicComplete = (topicId) => {
+  const handleTopicComplete = async (topicId) => {
+    const newCompletionStatus = !completedTopics[topicId]
+    
+    // Update UI immediately for responsiveness
     setCompletedTopics(prev => ({
       ...prev,
-      [topicId]: !prev[topicId]
+      [topicId]: newCompletionStatus
     }))
+
+    // Call API to persist the change
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/topics/progress`,
+        { topicId, completed: newCompletionStatus },
+        { withCredentials: true }
+      )
+      
+      if (!response.data.ok) {
+        console.error('Failed to update topic progress:', response.data.message)
+        // Revert the UI change if API call fails
+        setCompletedTopics(prev => ({
+          ...prev,
+          [topicId]: !newCompletionStatus
+        }))
+      }
+    } catch (err) {
+      console.error('Error updating topic progress:', err)
+      // Revert the UI change if API call fails
+      setCompletedTopics(prev => ({
+        ...prev,
+        [topicId]: !newCompletionStatus
+      }))
+    }
   }
 
   const getLevelColor = (level) => {
@@ -154,14 +190,22 @@ export default function ModuleDetail() {
           <div className="lessons-list">
             {topics.length > 0 ? (
               topics.map((topic) => (
-                <div key={topic.id} className="lesson-card">
+                <div 
+                  key={topic.id} 
+                  className="lesson-card"
+                  onClick={() => navigate(`/module/${moduleId}/topic/${topic.id}`)}
+                  style={{ cursor: 'pointer' }}
+                >
                   <div className="lesson-number">{topic.number}</div>
                   <div className="lesson-content">
                     <h3 className="lesson-name">{topic.topic_name}</h3>
                   </div>
                   <button
                     className={`lesson-checkbox ${completedTopics[topic.id] ? 'checked' : ''}`}
-                    onClick={() => handleTopicComplete(topic.id)}
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleTopicComplete(topic.id)
+                    }}
                   >
                     {completedTopics[topic.id] ? '✓' : ''}
                   </button>

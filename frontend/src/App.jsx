@@ -13,6 +13,12 @@ import VideoPage from './components/Video/VideoPage'
 import Dashboard from './components/Dashboard/Dashboard'
 import LearningPath from './components/Dashboard/LearningPath/LearningPath'
 import ModuleDetail from './components/Dashboard/LearningPath/ModuleDetail'
+import TopicDetail from './components/Dashboard/LearningPath/TopicDetail'
+import GameField from './components/GameField/GameField'
+import DuelGame from './components/GameField/DuelGame'
+import LiveGames from './components/GameField/LiveGames'
+import BattlesGame from './components/GameField/BattlesGame'
+import TrainingMode from './components/GameField/TrainingMode'
 import Test from './components/test/test'
 import Account from './components/Dashboard/account/Account'
 
@@ -37,8 +43,14 @@ export default function App() {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/learning-path" element={<LearningPath />} />
                 <Route path="/module/:moduleId" element={<ModuleDetail />} />
+                <Route path="/module/:moduleId/topic/:topicId" element={<TopicDetail />} />
                 <Route path="/video" element={<VideoPage />} />
                 <Route path="/account" element={<Account />} />
+                <Route path="/game-field" element={<GameField />} />
+                <Route path="/game-field/duel" element={<DuelGame />} />
+                <Route path="/game-field/games" element={<LiveGames />} />
+                <Route path="/game-field/battles" element={<BattlesGame />} />
+                <Route path="/game-field/training" element={<TrainingMode />} />
               </Route>
 
               {/* redirect any /login/* to /login (handles /login/dashboard) */}

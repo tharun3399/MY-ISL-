@@ -21,8 +21,7 @@ export default function Sidebar() {
     { icon: LearningIcon, label: 'Learning Path', id: 'learning' },
     { icon: PracticeIcon, label: 'Practice Mode', id: 'practice' },
     { icon: TutorIcon, label: 'AI Tutor', id: 'tutor' },
-    { icon: LearningIcon, label: 'Communities', id: 'communities' },
-    { icon: PracticeIcon, label: 'GameField', id: 'gamefield' }
+    { icon: LearningIcon, label: 'Communities', id: 'communities' }
   ]
 
   const systemItems = [
@@ -49,13 +48,10 @@ export default function Sidebar() {
         navigate('/learning-path')
         break
       case 'practice':
-        navigate('/video')
+        navigate('/practice-mode')
         break
       case 'account':
         navigate('/account')
-        break
-      case 'gamefield':
-        navigate('/game-field')
         break
       default:
         break

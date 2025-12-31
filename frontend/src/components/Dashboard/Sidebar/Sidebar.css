@@ -18,9 +18,20 @@
 
 @media (max-width: 480px) {
   .sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #e5e7eb;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    z-index: 1000;
+    display: none;
+    border-right: 1px solid #e5e7eb;
+    border-bottom: none;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .sidebar.open {
+    display: flex;
   }
 }
 

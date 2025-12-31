@@ -1,15 +1,21 @@
-import React, { useState, useContext, useEffect } from 'react'
+import React, { useState, useContext, useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import Sidebar from './Sidebar/Sidebar'
 import DashboardContent from './DashboardContent/DashboardContent'
+import axios from 'axios'
 import './Dashboard.css'
 
 export default function Dashboard() {
   const { authState } = useContext(AuthContext)
   const user = authState?.user || {}
+  const navigate = useNavigate()
   const [screenSize, setScreenSize] = useState('laptop')
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth)
-  const [manualScreenMode, setManualScreenMode] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [searchResults, setSearchResults] = useState([])
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false)
+  const [allModules, setAllModules] = useState([])
+  const searchContainerRef = useRef(null)
 
   const stats = {
     dailyStreak: 12,
@@ -18,28 +24,40 @@ export default function Dashboard() {
     rank: 3
   }
 
-  // Handle window resize
+  // Fetch all modules on mount
   useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth)
-      if (!manualScreenMode) {
-        if (window.innerWidth < 768) {
-          setScreenSize('phone')
-        } else if (window.innerWidth < 1024) {
-          setScreenSize('tablet')
-        } else {
-          setScreenSize('laptop')
+    const fetchAllModules = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/lessons/modules`, 
+          { withCredentials: true }
+        )
+        if (response.data.ok && response.data.modules) {
+          console.log('All modules loaded:', response.data.modules)
+          setAllModules(response.data.modules)
         }
+      } catch (err) {
+        console.error('Error fetching modules:', err)
+      }
+    }
+    fetchAllModules()
+  }, [])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setShowSearchDropdown(false)
       }
     }
 
-    window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
-  }, [manualScreenMode])
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
-  // Set initial screen size
+  // Handle window resize for responsive design
   useEffect(() => {
-    if (!manualScreenMode) {
+    const handleResize = () => {
       if (window.innerWidth < 768) {
         setScreenSize('phone')
       } else if (window.innerWidth < 1024) {
@@ -48,11 +66,42 @@ export default function Dashboard() {
         setScreenSize('laptop')
       }
     }
+
+    window.addEventListener('resize', handleResize)
+    // Set initial screen size
+    handleResize()
+    
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const handleScreenModeChange = (mode) => {
     setManualScreenMode(mode)
     setScreenSize(mode)
+  }
+  const handleSearchChange = (e) => {
+    const query = e.target.value.toLowerCase()
+    setSearchQuery(query)
+    
+    if (query.trim() === '') {
+      setSearchResults([])
+      setShowSearchDropdown(false)
+    } else {
+      const filtered = allModules.filter(module => {
+        const moduleName = (module.module_name || module.title || '').toLowerCase()
+        return moduleName.includes(query)
+      })
+      console.log('Search query:', query, 'Results:', filtered)
+      setSearchResults(filtered)
+      setShowSearchDropdown(true)
+    }
+  }
+
+  // Handle module click - navigate to that module
+  const handleModuleClick = (module) => {
+    navigate(`/module/${module.id}`)
+    setSearchQuery('')
+    setSearchResults([])
+    setShowSearchDropdown(false)
   }
 
   return (
@@ -62,29 +111,34 @@ export default function Dashboard() {
         <div className="dashboard-header">
           <h1 className="dashboard-title">Dashboard</h1>
           <div className="dashboard-header-actions">
-            <input type="text" placeholder="Search lessons..." className="search-input" />
-            <div className="screen-selector">
-              <button
-                className={`screen-btn ${screenSize === 'phone' ? 'active' : ''}`}
-                onClick={() => handleScreenModeChange('phone')}
-                title="Phone View"
-              >
-                📱 Phone
-              </button>
-              <button
-                className={`screen-btn ${screenSize === 'tablet' ? 'active' : ''}`}
-                onClick={() => handleScreenModeChange('tablet')}
-                title="Tablet View"
-              >
-                📱 Tablet
-              </button>
-              <button
-                className={`screen-btn ${screenSize === 'laptop' ? 'active' : ''}`}
-                onClick={() => handleScreenModeChange('laptop')}
-                title="Laptop View"
-              >
-                💻 Laptop
-              </button>
+            <div className="search-container" ref={searchContainerRef}>
+              <input 
+                type="text" 
+                placeholder="Search lessons..." 
+                className="search-input"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                onFocus={() => searchQuery && setShowSearchDropdown(true)}
+              />
+              {showSearchDropdown && searchResults.length > 0 && (
+                <div className="search-dropdown">
+                  {searchResults.map((module) => (
+                    <div 
+                      key={module.id} 
+                      className="search-result-item"
+                      onClick={() => handleModuleClick(module)}
+                    >
+                      <div className="search-result-name">{module.module_name || module.title}</div>
+                      <div className="search-result-module">{module.description || 'Module'}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {showSearchDropdown && searchResults.length === 0 && searchQuery && (
+                <div className="search-dropdown">
+                  <div className="search-no-results">No lessons found</div>
+                </div>
+              )}
             </div>
             <div className="notification-icon">🔔</div>
           </div>

@@ -7,16 +7,16 @@ WORKDIR /app
 # Copy root package files
 COPY package*.json ./
 
-# Clean cache and install root dependencies
-RUN npm cache clean --force && npm ci --no-audit
+# Install root dependencies
+RUN npm install --production=false
 
 # Copy frontend
 COPY frontend ./frontend
 
 WORKDIR /app/frontend
 
-# Clean cache and install frontend dependencies
-RUN npm cache clean --force && npm ci --no-audit
+# Install frontend dependencies
+RUN npm install --production=false
 
 # Build frontend
 RUN npm run build
@@ -27,8 +27,8 @@ COPY backend ./backend
 
 WORKDIR /app/backend/express/expressapp
 
-# Clean cache and install backend dependencies
-RUN npm cache clean --force && npm ci --no-audit
+# Install backend dependencies
+RUN npm install --production=false
 
 # Final stage
 FROM node:18-alpine
@@ -50,7 +50,7 @@ COPY --from=builder /app/backend ./backend
 WORKDIR /app/backend/express/expressapp
 
 # Install production dependencies only
-RUN npm ci --no-audit --only=production
+RUN npm install --production
 
 EXPOSE 5000
 

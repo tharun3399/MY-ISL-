@@ -1,9 +1,8 @@
 {
   "build": {
-    "builder": "nixpacks",
-    "buildCommand": "npm cache clean --force && npm ci --no-audit && cd frontend && npm cache clean --force && npm ci --no-audit && npm run build && cd ../backend/express/expressapp && npm cache clean --force && npm ci --no-audit"
+    "builder": "dockerfile"
   },
   "deploy": {
-    "startCommand": "npm run start:prod"
+    "startCommand": "node server.js"
   }
 }

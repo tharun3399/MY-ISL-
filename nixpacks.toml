@@ -1,9 +1,0 @@
-[build]
-architecture = "x86_64"
-onlyIncludeFiles = ["package.json", "package-lock.json", "frontend/", "backend/", "Procfile", "railway.json"]
-
-[build.providers.nodejs]
-node_version = "18"
-
-[build.providers.npm]
-npm_version = "10"

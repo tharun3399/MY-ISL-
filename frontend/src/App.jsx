@@ -31,7 +31,6 @@ export default function App() {
           <ThemeProvider>
             <Routes>
               {/* public */}
-              <Route path='/' element={<Test />} />
               <Route path="/VideoPage" element={<VideoPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
@@ -39,6 +38,7 @@ export default function App() {
 
               {/* protected group */}
               <Route element={<RequireAuth />}>
+                <Route path='/' element={<Test />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/learning-path" element={<LearningPath />} />
                 <Route path="/module/:moduleId" element={<ModuleDetail />} />

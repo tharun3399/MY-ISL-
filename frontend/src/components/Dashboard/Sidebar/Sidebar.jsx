@@ -4,7 +4,6 @@ import { AuthContext } from '../../../context/AuthContext'
 import DashboardIcon from './icons/dashboard-monitor.png'
 import LearningIcon from './icons/lesson.png'
 import PracticeIcon from './icons/practice.png'
-import TutorIcon from './icons/chalkboard-user.png'
 import SettingsIcon from './icons/settings-sliders.png'
 import UserIcon from './icons/user.png'
 import ISLIcon from './icons/icon.png'
@@ -20,7 +19,6 @@ export default function Sidebar() {
     { icon: DashboardIcon, label: 'Dashboard', id: 'dashboard' },
     { icon: LearningIcon, label: 'Learning Path', id: 'learning' },
     { icon: PracticeIcon, label: 'Practice Mode', id: 'practice' },
-    { icon: TutorIcon, label: 'AI Tutor', id: 'tutor' },
     { icon: LearningIcon, label: 'Communities', id: 'communities' }
   ]
 
@@ -49,6 +47,9 @@ export default function Sidebar() {
         break
       case 'practice':
         navigate('/practice-mode')
+        break
+      case 'communities':
+        navigate('/communities')
         break
       case 'account':
         navigate('/account')

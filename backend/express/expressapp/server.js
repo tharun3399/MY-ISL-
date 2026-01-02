@@ -44,6 +44,15 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '2mb' }));
 app.use(cookieParser());
 
+// Error handling middleware for DB errors
+app.use((err, req, res, next) => {
+  console.error('Middleware error:', err);
+  if (err.code === 'ECONNREFUSED' || err.message.includes('connect')) {
+    return res.status(503).json({ error: 'Database connection failed', message: err.message });
+  }
+  next(err);
+});
+
 // Determine the correct path for frontend dist
 const frontendDistPath = process.env.NODE_ENV === 'production' 
   ? path.join(__dirname, '../../frontend/dist')
@@ -86,15 +95,22 @@ async function start() {
 
   try {
     console.log("START(): checking DB connection...");
-    await db.query("SELECT 1");
-    console.log("START(): DB connection SUCCESS");
+    try {
+      await db.query("SELECT 1");
+      console.log("START(): DB connection SUCCESS");
 
-    console.log("START(): running schema updates...");
-    await db.query(`
-      ALTER TABLE IF EXISTS "userinfo"
-      ADD COLUMN IF NOT EXISTS email VARCHAR(255)
-    `);
-    console.log("START(): schema update success");
+      console.log("START(): running schema updates...");
+      await db.query(`
+        ALTER TABLE IF EXISTS "userinfo"
+        ADD COLUMN IF NOT EXISTS email VARCHAR(255)
+      `);
+      console.log("START(): schema update success");
+    } catch (dbErr) {
+      console.warn("START(): DB CONNECTION WARNING - Server will still start but DB features may not work");
+      console.warn("START(): Make sure Railway environment variables are set:");
+      console.warn("  - PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE");
+      console.warn("Error:", dbErr.message);
+    }
 
     // Create HTTP server for Socket.io
     const server = http.createServer(app);

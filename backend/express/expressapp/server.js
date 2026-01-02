@@ -54,15 +54,18 @@ app.use((err, req, res, next) => {
 });
 
 // Determine the correct path for frontend dist
-// __dirname is: /app/backend/express/expressapp
-// We need to go to: /app/frontend/dist
-// So from /app/backend/express/expressapp we go: ../../../frontend/dist
-const frontendDistPath = process.env.NODE_ENV === 'production' 
-  ? path.join(__dirname, '../../../frontend/dist')
-  : path.join(__dirname, '../../../frontend/dist');
+// In Docker: __dirname = /app/backend/express/expressapp
+// Frontend dist should be at: /app/frontend/dist
+// In local dev: __dirname = c:\...\backend\express\expressapp
+// Frontend dist should be at: c:\...\frontend\dist
+// Calculate path by going up 3 levels from server.js location
+const appRoot = path.resolve(__dirname, '../../../');
+const frontendDistPath = path.join(appRoot, 'frontend', 'dist');
 
 // Log the path for debugging
+console.log('App root:', appRoot);
 console.log('Serving frontend from:', frontendDistPath);
+console.log('Frontend dist exists:', require('fs').existsSync(frontendDistPath));
 
 // Serve frontend static files
 app.use(express.static(frontendDistPath));

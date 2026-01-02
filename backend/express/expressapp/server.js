@@ -115,70 +115,84 @@ async function start() {
     // Create HTTP server for Socket.io
     const server = http.createServer(app);
     
-    // Initialize Socket.io with CORS
-    const io = socketIO(server, {
-      cors: {
-        origin: [
-          'http://localhost:5173',
-          'http://localhost:5174',
-          'http://localhost:5175',
-          'http://localhost:3000',
-          FRONTEND
-        ],
-        credentials: true,
-        methods: ['GET', 'POST']
-      }
-    });
+    try {
+      // Initialize Socket.io with CORS
+      const io = socketIO(server, {
+        cors: {
+          origin: [
+            'http://localhost:5173',
+            'http://localhost:5174',
+            'http://localhost:5175',
+            'http://localhost:3000',
+            FRONTEND
+          ],
+          credentials: true,
+          methods: ['GET', 'POST']
+        }
+      });
 
-    // Socket.io middleware for authentication
-    io.use((socket, next) => {
-      const token = socket.handshake.auth.token;
-      
-      if (token) {
-        try {
-          const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
-          socket.userId = decoded.id || decoded.userId;
-          socket.user = decoded;
-          console.log(`Socket authenticated for user ${socket.userId}`);
-          next();
-        } catch (err) {
-          console.log('Socket auth error:', err.message);
-          // Allow connection but mark as unauthenticated
+      // Socket.io middleware for authentication
+      io.use((socket, next) => {
+        const token = socket.handshake.auth.token;
+        
+        if (token) {
+          try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+            socket.userId = decoded.id || decoded.userId;
+            socket.user = decoded;
+            console.log(`Socket authenticated for user ${socket.userId}`);
+            next();
+          } catch (err) {
+            console.log('Socket auth error:', err.message);
+            // Allow connection but mark as unauthenticated
+            socket.userId = null;
+            socket.user = null;
+            next();
+          }
+        } else {
+          // Allow connection without token but mark as unauthenticated
           socket.userId = null;
           socket.user = null;
           next();
         }
-      } else {
-        // Allow connection without token but mark as unauthenticated
-        socket.userId = null;
-        socket.user = null;
-        next();
+      });
+
+      // Initialize socket handlers - wrap in try-catch in case modules fail
+      try {
+        require('./sockets/duel')(io, db);
+        require('./sockets/games')(io, db);
+        require('./sockets/battles')(io, db);
+        require('./sockets/matchmaker')(io, db);
+        console.log('All socket handlers loaded successfully');
+      } catch (socketErr) {
+        console.warn('Warning: Some socket handlers failed to load:', socketErr.message);
+        console.warn('Socket.io will still work but some features may be unavailable');
       }
-    });
 
-    // Initialize socket handlers
-    require('./sockets/duel')(io, db);
-    require('./sockets/games')(io, db);
-    require('./sockets/battles')(io, db);
-    require('./sockets/matchmaker')(io, db);
+      // Handle socket connections
+      io.on('connection', (socket) => {
+        console.log(`User ${socket.userId} connected with socket ID ${socket.id}`);
 
-    // Handle socket connections
-    io.on('connection', (socket) => {
-      console.log(`User ${socket.userId} connected with socket ID ${socket.id}`);
+        socket.on('disconnect', () => {
+          console.log(`User ${socket.userId} disconnected`);
+        });
 
-      socket.on('disconnect', () => {
-        console.log(`User ${socket.userId} disconnected`);
+        socket.on('error', (error) => {
+          console.log(`Socket error for user ${socket.userId}:`, error);
+        });
       });
 
-      socket.on('error', (error) => {
-        console.log(`Socket error for user ${socket.userId}:`, error);
+      server.listen(PORT, '0.0.0.0', () => {
+        console.log(`SERVER RUNNING at http://0.0.0.0:${PORT}`);
+        console.log(`Socket.io initialized and ready for connections`);
       });
-    });
-
-    server.listen(PORT, '0.0.0.0', () => {
-      console.log(`SERVER RUNNING at http://0.0.0.0:${PORT}`);
-      console.log(`Socket.io initialized and ready for connections`);
-    });
+    } catch (socketInitErr) {
+      console.error('Socket.io initialization failed:', socketInitErr.message);
+      console.warn('Starting server without Socket.io...');
+      server.listen(PORT, '0.0.0.0', () => {
+        console.log(`SERVER RUNNING (no Socket.io) at http://0.0.0.0:${PORT}`);
+      });
+    }
 
   } catch (err) {
     console.log("START(): ERROR WHILE STARTING SERVER");

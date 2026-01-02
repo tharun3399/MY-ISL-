@@ -59,8 +59,7 @@ EXPOSE 8000
 
 # Set environment variables
 ENV NODE_ENV=production
+ENV PORT=8000
 
-# Start the backend server from app directory
-WORKDIR /app/backend/express/expressapp
-
+# Start the backend server
 CMD ["node", "server.js"]

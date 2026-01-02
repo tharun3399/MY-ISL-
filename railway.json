@@ -1,7 +1,7 @@
 {
   "build": {
     "builder": "nixpacks",
-    "buildCommand": "npm install && cd frontend && npm install && npm run build && cd ../backend/express/expressapp && npm install"
+    "buildCommand": "npm ci --prefer-offline --no-audit && cd frontend && npm ci --prefer-offline --no-audit && npm run build && cd ../backend/express/expressapp && npm ci --prefer-offline --no-audit"
   },
   "deploy": {
     "startCommand": "npm run start:prod"

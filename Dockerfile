@@ -58,5 +58,8 @@ EXPOSE 5000
 ENV NODE_ENV=production
 ENV PORT=5000
 
+# Working directory for start command
+WORKDIR /app/backend/express/expressapp
+
 # Start the backend server
 CMD ["node", "server.js"]

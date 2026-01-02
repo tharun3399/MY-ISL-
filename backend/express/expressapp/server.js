@@ -44,6 +44,17 @@ app.use(cors(corsOptions));
 app.use(express.json({ limit: '2mb' }));
 app.use(cookieParser());
 
+// Determine the correct path for frontend dist
+const frontendDistPath = process.env.NODE_ENV === 'production' 
+  ? path.join(__dirname, '../../frontend/dist')
+  : path.join(__dirname, '../../frontend/dist');
+
+// Log the path for debugging
+console.log('Serving frontend from:', frontendDistPath);
+
+// Serve frontend static files
+app.use(express.static(frontendDistPath));
+
 // Mount routers
 // lesson routes will be available at /api/lessons
 app.use('/api/lessons', lessonFetchRoute);
@@ -52,11 +63,21 @@ app.use('/api/topics', topicsFetchRoute);
 // auth routes (register/login) available at /api/auth
 app.use('/api/auth', loginRegRoute);
 
-// simple health check
+// Health checks
 app.get('/health', (req, res) => res.json({ ok: true, uptime: process.uptime() }));
+app.get('/api/health', (req, res) => res.json({ ok: true, uptime: process.uptime() }));
 
-// optional: serve frontend build (uncomment and set correct folder)
-// app.use(express.sta
+// Serve frontend for all other routes (SPA fallback)
+app.get('*', (req, res) => {
+  const indexPath = path.join(frontendDistPath, 'index.html');
+  console.log('Serving index.html from:', indexPath);
+  res.sendFile(indexPath, (err) => {
+    if (err) {
+      console.error('Error serving index.html:', err);
+      res.status(404).json({ error: 'Frontend not found' });
+    }
+  });
+});
 // ---------------------------------------------------------
 // START SERVER
 // ---------------------------------------------------------
@@ -138,16 +159,30 @@ async function start() {
       });
     });
 
-    server.listen(PORT, () => {
-      console.log(`SERVER RUNNING at http://localhost:${PORT}`);
+    server.listen(PORT, '0.0.0.0', () => {
+      console.log(`SERVER RUNNING at http://0.0.0.0:${PORT}`);
       console.log(`Socket.io initialized and ready for connections`);
     });
 
   } catch (err) {
     console.log("START(): ERROR WHILE STARTING SERVER");
     console.error(err);
+    // Exit with error code to trigger Railway restart
+    process.exit(1);
   }
 }
 
 // Call start()
 start();
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err);
+  process.exit(1);
+});
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1);
+});

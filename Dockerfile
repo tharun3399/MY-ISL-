@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install root dependencies
-RUN npm install --production=false
+RUN npm install
 
 # Copy frontend
 COPY frontend ./frontend
@@ -16,7 +16,7 @@ COPY frontend ./frontend
 WORKDIR /app/frontend
 
 # Install frontend dependencies
-RUN npm install --production=false
+RUN npm install
 
 # Build frontend
 RUN npm run build
@@ -28,7 +28,7 @@ COPY backend ./backend
 WORKDIR /app/backend/express/expressapp
 
 # Install backend dependencies
-RUN npm install --production=false
+RUN npm install
 
 # Final stage
 FROM node:18-alpine
@@ -47,19 +47,20 @@ COPY --from=builder /app/frontend/dist ./frontend/dist
 # Copy backend
 COPY --from=builder /app/backend ./backend
 
-WORKDIR /app/backend/express/expressapp
+# Copy root node_modules
+COPY --from=builder /app/node_modules ./node_modules
 
-# Install production dependencies only
+# Install production dependencies for backend
+WORKDIR /app/backend/express/expressapp
 RUN npm install --production
 
-EXPOSE 5000
+# Expose port
+EXPOSE 8000
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV PORT=5000
 
-# Working directory for start command
+# Start the backend server from app directory
 WORKDIR /app/backend/express/expressapp
 
-# Start the backend server
 CMD ["node", "server.js"]

@@ -1,11 +1,5 @@
 {
   "build": {
     "builder": "dockerfile"
-  },
-  "deploy": {
-    "startCommand": "cd /app/backend/express/expressapp && node server.js",
-    "healthCheckPath": "/health",
-    "healthCheckInterval": 30,
-    "healthCheckTimeout": 10
   }
 }

@@ -1,0 +1,5 @@
+# Don't ignore these files during Railway build
+!frontend/package.json
+!frontend/src/**
+!backend/package.json
+!backend/express/expressapp/**

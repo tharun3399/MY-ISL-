@@ -54,9 +54,12 @@ app.use((err, req, res, next) => {
 });
 
 // Determine the correct path for frontend dist
+// __dirname is: /app/backend/express/expressapp
+// We need to go to: /app/frontend/dist
+// So from /app/backend/express/expressapp we go: ../../../frontend/dist
 const frontendDistPath = process.env.NODE_ENV === 'production' 
-  ? path.join(__dirname, '../../frontend/dist')
-  : path.join(__dirname, '../../frontend/dist');
+  ? path.join(__dirname, '../../../frontend/dist')
+  : path.join(__dirname, '../../../frontend/dist');
 
 // Log the path for debugging
 console.log('Serving frontend from:', frontendDistPath);
@@ -76,16 +79,21 @@ app.use('/api/auth', loginRegRoute);
 app.get('/health', (req, res) => res.json({ ok: true, uptime: process.uptime() }));
 app.get('/api/health', (req, res) => res.json({ ok: true, uptime: process.uptime() }));
 
-// Serve frontend for all other routes (SPA fallback)
-app.get('*', (req, res) => {
-  const indexPath = path.join(frontendDistPath, 'index.html');
-  console.log('Serving index.html from:', indexPath);
-  res.sendFile(indexPath, (err) => {
-    if (err) {
-      console.error('Error serving index.html:', err);
-      res.status(404).json({ error: 'Frontend not found' });
-    }
-  });
+// Serve frontend for all other routes (SPA fallback) - use middleware for catch-all
+app.use((req, res) => {
+  // Only serve index.html if it's not an API or health check
+  if (!req.path.startsWith('/api') && !req.path.startsWith('/health')) {
+    const indexPath = path.join(frontendDistPath, 'index.html');
+    console.log('Serving index.html from:', indexPath);
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        console.error('Error serving index.html:', err);
+        res.status(404).json({ error: 'Frontend not found', path: req.path });
+      }
+    });
+  } else {
+    res.status(404).json({ error: 'Not found' });
+  }
 });
 // ---------------------------------------------------------
 // START SERVER

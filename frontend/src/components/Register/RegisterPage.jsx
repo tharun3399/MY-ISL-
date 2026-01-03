@@ -42,8 +42,39 @@ export default function RegisterPage() {
     console.log('Registering user with', formData);
     const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/register`, formData);
     console.log('Registration successful:', res.data);
-    // optionally show success message before navigate
-    navigate('/dashboard');
+    
+    // Auto-login the user after registration
+    try {
+      const loginRes = await axios.post(
+        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`,
+        {
+          email: formData.email,
+          password: formData.password
+        },
+        { withCredentials: true }
+      );
+      
+      console.log('Auto-login response:', loginRes.data);
+      console.log('Login cookies set');
+      
+      // Update auth context - use the proper setState method
+      if (setAuthState) {
+        setAuthState({ authenticated: true, user: loginRes.data.user, loading: false });
+        console.log('Auth state updated');
+      }
+      
+      // Add small delay to ensure cookie is set
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('Navigating to profile setup');
+      // Navigate to profile setup page with user data and authenticated
+      navigate('/register/profile-setup', { state: { user: loginRes.data.user } });
+    } catch (loginErr) {
+      console.error('Auto-login failed:', loginErr);
+      console.error('Login error response:', loginErr.response?.data);
+      // If auto-login fails, still allow profile setup with registration data
+      navigate('/register/profile-setup', { state: { user: res.data.user || res.data } });
+    }
   } catch (err) {
     console.error('Registration error:', err);
     const msg = err.response?.data?.message || 'Registration failed. Please try again.';

@@ -1,7 +1,11 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
+import axios from 'axios'
 import App from './App'
 import './styles.css'
+
+// Configure axios to always send credentials (cookies)
+axios.defaults.withCredentials = true
 
 // Suppress non-critical warnings for better development experience
 if (typeof window !== 'undefined') {

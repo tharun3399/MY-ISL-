@@ -6,6 +6,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 
+// Define constants at the top, before any route handlers
+const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-this';
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
+const SALT_ROUNDS = 10;
+
 // Update profile route (mounted at /api/auth/update-profile)
 router.post('/update-profile', async (req, res) => {
   try {
@@ -47,10 +52,6 @@ router.post('/update-profile', async (req, res) => {
     return res.status(500).json({ message: 'Server error during profile update' });
   }
 });
-
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-this';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
-const SALT_ROUNDS = 10;
 
 // Rate limiters (you can tune or move to server.js if preferred)
 const loginLimiter = rateLimit({
@@ -135,6 +136,18 @@ router.post('/register', registerLimiter, async (req, res) => {
     insertQ += `) RETURNING id, name, email, phone;`;
 
     const result = await db.query(insertQ, values);
+    const userId = result.rows[0].id;
+
+    // Automatically create user learning stats record
+    try {
+      await db.query(`
+        INSERT INTO "user_learning_stats" (user_id, current_goal_minutes, xp, level, minutes_spent_today, streak_days, gender, updated_at)
+        VALUES ($1, 30, 0, 1, 0, 0, NULL, CURRENT_TIMESTAMP)
+        ON CONFLICT (user_id) DO NOTHING;
+      `, [userId]);
+    } catch (statsErr) {
+      console.warn('Warning: Could not create learning stats for user:', statsErr.message);
+    }
 
     return res.status(201).json({ message: 'User created successfully', user: result.rows[0] });
   } catch (err) {
@@ -238,6 +251,143 @@ router.post('/login', loginLimiter, async (req, res) => {
 });
 
 
+// Save user learning stats (mounted at /api/user_stats)
+router.post('/user_stats', async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ message: 'Not authenticated' });
+    
+    let decoded;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+
+    const { avatarGender, dailyGoalMinutes } = req.body;
+
+    // Validation
+    if (!dailyGoalMinutes) {
+      return res.status(400).json({ message: 'dailyGoalMinutes is required' });
+    }
+
+    // Validate gender if provided
+    const genderValue = avatarGender ? String(avatarGender).toLowerCase() : null;
+    if (genderValue && !['male', 'female'].includes(genderValue)) {
+      return res.status(400).json({ message: 'Invalid gender. Must be "male" or "female"' });
+    }
+
+    const goalMinutes = parseInt(dailyGoalMinutes, 10);
+    if (isNaN(goalMinutes) || goalMinutes < 1 || goalMinutes > 480) {
+      return res.status(400).json({ message: 'dailyGoalMinutes must be between 1 and 480' });
+    }
+
+    // Get user ID
+    const userResult = await db.query(
+      'SELECT id FROM "userinfo" WHERE LOWER(email) = LOWER($1)',
+      [decoded.email]
+    );
+
+    if (!userResult.rows.length) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const userId = userResult.rows[0].id;
+
+    console.log('Updating stats - userId:', userId, 'gender:', genderValue, 'goalMinutes:', goalMinutes);
+
+    // Check if user stats exist
+    const existingStats = await db.query(
+      'SELECT * FROM "user_learning_stats" WHERE user_id = $1',
+      [userId]
+    );
+
+    let result;
+    if (existingStats.rows.length) {
+      // Update existing stats
+      const q = `
+        UPDATE "user_learning_stats"
+        SET current_goal_minutes = $2, gender = $3, updated_at = CURRENT_TIMESTAMP
+        WHERE user_id = $1
+        RETURNING user_id, current_goal_minutes, xp, level, minutes_spent_today, streak_days, gender, last_active_date, updated_at;
+      `;
+      console.log('Executing UPDATE with params:', [userId, goalMinutes, genderValue]);
+      result = await db.query(q, [userId, goalMinutes, genderValue]);
+    } else {
+      // Insert new stats with default values
+      const q = `
+        INSERT INTO "user_learning_stats" (user_id, current_goal_minutes, xp, level, minutes_spent_today, streak_days, gender, updated_at)
+        VALUES ($1, $2, 0, 1, 0, 0, $3, CURRENT_TIMESTAMP)
+        RETURNING user_id, current_goal_minutes, xp, level, minutes_spent_today, streak_days, gender, last_active_date, updated_at;
+      `;
+      console.log('Executing INSERT with params:', [userId, goalMinutes, genderValue]);
+      result = await db.query(q, [userId, goalMinutes, genderValue]);
+    }
+
+    // Return updated user info
+    const userInfoResult = await db.query(
+      'SELECT id, name, email, phone FROM "userinfo" WHERE id = $1',
+      [userId]
+    );
+
+    const user = userInfoResult.rows[0];
+    const stats = result.rows[0];
+
+    return res.json({
+      message: 'Profile setup completed successfully',
+      user: { ...user, ...stats },
+      stats
+    });
+  } catch (err) {
+    console.error('Profile setup error:', err);
+    console.error('Error details:', err.message, err.code, err.constraint);
+    return res.status(500).json({ message: 'Server error during profile setup', error: err.message });
+  }
+});
+
+// Get user learning stats (mounted at /api/user_stats)
+router.get('/user_stats', async (req, res) => {
+  try {
+    const token = req.cookies.token;
+    if (!token) return res.status(401).json({ message: 'Not authenticated' });
+    
+    let decoded;
+    try {
+      decoded = jwt.verify(token, JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+
+    // Get user ID
+    const userResult = await db.query(
+      'SELECT id FROM "userinfo" WHERE LOWER(email) = LOWER($1)',
+      [decoded.email]
+    );
+
+    if (!userResult.rows.length) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const userId = userResult.rows[0].id;
+
+    // Fetch user stats
+    const statsResult = await db.query(
+      'SELECT user_id, current_goal_minutes, xp, level, minutes_spent_today, streak_days, gender, last_active_date, updated_at FROM "user_learning_stats" WHERE user_id = $1',
+      [userId]
+    );
+
+    if (!statsResult.rows.length) {
+      return res.status(404).json({ message: 'User stats not found. Please complete profile setup.' });
+    }
+
+    const stats = statsResult.rows[0];
+    return res.json({ stats });
+  } catch (err) {
+    console.error('User stats fetch error:', err);
+    return res.status(500).json({ message: 'Server error during stats fetch' });
+  }
+});
+
 // Profile route (mounted at /api/auth/profile)
 router.get('/profile', async (req, res) => {
   try {
@@ -273,6 +423,61 @@ router.post('/logout', (req, res) => {
   } catch (err) {
     console.error('Logout error:', err);
     return res.status(500).json({ message: 'Server error during logout' });
+  }
+});
+
+// Migration endpoint - Add user_ids to user_learning_stats for existing users
+router.post('/migrate-user-stats', async (req, res) => {
+  try {
+    // Check if this is an admin request or from server (you can add auth here)
+    const token = req.cookies.token;
+    if (!token) {
+      // Allow if called from server (no token) or from authenticated admin
+      // For now, allow migrations from the server itself
+      const isServerRequest = req.get('x-server-key') === process.env.SERVER_KEY;
+      if (!isServerRequest) {
+        // Check if user is authenticated
+        try {
+          jwt.verify(token, JWT_SECRET);
+        } catch (err) {
+          return res.status(401).json({ message: 'Not authenticated' });
+        }
+      }
+    }
+
+    // Get all users without learning stats
+    const usersWithoutStats = await db.query(`
+      SELECT id FROM "userinfo"
+      WHERE id NOT IN (SELECT DISTINCT user_id FROM "user_learning_stats")
+    `);
+
+    if (usersWithoutStats.rows.length === 0) {
+      return res.json({ message: 'All users already have learning stats', migrated: 0 });
+    }
+
+    // Insert learning stats for all users
+    let migrationCount = 0;
+    for (const user of usersWithoutStats.rows) {
+      try {
+        await db.query(`
+          INSERT INTO "user_learning_stats" (user_id, current_goal_minutes, xp, level, minutes_spent_today, streak_days, updated_at)
+          VALUES ($1, 30, 0, 1, 0, 0, CURRENT_TIMESTAMP)
+          ON CONFLICT (user_id) DO NOTHING;
+        `, [user.id]);
+        migrationCount++;
+      } catch (err) {
+        console.warn(`Failed to migrate user ${user.id}:`, err.message);
+      }
+    }
+
+    return res.json({
+      message: 'Migration completed successfully',
+      migrated: migrationCount,
+      total: usersWithoutStats.rows.length
+    });
+  } catch (err) {
+    console.error('Migration error:', err);
+    return res.status(500).json({ message: 'Server error during migration' });
   }
 });
 

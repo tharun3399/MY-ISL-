@@ -9,6 +9,7 @@ import RequireAuth from './components/RequireAuth'
 import LoginPage from './components/Login/LoginPage'
 import RegisterPage from './components/Register/RegisterPage'
 import GoogleSignupComplete from './components/Register/GoogleSignupComplete'
+import ProfileSetup from './components/Register/ProfileSetup'
 import VideoPage from './components/Video/VideoPage'
 import Dashboard from './components/Dashboard/Dashboard'
 import LearningPath from './components/Dashboard/LearningPath/LearningPath'
@@ -31,14 +32,15 @@ export default function App() {
           <ThemeProvider>
             <Routes>
               {/* public */}
+              <Route path='/' element={<VideoPage />} />
               <Route path="/VideoPage" element={<VideoPage />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/register/complete" element={<GoogleSignupComplete />} />
+              <Route path="/register/profile-setup" element={<ProfileSetup />} />
 
               {/* protected group */}
               <Route element={<RequireAuth />}>
-                <Route path='/' element={<Test />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/learning-path" element={<LearningPath />} />
                 <Route path="/module/:moduleId" element={<ModuleDetail />} />

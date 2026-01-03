@@ -453,23 +453,16 @@ export default function TopicDetail() {
                 </p>
               </div>
               <div className="merged-video-wrapper-inline">
-                {playlistLoading ? (
-                  <div className="playlist-loading">
-                    <p>Building merged playlist...</p>
-                    <div className="spinner"></div>
-                  </div>
-                ) : (
-                  <video 
-                    ref={mergedVideoRef}
-                    className="merged-video-player-inline"
-                    controls
-                    poster=""
-                    autoPlay
-                    muted
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                )}
+                <video 
+                  ref={mergedVideoRef}
+                  className="merged-video-player-inline"
+                  controls
+                  poster=""
+                  autoPlay
+                  muted
+                >
+                  Your browser does not support the video tag.
+                </video>
               </div>
               <div className="merged-video-info-bar-inline">
                 <span className="current-video-title-inline">
@@ -500,18 +493,14 @@ export default function TopicDetail() {
                 <span className="speed-value">{playbackSpeed.toFixed(2)}x</span>
               </div>
             </div>
-          ) : (
+          ) : playlistLoading ? (
             <div className="video-placeholder">
               <div className="placeholder-content">
-                <svg className="video-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polygon points="23 7 16 12 23 17 23 7"></polygon>
-                  <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-                </svg>
-                <p className="placeholder-text">No video available</p>
-                <p className="placeholder-subtext">Video content will be displayed here when available</p>
+                <div className="spinner"></div>
+                <p className="placeholder-text">Loading videos...</p>
               </div>
             </div>
-          )}
+          ) : null}
         </div>
 
         {/* Word Videos Section - Removed: Merged video now plays in placeholder area */}

@@ -93,20 +93,11 @@ export default function GoogleSignupComplete() {
       const res = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/register`, registrationData)
       console.log('Registration successful:', res.data)
 
-      // Auto-login the user with the custom password
-      const loginRes = await axios.post(
-        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/login`,
-        {
-          email: googleData.email,
-          password: formData.password
-        },
-        { withCredentials: true }
-      )
-
-      if (loginRes.data.user) {
-        // Update auth context and navigate
-        navigate('/dashboard')
-      }
+      // Navigate to profile setup page instead of auto-login
+      navigate('/register/profile-setup', { 
+        state: { user: res.data.user || res.data },
+        replace: true 
+      })
     } catch (err) {
       console.error('Registration error:', err)
       const msg = err.response?.data?.message || 'Registration failed. Please try again.'

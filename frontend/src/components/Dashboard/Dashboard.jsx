@@ -15,14 +15,36 @@ export default function Dashboard() {
   const [searchResults, setSearchResults] = useState([])
   const [showSearchDropdown, setShowSearchDropdown] = useState(false)
   const [allModules, setAllModules] = useState([])
+  const [stats, setStats] = useState({
+    dailyStreak: 0,
+    totalXP: 0,
+    currentGoal: 0,
+    rank: 0
+  })
   const searchContainerRef = useRef(null)
 
-  const stats = {
-    dailyStreak: 12,
-    totalXP: 2450,
-    currentGoal: 30,
-    rank: 3
-  }
+  // Fetch user stats from API
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/user_stats`,
+          { withCredentials: true }
+        )
+        if (response.data.stats) {
+          setStats({
+            dailyStreak: response.data.stats.streak_days || 0,
+            totalXP: response.data.stats.xp || 0,
+            currentGoal: response.data.stats.current_goal_minutes || 0,
+            rank: response.data.stats.level || 0
+          })
+        }
+      } catch (err) {
+        console.error('Error fetching user stats:', err)
+      }
+    }
+    fetchUserStats()
+  }, [])
 
   // Fetch all modules on mount
   useEffect(() => {

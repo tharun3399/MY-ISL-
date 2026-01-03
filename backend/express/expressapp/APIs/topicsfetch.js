@@ -649,6 +649,11 @@ router.post('/progress', verifyToken, async (req, res) => {
       return res.status(401).json({ ok: false, message: 'Invalid token' });
     }
 
+    // Check if topic was previously completed
+    const checkQuery = 'SELECT completed FROM user_topic_progress WHERE user_id = $1 AND topic_id = $2';
+    const checkResult = await db.query(checkQuery, [userId, topicId]);
+    const wasCompleted = checkResult.rows.length > 0 ? checkResult.rows[0].completed : false;
+
     // Insert or update user_topic_progress
     // Table structure: user_id, topic_id, completed, completed_at
     const q = `
@@ -660,6 +665,30 @@ router.post('/progress', verifyToken, async (req, res) => {
     `;
 
     const result = await db.query(q, [userId, topicId, completed]);
+
+    // Handle XP changes
+    const xpReward = 10; // XP points per completed lesson
+    
+    try {
+      if (completed && !wasCompleted) {
+        // Marking as completed for the first time - increment XP
+        await db.query(
+          'UPDATE "user_learning_stats" SET xp = xp + $1 WHERE user_id = $2',
+          [xpReward, userId]
+        );
+        console.log(`XP updated: User ${userId} earned ${xpReward} XP for completing topic ${topicId}`);
+      } else if (!completed && wasCompleted) {
+        // Unmarking a completed topic - decrement XP
+        await db.query(
+          'UPDATE "user_learning_stats" SET xp = GREATEST(xp - $1, 0) WHERE user_id = $2',
+          [xpReward, userId]
+        );
+        console.log(`XP updated: User ${userId} lost ${xpReward} XP for uncompleting topic ${topicId}`);
+      }
+    } catch (xpErr) {
+      console.error('Error updating XP:', xpErr);
+      // Don't fail the entire request if XP update fails
+    }
 
     return res.json({ 
       ok: true, 

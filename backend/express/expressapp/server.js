@@ -77,6 +77,8 @@ app.use('/api/lessons', lessonFetchRoute);
 app.use('/api/topics', topicsFetchRoute);
 // auth routes (register/login) available at /api/auth
 app.use('/api/auth', loginRegRoute);
+// user_stats route available at /api/user_stats
+app.use('/api', loginRegRoute);
 
 // Health checks
 app.get('/health', (req, res) => res.json({ ok: true, uptime: process.uptime() }));

@@ -1,11 +1,11 @@
 /* Dashboard.css - Main Layout */
 
 .dashboard {
-  display: flex;
-  height: 100vh;
-  background: #f5f7fa;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  transition: all 0.3s ease;
+  display: flex !important;
+  height: 100vh !important;
+  background: #0B0F14 !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
+  transition: all 0.3s ease !important;
 }
 
 @media (max-width: 480px) {
@@ -24,14 +24,14 @@
 }
 
 .dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2rem;
-  background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
-  gap: 1.5rem;
-  flex-wrap: wrap;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 2rem !important;
+  background: #0E1420 !important;
+  border-bottom: 1px solid #1F2937 !important;
+  gap: 1.5rem !important;
+  flex-wrap: wrap !important;
 }
 
 @media (max-width: 768px) {
@@ -51,8 +51,12 @@
 .dashboard-title {
   font-size: 28px;
   font-weight: 700;
-  color: #1f2937;
+  color: #E5E7EB;
   margin: 0;
+  background: linear-gradient(90deg, #00d9ff, #39ff14);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 @media (max-width: 768px) {
@@ -91,13 +95,14 @@
 }
 
 .search-input {
-  padding: 0.75rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  width: 250px;
-  font-size: 14px;
-  background: #f9fafb;
-  transition: all 0.2s ease;
+  padding: 0.75rem 1rem !important;
+  border: 1px solid #1F2937 !important;
+  border-radius: 8px !important;
+  width: 250px !important;
+  font-size: 14px !important;
+  background: #0E1420 !important;
+  transition: all 0.2s ease !important;
+  color: #E5E7EB !important;
 }
 
 @media (max-width: 768px) {
@@ -114,10 +119,10 @@
 }
 
 .search-input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  outline: none !important;
+  border-color: #00d9ff !important;
+  background: rgba(0, 229, 255, 0.05) !important;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.25) !important;
 }
 
 /* Search Container and Dropdown */
@@ -139,26 +144,26 @@
 }
 
 .search-dropdown {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-top: none;
-  border-radius: 0 0 8px 8px;
-  max-height: 400px;
-  overflow-y: auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
-  margin-top: -1px;
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: #121826 !important;
+  border: 1px solid #1F2937 !important;
+  border-top: none !important;
+  border-radius: 0 0 8px 8px !important;
+  max-height: 400px !important;
+  overflow-y: auto !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+  z-index: 1000 !important;
+  margin-top: -1px !important;
 }
 
 .search-result-item {
-  padding: 0.75rem 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-bottom: 1px solid #f3f4f6;
+  padding: 0.75rem 1rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  border-bottom: 1px solid #1F2937 !important;
 }
 
 .search-result-item:last-child {
@@ -166,26 +171,26 @@
 }
 
 .search-result-item:hover {
-  background: #f0f9ff;
+  background: rgba(0, 229, 255, 0.10);
   padding-left: 1.25rem;
 }
 
 .search-result-name {
   font-weight: 600;
-  color: #1f2937;
+  color: #E5E7EB;
   font-size: 14px;
   margin-bottom: 0.25rem;
 }
 
 .search-result-module {
   font-size: 12px;
-  color: #6b7280;
+  color: #6B7280;
 }
 
 .search-no-results {
   padding: 1rem;
   text-align: center;
-  color: #9ca3af;
+  color: #6B7280;
   font-size: 14px;
 }
 
@@ -195,17 +200,17 @@
 }
 
 .search-dropdown::-webkit-scrollbar-track {
-  background: #f9fafb;
+  background: rgba(0, 217, 255, 0.05);
   border-radius: 0 8px 8px 0;
 }
 
 .search-dropdown::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: rgba(0, 217, 255, 0.25);
   border-radius: 3px;
 }
 
 .search-dropdown::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: rgba(0, 217, 255, 0.4);
 }
 
 .notification-icon {

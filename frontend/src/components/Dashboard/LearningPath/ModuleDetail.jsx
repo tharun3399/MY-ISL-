@@ -159,7 +159,6 @@ export default function ModuleDetail() {
             <span className="module-icon">{module.icon}</span>
             <div className="module-info">
               <h1 className="module-title">{module.module_name}</h1>
-              <p className="module-description">{module.description}</p>
             </div>
           </div>
           <div className="module-stats">
@@ -178,21 +177,17 @@ export default function ModuleDetail() {
           </div>
         </div>
 
-        <div className="progress-section">
-          <div className="progress-bar">
-            <div className="progress-fill" style={{ width: `${moduleProgress}%`, backgroundColor: module.color }}></div>
-          </div>
-          <p className="progress-text">{moduleProgress}% Complete</p>
-        </div>
-
         <div className="lessons-section">
           <h2 className="lessons-title">Topics</h2>
           <div className="lessons-list">
             {topics.length > 0 ? (
-              topics.map((topic) => (
+              topics.map((topic) => {
+                const topicProgress = completedTopics[topic.id] ? 100 : 0
+                return (
                 <div 
                   key={topic.id} 
                   className="lesson-card"
+                  data-progress={topicProgress}
                   onClick={() => navigate(`/module/${moduleId}/topic/${topic.id}`)}
                   style={{ cursor: 'pointer' }}
                 >
@@ -210,7 +205,7 @@ export default function ModuleDetail() {
                     {completedTopics[topic.id] ? '✓' : ''}
                   </button>
                 </div>
-              ))
+              )})
             ) : (
               <div className="no-topics-message">
                 <p>No topics found for this lesson. Please check back later or contact support.</p>

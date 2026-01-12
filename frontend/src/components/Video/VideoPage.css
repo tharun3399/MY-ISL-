@@ -164,23 +164,23 @@
 
 /* Arrow style */
 .arrow-btn {
-  background: linear-gradient(135deg, #00bcd4 0%, #0072ff 100%);
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 56px;
-  height: 56px;
-  font-size: 24px;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 12px 32px rgba(0,114,255,0.25);
-  transition: transform .18s, box-shadow .18s;
-  flex-shrink: 0;
+  background: linear-gradient(135deg, #00E5FF 0%, #39FF14 100%) !important;
+  color: #0B0F14 !important;
+  border: none !important;
+  border-radius: 50% !important;
+  width: 56px !important;
+  height: 56px !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.25) !important;
+  transition: transform .18s, box-shadow .18s !important;
+  flex-shrink: 0 !important;
 }
-.arrow-btn:hover { transform: scale(1.06); }
+.arrow-btn:hover { transform: scale(1.06) !important; box-shadow: 0 0 24px rgba(0, 229, 255, 0.35) !important; }
 .left-arrow { position: absolute; left: 28px; top: 50%; transform: translateY(-50%); }
 .right-arrow { position: absolute; right: 28px; top: 50%; transform: translateY(-50%); }
 

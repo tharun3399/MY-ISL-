@@ -3,7 +3,7 @@
 .gamefield-wrapper {
   display: flex;
   height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0a0e1a 0%, #1a1f3a 100%);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
 }
 
@@ -11,7 +11,7 @@
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
-  background: #f5f7fa;
+  background: #0a0e1a;
 }
 
 /* Header */
@@ -19,30 +19,31 @@
   display: grid;
   grid-template-columns: 1fr 300px;
   gap: 2rem;
-  background: white;
+  background: linear-gradient(135deg, #121820 0%, #1a2332 100%);
+  border: 1px solid rgba(0, 217, 255, 0.1);
   padding: 2rem;
   border-radius: 16px;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
   align-items: center;
 }
 
 .header-content h1 {
   font-size: 36px;
   margin: 0 0 0.5rem 0;
-  color: #1f2937;
+  color: #e0e7ff;
 }
 
 .header-title {
   font-weight: 800;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #00d9ff 0%, #39ff14 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .header-subtitle {
-  color: #6b7280;
+  color: #a8b3ff;
   margin: 0 0 1.5rem 0;
   font-size: 16px;
 }
@@ -64,7 +65,7 @@
 
 .stat-label {
   font-size: 12px;
-  color: #9ca3af;
+  color: #7a83b8;
   text-transform: uppercase;
   font-weight: 600;
 }
@@ -72,7 +73,7 @@
 .stat-value {
   font-size: 24px;
   font-weight: 700;
-  color: #1f2937;
+  color: #00d9ff;
 }
 
 .header-visual {
@@ -99,8 +100,12 @@
 .section-title {
   font-size: 24px;
   font-weight: 700;
-  color: #1f2937;
+  color: #e0e7ff;
   margin: 0 0 2rem 0;
+  background: linear-gradient(90deg, #00d9ff, #39ff14);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .games-grid {
@@ -111,11 +116,12 @@
 
 /* Game Card */
 .game-card {
-  background: white;
+  background: linear-gradient(135deg, #121820 0%, #1a2332 100%);
   border-radius: 12px;
   padding: 2rem;
-  border-top: 4px solid #667eea;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  border-top: 4px solid #00d9ff;
+  border: 1px solid rgba(0, 217, 255, 0.15);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
   transition: all 0.3s ease;
   cursor: pointer;
   display: flex;
@@ -124,7 +130,8 @@
 
 .game-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 12px 24px rgba(0, 217, 255, 0.2);
+  border-color: rgba(57, 255, 20, 0.3);
 }
 
 .game-card-header {
@@ -141,12 +148,12 @@
 .game-title {
   font-size: 20px;
   font-weight: 700;
-  color: #1f2937;
+  color: #e0e7ff;
   margin: 0;
 }
 
 .game-description {
-  color: #6b7280;
+  color: #a8b3ff;
   font-size: 14px;
   line-height: 1.6;
   margin: 0 0 1.5rem 0;
@@ -159,7 +166,7 @@
   gap: 0.75rem;
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid rgba(0, 217, 255, 0.1);
 }
 
 .meta-item {
@@ -170,12 +177,12 @@
 }
 
 .meta-label {
-  color: #9ca3af;
+  color: #7a83b8;
   font-weight: 600;
 }
 
 .meta-value {
-  color: #1f2937;
+  color: #00d9ff;
   font-weight: 700;
 }
 
@@ -184,8 +191,8 @@
   padding: 0.75rem;
   border: none;
   border-radius: 8px;
-  background: #667eea;
-  color: white;
+  background: linear-gradient(135deg, #00d9ff 0%, #39ff14 100%);
+  color: #0a0e1a;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
@@ -195,6 +202,7 @@
 .play-btn:hover {
   opacity: 0.9;
   transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(0, 217, 255, 0.3);
 }
 
 /* Quick Stats */
@@ -205,13 +213,14 @@
 }
 
 .stat-card {
-  background: white;
+  background: linear-gradient(135deg, #121820 0%, #1a2332 100%);
   padding: 1.5rem;
   border-radius: 12px;
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 217, 255, 0.1);
 }
 
 .stat-card-icon {
@@ -220,7 +229,7 @@
 
 .stat-card-label {
   font-size: 12px;
-  color: #9ca3af;
+  color: #7a83b8;
   text-transform: uppercase;
   font-weight: 600;
   margin-bottom: 0.25rem;
@@ -229,7 +238,7 @@
 .stat-card-value {
   font-size: 24px;
   font-weight: 700;
-  color: #1f2937;
+  color: #39ff14;
 }
 
 /* Responsive */

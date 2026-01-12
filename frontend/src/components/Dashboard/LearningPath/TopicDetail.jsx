@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
 import Sidebar from '../Sidebar/Sidebar'
+import VideoSequencePlayer from './VideoSequencePlayer'
 import axios from 'axios'
 import { extractVideoUrls, mergeVideosOnBackend, setupSequentialPlayer } from '../../../utils/videoMerger'
 import './TopicDetail.css'
@@ -434,65 +435,41 @@ export default function TopicDetail() {
         </div>
 
         <div className="video-container">
-          {videoUrl ? (
-            <video 
-              className="video-player"
-              controls
-              poster=""
-            >
-              <source src={videoUrl} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          ) : mergedPlaylist && mergedPlaylist.availableVideos.length > 0 ? (
-            // Show merged video player in the placeholder area
-            <div className="merged-video-placeholder-container">
-              <div className="merged-video-header-inline">
-                <h4>🎬 Merged Word Videos Stream</h4>
-                <p className="merged-video-info-inline">
-                  Playing {mergedPlaylist.totalAvailable} word videos
-                </p>
-              </div>
-              <div className="merged-video-wrapper-inline">
-                <video 
-                  ref={mergedVideoRef}
-                  className="merged-video-player-inline"
-                  controls
-                  poster=""
-                  autoPlay
-                  muted
-                >
-                  Your browser does not support the video tag.
-                </video>
-              </div>
-              <div className="merged-video-info-bar-inline">
-                <span className="current-video-title-inline">
-                  ▶️ {playlistControllerRef.current?.getCurrentTitle() || 'Loading...'}
-                </span>
-                <span className="playlist-position-inline">
-                  {(playlistControllerRef.current?.getCurrentIndex() ?? 0) + 1} / {playlistControllerRef.current?.getPlaylistSize() ?? mergedPlaylist.totalAvailable}
-                </span>
-              </div>
-              <div className="playback-speed-control">
-                <label htmlFor="speed-slider">⚡ Speed:</label>
-                <input 
-                  id="speed-slider"
-                  type="range" 
-                  min="0.25" 
-                  max="2" 
-                  step="0.25" 
-                  value={playbackSpeed}
-                  onChange={(e) => {
-                    const speed = parseFloat(e.target.value)
-                    setPlaybackSpeed(speed)
-                    if (mergedVideoRef.current) {
-                      mergedVideoRef.current.playbackRate = speed
-                    }
-                  }}
-                  className="speed-slider"
-                />
-                <span className="speed-value">{playbackSpeed.toFixed(2)}x</span>
-              </div>
-            </div>
+          {videoUrl && wordVideos.length > 0 ? (
+            // Play topic video first, then word videos
+            <VideoSequencePlayer 
+              videos={[
+                { url: topic.video_name, title: topic.topic_name },
+                ...wordVideos.map((video, idx) => ({
+                  url: video.video_name,
+                  title: video.word_name || `Word Video ${idx + 1}`
+                }))
+              ]}
+              onSequenceComplete={() => {
+                console.log('Video sequence complete!')
+              }}
+            />
+          ) : videoUrl ? (
+            // Only topic video, no word videos
+            <VideoSequencePlayer 
+              videos={[
+                { url: topic.video_name, title: topic.topic_name }
+              ]}
+              onSequenceComplete={() => {
+                console.log('Topic video complete!')
+              }}
+            />
+          ) : wordVideos.length > 0 ? (
+            // Only word videos, no topic video
+            <VideoSequencePlayer 
+              videos={wordVideos.map((video, idx) => ({
+                url: video.video_name,
+                title: video.word_name || `Word Video ${idx + 1}`
+              }))}
+              onSequenceComplete={() => {
+                console.log('Word video sequence complete!')
+              }}
+            />
           ) : playlistLoading ? (
             <div className="video-placeholder">
               <div className="placeholder-content">
@@ -500,7 +477,13 @@ export default function TopicDetail() {
                 <p className="placeholder-text">Loading videos...</p>
               </div>
             </div>
-          ) : null}
+          ) : (
+            <div className="video-placeholder">
+              <div className="placeholder-content">
+                <p className="placeholder-text">No videos available for this topic</p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Word Videos Section - Removed: Merged video now plays in placeholder area */}

@@ -32,16 +32,16 @@
 }
 
 .dashboard-content-wrapper::-webkit-scrollbar-track {
-  background: #f5f7fa;
+  background: #0a0e1a;
 }
 
 .dashboard-content-wrapper::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: rgba(0, 217, 255, 0.25);
   border-radius: 4px;
 }
 
 .dashboard-content-wrapper::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: rgba(0, 217, 255, 0.4);
 }
 
 /* LAPTOP (1024px and above) */

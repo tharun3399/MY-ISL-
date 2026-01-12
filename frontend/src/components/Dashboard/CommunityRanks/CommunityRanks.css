@@ -1,15 +1,28 @@
 /* CommunityRanks.css */
 
 .community-ranks {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  background: linear-gradient(135deg, #141420 0%, #1a2332 100%);
+  border: 1px solid rgba(0, 229, 255, 0.12);
+  border-radius: 14px;
   padding: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.community-ranks::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.05) 0%, rgba(57, 255, 20, 0.02) 100%);
+  pointer-events: none;
 }
 
 .ranks-header {
@@ -21,27 +34,35 @@
 .ranks-title {
   font-size: 18px;
   font-weight: 700;
-  color: #1f2937;
+  color: #FFFFFF;
   margin: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .view-all-link {
   font-size: 13px;
-  color: #3b82f6;
+  color: #00E5FF;
   text-decoration: none;
   font-weight: 600;
-  transition: color 0.2s ease;
+  transition: all 0.3s ease-out;
+  position: relative;
+  z-index: 1;
+  padding: 0.25rem 0.5rem;
 }
 
 .view-all-link:hover {
-  color: #2563eb;
+  color: #39FF14;
   text-decoration: underline;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
 }
 
 .ranks-list {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  position: relative;
+  z-index: 1;
 }
 
 .rank-item {
@@ -49,26 +70,64 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: #f9fafb;
+  background: rgba(0, 229, 255, 0.08);
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease-out;
+  border: 1px solid rgba(0, 229, 255, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.rank-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 229, 255, 0.1), transparent);
+  transition: left 0.5s ease-out;
 }
 
 .rank-item:hover {
-  background: #f3f4f6;
+  background: rgba(0, 229, 255, 0.15);
+  border-color: rgba(0, 229, 255, 0.25);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+  transform: translateX(4px);
+}
+
+.rank-item:hover::before {
+  left: 100%;
 }
 
 .rank-item.rank-you {
-  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
-  border: 1px solid #d1d5db;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(57, 255, 20, 0.1));
+  border: 1px solid rgba(0, 229, 255, 0.25);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
 }
 
 .rank-position {
   font-size: 18px;
   font-weight: 700;
-  color: #6b7280;
+  color: #A0A0B2;
   min-width: 30px;
   text-align: center;
+  transition: color 0.3s ease-out;
+}
+
+.rank-item:nth-child(1) .rank-position {
+  color: #F5C542;
+  text-shadow: 0 0 8px rgba(245, 197, 66, 0.4);
+}
+
+.rank-item:nth-child(2) .rank-position {
+  color: #00E5FF;
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.4);
+}
+
+.rank-item:nth-child(3) .rank-position {
+  color: #39FF14;
+  text-shadow: 0 0 8px rgba(57, 255, 20, 0.4);
 }
 
 .rank-avatar {
@@ -82,10 +141,13 @@
   font-weight: 700;
   font-size: 14px;
   flex-shrink: 0;
+  transition: all 0.3s ease-out;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
 }
 
 .rank-avatar.avatar-highlight {
-  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+  border: 2px solid rgba(0, 229, 255, 0.3);
 }
 
 .rank-info {
@@ -95,23 +157,32 @@
 .rank-name {
   font-size: 14px;
   font-weight: 600;
-  color: #1f2937;
+  color: #FFFFFF;
   margin-bottom: 0.25rem;
 }
 
 .rank-xp {
   font-size: 12px;
-  color: #9ca3af;
+  color: #00E5FF;
+  font-weight: 500;
+  transition: text-shadow 0.3s ease-out;
+}
+
+.rank-item:hover .rank-xp {
+  text-shadow: 0 0 8px rgba(0, 229, 255, 0.3);
 }
 
 .rank-medal {
   font-size: 18px;
-  opacity: 0.6;
-  transition: opacity 0.2s ease;
+  opacity: 0.5;
+  transition: all 0.3s ease-out;
+  filter: drop-shadow(0 0 4px rgba(245, 197, 66, 0.2));
 }
 
 .rank-item:hover .rank-medal {
   opacity: 1;
+  filter: drop-shadow(0 0 8px rgba(245, 197, 66, 0.4));
+  transform: scale(1.1);
 }
 
 /* LAPTOP (1024px and above) */

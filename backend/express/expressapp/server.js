@@ -77,6 +77,41 @@ app.use('/api/lessons', lessonFetchRoute);
 app.use('/api/topics', topicsFetchRoute);
 // auth routes (register/login) available at /api/auth
 app.use('/api/auth', loginRegRoute);
+
+// Video proxy endpoint to bypass CORS issues with Cloudflare R2
+// MUST come before the generic /api router to avoid being caught by it
+app.get('/api/video/:filename', async (req, res) => {
+  try {
+    const filename = req.params.filename;
+    const r2Url = `https://pub-2d19b53b556b4755a69be5d1e59da23a.r2.dev/Animated/${filename}`;
+    
+    console.log(`Proxying video request: ${filename} -> ${r2Url}`);
+    
+    // Use native fetch (Node 18+)
+    const response = await fetch(r2Url);
+    
+    if (!response.ok) {
+      console.error(`Failed to fetch video from R2: ${response.status}`);
+      return res.status(response.status).json({ error: 'Video not found' });
+    }
+    
+    // Set proper headers for video streaming
+    res.setHeader('Content-Type', response.headers.get('content-type') || 'video/mp4');
+    const contentLength = response.headers.get('content-length');
+    if (contentLength) {
+      res.setHeader('Content-Length', contentLength);
+    }
+    res.setHeader('Accept-Ranges', 'bytes');
+    
+    // Stream the video response
+    const arrayBuffer = await response.arrayBuffer();
+    res.send(Buffer.from(arrayBuffer));
+  } catch (error) {
+    console.error('Error proxying video:', error);
+    res.status(500).json({ error: 'Failed to load video', details: error.message });
+  }
+});
+
 // user_stats route available at /api/user_stats
 app.use('/api', loginRegRoute);
 

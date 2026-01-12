@@ -6,7 +6,40 @@ const { verifyToken } = require('../middleware/auth');
 
 // Colors and icons for module display
 const COLORS = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2'];
-const ICONS = ['🌍', '🎓', '📚', '✍️', '💬', '👂', '🎯', '🗣️', '📖', '✨', '🎨', '🔤'];
+
+// Function to get relevant icon based on module name
+const getIconForModule = (moduleName) => {
+  const name = moduleName.toLowerCase();
+  
+  // Common ISL learning modules
+  if (name.includes('number') || name.includes('digit') || name.includes('count')) return '🔢';
+  if (name.includes('alphabet') || name.includes('letter') || name.includes('vowel')) return '🔤';
+  if (name.includes('hand') || name.includes('gesture')) return '🤚';
+  if (name.includes('color') || name.includes('colour')) return '🎨';
+  if (name.includes('animal') || name.includes('creature')) return '🐾';
+  if (name.includes('food') || name.includes('eat') || name.includes('fruit')) return '🍎';
+  if (name.includes('body') || name.includes('part')) return '👤';
+  if (name.includes('family') || name.includes('relation')) return '👨‍👩‍👧‍👦';
+  if (name.includes('emotion') || name.includes('feeling') || name.includes('expression')) return '😊';
+  if (name.includes('action') || name.includes('verb') || name.includes('activity')) return '🏃';
+  if (name.includes('object') || name.includes('thing') || name.includes('item')) return '📦';
+  if (name.includes('place') || name.includes('location')) return '📍';
+  if (name.includes('day') || name.includes('week') || name.includes('time')) return '📅';
+  if (name.includes('month') || name.includes('season')) return '📆';
+  if (name.includes('weather') || name.includes('rain') || name.includes('sun')) return '⛅';
+  if (name.includes('sport') || name.includes('game') || name.includes('play')) return '⚽';
+  if (name.includes('question') || name.includes('ask')) return '❓';
+  if (name.includes('greeting') || name.includes('hello') || name.includes('hello')) return '👋';
+  if (name.includes('thank') || name.includes('please')) return '🙏';
+  if (name.includes('water') || name.includes('drink')) return '💧';
+  if (name.includes('school') || name.includes('education') || name.includes('learn')) return '🎓';
+  if (name.includes('work') || name.includes('job')) return '💼';
+  if (name.includes('house') || name.includes('home')) return '🏠';
+  if (name.includes('travel') || name.includes('car') || name.includes('vehicle')) return '🚗';
+  
+  // Default emoji
+  return '📚';
+};
 
 // Helper function to format lesson as module
 const formatAsModule = (lesson, index) => ({
@@ -16,7 +49,7 @@ const formatAsModule = (lesson, index) => ({
   description: `Learn ${lesson.lesson_name} with our interactive lessons`,
   progress: 0,
   color: COLORS[index % COLORS.length],
-  icon: ICONS[index % ICONS.length]
+  icon: getIconForModule(lesson.lesson_name)
 });
 
 // GET /modules -> get list of all lessons as modules

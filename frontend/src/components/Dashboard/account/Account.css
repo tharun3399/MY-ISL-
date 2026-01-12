@@ -4,26 +4,26 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+  background: linear-gradient(135deg, #0a0e1a 0%, #1a1f3a 100%);
   padding: 2rem 0;
 }
 
 
 .account-card {
-  background: rgba(255,255,255,0.85);
+  background: linear-gradient(135deg, #121820 0%, #1a2332 100%);
   border-radius: 2rem;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18), 0 1.5px 8px 0 rgba(0,0,0,0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 217, 255, 0.15), 0 1.5px 8px 0 rgba(0,0,0,0.4);
   padding: 2.8rem 2.2rem 2.2rem 2.2rem;
   min-width: 340px;
   max-width: 420px;
   width: 100%;
   transition: box-shadow 0.2s, background 0.2s;
   backdrop-filter: blur(8px);
-  border: 1.5px solid rgba(99,102,241,0.08);
+  border: 1.5px solid rgba(0, 217, 255, 0.1);
 }
 
 .premium-shadow {
-  box-shadow: 0 4px 32px 0 rgba(99,102,241,0.13), 0 1.5px 8px 0 rgba(0,0,0,0.08);
+  box-shadow: 0 4px 32px 0 rgba(0, 217, 255, 0.15), 0 1.5px 8px 0 rgba(0,0,0,0.4);
 }
 
 .account-header {
@@ -36,16 +36,16 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #38bdf8 0%, #6366f1 100%);
-  color: #fff;
+  background: linear-gradient(135deg, #00d9ff 0%, #39ff14 100%);
+  color: #0a0e1a;
   font-size: 2.7rem;
   font-weight: 700;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 1.5rem;
-  box-shadow: 0 2px 12px 0 rgba(56,189,248,0.13);
-  border: 2.5px solid #fff;
+  box-shadow: 0 2px 12px 0 rgba(0, 217, 255, 0.2);
+  border: 2.5px solid rgba(0, 217, 255, 0.3);
 }
 
 .account-title {
@@ -58,22 +58,22 @@
   margin: 0;
   font-size: 1.7rem;
   font-weight: 800;
-  color: #22223b;
+  color: #e0e7ff;
   letter-spacing: 0.01em;
 }
 
 .account-premium-badge {
   margin-top: 0.25rem;
   display: inline-block;
-  background: linear-gradient(90deg, #fbbf24 0%, #f59e42 100%);
-  color: #fff;
+  background: linear-gradient(90deg, #ff006e 0%, #ffd700 100%);
+  color: #0a0e1a;
   font-size: 0.9rem;
   font-weight: 700;
   padding: 0.18rem 0.8rem;
   border-radius: 999px;
   letter-spacing: 0.04em;
-  box-shadow: 0 1px 4px 0 rgba(251,191,36,0.13);
-  border: 1.2px solid #fde68a;
+  box-shadow: 0 1px 4px 0 rgba(255, 0, 110, 0.2);
+  border: 1.2px solid rgba(255, 215, 0, 0.3);
 }
 
 .account-details {

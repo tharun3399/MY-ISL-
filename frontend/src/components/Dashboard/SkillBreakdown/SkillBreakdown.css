@@ -1,11 +1,30 @@
 /* SkillBreakdown.css */
 
 .skill-breakdown {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  background: linear-gradient(135deg, #141420 0%, #1a2332 100%);
+  border: 1px solid rgba(0, 229, 255, 0.12);
+  border-radius: 14px;
   padding: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease-out;
+}
+
+.skill-breakdown::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.05) 0%, rgba(57, 255, 20, 0.02) 100%);
+  pointer-events: none;
+}
+
+.skill-breakdown:hover {
+  border-color: rgba(0, 229, 255, 0.25);
+  box-shadow: 0 0 20px rgba(0, 229, 255, 0.2), 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .skill-header {
@@ -15,14 +34,22 @@
 .skill-title {
   font-size: 20px;
   font-weight: 700;
-  color: #1f2937;
+  color: #FFFFFF;
   margin: 0 0 0.5rem 0;
+  background: linear-gradient(90deg, #00E5FF, #39FF14);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  position: relative;
+  z-index: 1;
 }
 
 .skill-subtitle {
   font-size: 14px;
-  color: #9ca3af;
+  color: #A0A0B2;
   margin: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .skill-radar {
@@ -39,24 +66,30 @@
 
 .radar-circle {
   fill: none;
-  stroke: #e5e7eb;
+  stroke: rgba(0, 229, 255, 0.12);
   stroke-width: 1;
 }
 
 .radar-axis {
-  stroke: #f3f4f6;
+  stroke: rgba(0, 229, 255, 0.06);
   stroke-width: 1;
 }
 
 .radar-polygon {
-  fill: rgba(147, 112, 219, 0.3);
-  stroke: #7c3aed;
+  fill: rgba(0, 229, 255, 0.15);
+  stroke: #00E5FF;
   stroke-width: 2;
+  filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.2));
+  transition: all 0.3s ease-out;
+}
+
+.radar-svg:hover .radar-polygon {
+  filter: drop-shadow(0 0 12px rgba(0, 229, 255, 0.4));
 }
 
 .radar-label {
   font-size: 12px;
-  fill: #6b7280;
+  fill: #A0A0B2;
   font-weight: 500;
 }
 

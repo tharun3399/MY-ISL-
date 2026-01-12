@@ -66,9 +66,6 @@ export default function Sidebar() {
           <img src={ISLIcon} alt="ISL Logo" className="isl-logo" style={{ width: 36, height: 36, marginRight: 8 }} />
           <span className="logo-name">ISL Academy</span>
         </div>
-        <button className="sidebar-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-          {menuOpen ? '✕' : '☰'}
-        </button>
       </div>
 
       <nav className="sidebar-nav" onClick={closeSidebarOnMobile}>
@@ -100,7 +97,7 @@ export default function Sidebar() {
                   handleMenuClick(item.id);
                 }}>
                   <img src={item.icon} alt={item.label} className="menu-icon" />
-                  <span className="menu-text">{item.label}</span>
+                  <span className="menu-text" >{item.label}</span>
                 </a>
               </li>
             ))}

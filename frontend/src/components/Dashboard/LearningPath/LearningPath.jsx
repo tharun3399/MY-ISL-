@@ -95,16 +95,9 @@ export default function LearningPath() {
                       <span className="module-icon">{module.icon}</span>
                       <div className="module-info">
                         <h3 className="module-title">{module.title}</h3>
-                        <p className="module-description">{module.description}</p>
                       </div>
                     </div>
                     <div className="module-header-right">
-                      <div className="module-progress">
-                        <div className="progress-bar">
-                          <div className="progress-fill" style={{ width: `${Math.max(module.progress, 2)}%`, backgroundColor: module.color }}></div>
-                        </div>
-                        <span className="progress-text">{module.progress}%</span>
-                      </div>
                     </div>
                   </div>
                 </div>

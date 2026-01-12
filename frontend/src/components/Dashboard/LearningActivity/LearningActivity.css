@@ -1,11 +1,24 @@
 /* LearningActivity.css */
 
 .learning-activity {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  background: linear-gradient(135deg, #141420 0%, #1a2332 100%);
+  border: 1px solid rgba(0, 229, 255, 0.12);
+  border-radius: 14px;
   padding: 2rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.learning-activity::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.05) 0%, rgba(57, 255, 20, 0.02) 100%);
+  pointer-events: none;
 }
 
 .activity-header {
@@ -19,18 +32,24 @@
 .activity-title {
   font-size: 18px;
   font-weight: 700;
-  color: #1f2937;
+  color: #FFFFFF;
   margin: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .activity-period {
   font-size: 13px;
-  color: #9ca3af;
-  background: #f3f4f6;
+  color: #FFFFFF;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(57, 255, 20, 0.1));
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
   font-weight: 500;
   white-space: nowrap;
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.15);
 }
 
 .activity-chart {
@@ -60,21 +79,23 @@
 
 .chart-bar {
   width: 50px;
-  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+  background: linear-gradient(180deg, #00E5FF 0%, #0099CC 100%);
   border-radius: 6px 6px 0 0;
   min-height: 30px;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-out;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .chart-bar:hover {
-  background: linear-gradient(180deg, #2563eb 0%, #1e40af 100%);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(180deg, #00F5FF 0%, #00BFFF 100%);
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+  transform: scale(1.05);
 }
 
 .chart-label {
   font-size: 12px;
-  color: #6b7280;
+  color: #A0A0B2;
   font-weight: 500;
   margin-top: 0.5rem;
 }
@@ -83,8 +104,10 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid rgba(0, 229, 255, 0.15);
   padding-top: 1.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .activity-stat {
@@ -95,7 +118,7 @@
 
 .stat-name {
   font-size: 12px;
-  color: #9ca3af;
+  color: #A0A0B2;
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.5px;
@@ -104,7 +127,12 @@
 .stat-val {
   font-size: 18px;
   font-weight: 700;
-  color: #1f2937;
+  color: #00E5FF;
+  transition: text-shadow 0.3s ease-out;
+}
+
+.activity-stat:hover .stat-val {
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
 }
 
 /* LAPTOP (1024px and above) */

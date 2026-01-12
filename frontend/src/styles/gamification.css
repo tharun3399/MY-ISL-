@@ -1,0 +1,289 @@
+/* ================================
+   GAMIFIED BLACK THEME
+   ================================ */
+
+:root {
+  /* Colors */
+  --game-bg: #0B0B0F;
+  --game-card: #141420;
+  --game-border: rgba(255,255,255,0.08);
+  --game-accent: #00E5FF;
+  --game-success: #39FF14;
+  --game-reward: #F5C542;
+  --game-error: #FF3B3B;
+  --game-text: #FFFFFF;
+  --game-secondary: #A0A0B2;
+  --game-muted: #6B6B80;
+  
+  /* Shadows & Glows */
+  --glow-accent: 0 0 20px rgba(0, 229, 255, 0.3);
+  --glow-accent-strong: 0 0 30px rgba(0, 229, 255, 0.6);
+  --glow-success: 0 0 20px rgba(57, 255, 20, 0.3);
+  --glow-success-strong: 0 0 30px rgba(57, 255, 20, 0.6);
+  --glow-reward: 0 0 20px rgba(245, 197, 66, 0.3);
+  --glow-reward-strong: 0 0 30px rgba(245, 197, 66, 0.6);
+  --ambient-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* ================================
+   ANIMATIONS
+   ================================ */
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: var(--glow-accent); }
+  50% { box-shadow: var(--glow-accent-strong); }
+}
+
+@keyframes xp-pulse {
+  0%, 100% { box-shadow: var(--glow-success); }
+  50% { box-shadow: var(--glow-success-strong); }
+}
+
+@keyframes reward-glow {
+  0%, 100% { box-shadow: var(--glow-reward); }
+  50% { box-shadow: var(--glow-reward-strong); }
+}
+
+@keyframes scale-hover {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.03); }
+}
+
+@keyframes press-down {
+  0% { transform: scale(1); }
+  100% { transform: scale(0.98); }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ================================
+   UTILITY CLASSES
+   ================================ */
+
+/* Cards */
+.game-card {
+  background: var(--game-card);
+  border: 1px solid var(--game-border);
+  border-radius: 14px;
+  box-shadow: var(--ambient-shadow);
+  transition: all 300ms ease-out;
+}
+
+.game-card:hover {
+  border-color: var(--game-accent);
+  box-shadow: var(--glow-accent), var(--ambient-shadow);
+  animation: scale-hover 200ms ease-out forwards;
+}
+
+.game-card.glow {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.game-card.reward {
+  animation: reward-glow 1.8s ease-in-out infinite;
+}
+
+.game-card.disabled {
+  opacity: 0.5;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+/* Buttons */
+.game-btn {
+  position: relative;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 200ms ease-out;
+  overflow: hidden;
+}
+
+.game-btn:hover:not(:disabled) {
+  transform: scale(1.03);
+  box-shadow: var(--glow-accent), var(--ambient-shadow);
+}
+
+.game-btn:active:not(:disabled) {
+  animation: press-down 100ms ease-out forwards;
+}
+
+.game-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.game-btn-primary {
+  background: linear-gradient(135deg, var(--game-accent), #00B8D4);
+  color: #000;
+}
+
+.game-btn-primary:hover {
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.6), var(--ambient-shadow);
+}
+
+.game-btn-success {
+  background: linear-gradient(135deg, var(--game-success), #2DD80B);
+  color: #000;
+}
+
+.game-btn-success:hover {
+  box-shadow: 0 0 30px rgba(57, 255, 20, 0.6), var(--ambient-shadow);
+}
+
+.game-btn-reward {
+  background: linear-gradient(135deg, var(--game-reward), #FFB800);
+  color: #000;
+}
+
+.game-btn-reward:hover {
+  box-shadow: 0 0 30px rgba(245, 197, 66, 0.6), var(--ambient-shadow);
+}
+
+.game-btn-error {
+  background: linear-gradient(135deg, var(--game-error), #D42D2D);
+  color: #fff;
+}
+
+.game-btn-error:hover {
+  box-shadow: 0 0 30px rgba(255, 59, 59, 0.6), var(--ambient-shadow);
+}
+
+/* Progress Bars */
+.game-progress {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  height: 8px;
+  overflow: hidden;
+  border: 1px solid var(--game-border);
+}
+
+.game-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--game-accent), var(--game-success));
+  border-radius: 8px;
+  transition: width 400ms ease-out;
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
+  position: relative;
+}
+
+.game-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* XP Bar - with pulse */
+.game-xp-bar .game-progress-bar {
+  background: linear-gradient(90deg, var(--game-success), #2DD80B);
+}
+
+.game-xp-bar.pulse .game-progress-bar {
+  animation: xp-pulse 1.5s ease-in-out infinite;
+}
+
+/* Icons */
+.game-icon-active {
+  color: var(--game-accent);
+  filter: drop-shadow(0 0 8px rgba(0, 229, 255, 0.4));
+}
+
+.game-icon-success {
+  color: var(--game-success);
+  filter: drop-shadow(0 0 8px rgba(57, 255, 20, 0.4));
+}
+
+.game-icon-reward {
+  color: var(--game-reward);
+  filter: drop-shadow(0 0 8px rgba(245, 197, 66, 0.4));
+}
+
+.game-icon-disabled {
+  color: var(--game-muted);
+  opacity: 0.4;
+  filter: none;
+}
+
+/* Text */
+.game-text-heading {
+  color: var(--game-text);
+  font-weight: 700;
+}
+
+.game-text-secondary {
+  color: var(--game-secondary);
+}
+
+.game-text-muted {
+  color: var(--game-muted);
+}
+
+/* Active State */
+.game-active {
+  position: relative;
+  color: var(--game-accent);
+}
+
+.game-active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--game-accent);
+  border-radius: 1px;
+  box-shadow: 0 0 8px var(--game-accent);
+}
+
+/* Leaderboard Glow */
+.game-rank-1 {
+  border-color: var(--game-reward) !important;
+  animation: reward-glow 1.8s ease-in-out infinite;
+}
+
+.game-rank-2 {
+  border-color: var(--game-accent) !important;
+  opacity: 0.95;
+}
+
+.game-rank-3 {
+  border-color: var(--game-accent) !important;
+  opacity: 0.9;
+}
+
+/* Locked/Disabled State */
+.game-locked {
+  opacity: 0.5;
+  filter: grayscale(0.8);
+}
+
+.game-locked:hover {
+  box-shadow: none !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Achievement Unlock Glow */
+.game-achievement-unlock {
+  animation: reward-glow 0.6s ease-out;
+}
+
+/* Slide In Animation */
+.game-slide-in {
+  animation: slide-in 400ms ease-out;
+}

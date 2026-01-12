@@ -1,0 +1,95 @@
+/*
+DATABASE SCHEMA - user_learning_stats TABLE
+==============================================
+
+The new user_learning_stats table has been created automatically on first profile setup.
+
+Table Structure:
+- id: SERIAL PRIMARY KEY (auto-increment)
+- user_id: INTEGER (Foreign Key to userinfo.id, UNIQUE, ON DELETE CASCADE)
+- avatar_gender: VARCHAR(20) - stores 'male' or 'female'
+- current_goal_time: INTEGER - stores daily learning goal in minutes
+- created_at: TIMESTAMP - when the record was created
+- updated_at: TIMESTAMP - when the record was last updated
+
+SQL CREATE STATEMENT (auto-executed on first use):
+-----------------------------------------------------
+
+CREATE TABLE IF NOT EXISTS "user_learning_stats" (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL UNIQUE REFERENCES "userinfo"(id) ON DELETE CASCADE,
+  avatar_gender VARCHAR(20),
+  current_goal_time INTEGER,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+DATA FLOW:
+----------
+
+1. User completes registration form
+   ↓
+2. User is redirected to /register/profile-setup page
+   ↓
+3. User selects avatar gender (male/female) and daily goal (1-480 minutes)
+   ↓
+4. Form is submitted to PUT /api/users/profile endpoint
+   ↓
+5. Backend API:
+   - Extracts JWT token from cookies
+   - Verifies user authentication
+   - Validates avatar_gender and current_goal_time
+   - Gets user_id from userinfo table
+   - Inserts/Updates row in user_learning_stats table
+   - Returns updated user profile
+   ↓
+6. User is redirected to dashboard with profile stats saved
+
+API ENDPOINT:
+-------------
+
+PUT /api/users/profile
+
+REQUEST BODY:
+{
+  "avatarGender": "male" or "female",
+  "dailyGoalMinutes": 30 (or any number between 1-480)
+}
+
+RESPONSE:
+{
+  "message": "Profile setup completed successfully",
+  "user": {
+    "id": 123,
+    "name": "User Name",
+    "email": "user@example.com",
+    "phone": "1234567890",
+    "id": 1,
+    "user_id": 123,
+    "avatar_gender": "male",
+    "current_goal_time": 30
+  },
+  "stats": {
+    "id": 1,
+    "user_id": 123,
+    "avatar_gender": "male",
+    "current_goal_time": 30
+  }
+}
+
+QUERY TO GET USER LEARNING STATS:
+----------------------------------
+
+SELECT 
+  u.id,
+  u.name,
+  u.email,
+  u.phone,
+  ls.avatar_gender,
+  ls.current_goal_time,
+  ls.created_at,
+  ls.updated_at
+FROM "userinfo" u
+LEFT JOIN "user_learning_stats" ls ON u.id = ls.user_id
+WHERE u.id = 123;
+*/

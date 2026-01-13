@@ -37,7 +37,7 @@ export default function LearningPath() {
   }, [])
 
   const handleModuleClick = (moduleId) => {
-    navigate(`/module/${moduleId}`)
+    navigate(`/module/${moduleId}/topics`)
   }
 
   const getLevelColor = (level) => {

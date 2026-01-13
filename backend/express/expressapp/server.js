@@ -14,6 +14,7 @@ const db = require('./db'); // shared pool (expressapp/db.js)
 const lessonFetchRoute = require('./APIs/lesssonfetch');
 const loginRegRoute = require('./APIs/loginreg');
 const topicsFetchRoute = require('./APIs/topicsfetch');
+const sentencesFetchRoute = require('./APIs/sentencesfetch');
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
@@ -75,6 +76,8 @@ app.use(express.static(frontendDistPath));
 app.use('/api/lessons', lessonFetchRoute);
 // topics routes will be available at /api/topics
 app.use('/api/topics', topicsFetchRoute);
+// sentences routes will be available at /api/sentences
+app.use('/api/sentences', sentencesFetchRoute);
 // auth routes (register/login) available at /api/auth
 app.use('/api/auth', loginRegRoute);
 

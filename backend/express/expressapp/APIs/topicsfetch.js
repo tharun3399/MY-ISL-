@@ -64,8 +64,7 @@ router.get('/lesson/:lessonId', verifyToken, async (req, res) => {
       SELECT 
         t.id,
         t.lesson_id,
-        t.topic_name,
-        t.video_name,
+        t.topic,
         COALESCE(utp.completed, false) as completed
       FROM topics t
       LEFT JOIN user_topic_progress utp ON t.id = utp.topic_id AND utp.user_id = $2
@@ -87,8 +86,7 @@ router.get('/lesson/:lessonId', verifyToken, async (req, res) => {
     const topics = result.rows.map((row, index) => ({
       id: row.id,
       lesson_id: row.lesson_id,
-      topic_name: row.topic_name,
-      video_name: row.video_name,
+      topic: row.topic,
       completed: row.completed,
       number: index + 1 // Add sequential number for display
     }));

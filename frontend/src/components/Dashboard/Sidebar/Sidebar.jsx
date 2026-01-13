@@ -64,7 +64,7 @@ export default function Sidebar() {
       <div className="sidebar-header">
         <div className="logo">
           <img src={ISLIcon} alt="ISL Logo" className="isl-logo" style={{ width: 36, height: 36, marginRight: 8 }} />
-          <span className="logo-name">ISL Academy</span>
+          <span className="logo-name blink">ISL Academy</span>
         </div>
       </div>
 

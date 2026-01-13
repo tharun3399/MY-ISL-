@@ -15,6 +15,7 @@ export default function LearningPath() {
   const [pathData, setPathData] = useState('')
   const nodeRefs = useRef([])
   const journeyMapRef = useRef(null)
+  const svgRef = useRef(null)
 
   // Fetch modules from API on component mount
   useEffect(() => {
@@ -48,42 +49,43 @@ export default function LearningPath() {
   // Recalculate path on module change and window resize
   useEffect(() => {
     const calculatePath = () => {
-      if (!journeyMapRef.current || nodeRefs.current.length < 2) return
+      if (!journeyMapRef.current || nodeRefs.current.length < 2 || !svgRef.current) return
 
       const mapRect = journeyMapRef.current.getBoundingClientRect()
+      const svgRect = svgRef.current.getBoundingClientRect()
       let pathD = ''
 
       for (let i = 0; i < nodeRefs.current.length - 1; i++) {
         if (!nodeRefs.current[i] || !nodeRefs.current[i + 1]) continue
 
-        const node1Rect = nodeRefs.current[i].getBoundingClientRect()
-        const node2Rect = nodeRefs.current[i + 1].getBoundingClientRect()
+        const node1 = nodeRefs.current[i]
+        const node2 = nodeRefs.current[i + 1]
+        
+        const rect1 = node1.getBoundingClientRect()
+        const rect2 = node2.getBoundingClientRect()
 
-        // Calculate positions relative to journey-map container
-        const x1 = node1Rect.left - mapRect.left + node1Rect.width / 2
-        const y1 = node1Rect.bottom - mapRect.top
-        const x2 = node2Rect.left - mapRect.left + node2Rect.width / 2
-        const y2 = node2Rect.top - mapRect.top
+        // Convert to SVG coordinates
+        const x1 = rect1.left - svgRect.left + rect1.width / 2
+        const y1 = rect1.top - svgRect.top + rect1.height / 2
+        const x2 = rect2.left - svgRect.left + rect2.width / 2
+        const y2 = rect2.top - svgRect.top + rect2.height / 2
 
         const distance = y2 - y1
-        const waveDepth = Math.abs(x2 - x1) * 0.5 + 40 // Dynamic wave depth based on horizontal distance
+        const midY = (y1 + y2) / 2
 
         if (i === 0) {
           pathD = `M ${x1} ${y1}`
         }
 
-        // Create smooth flowing wave with S-curves like the reference
-        const cpY1 = y1 + distance * 0.25
-        const cpY2 = y1 + distance * 0.75
-        
-        pathD += ` C ${x1 + waveDepth} ${cpY1}, ${x2 - waveDepth} ${cpY2}, ${x2} ${y2}`
+        // Create smooth S-curve connecting nodes
+        pathD += ` C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`
       }
 
       setPathData(pathD)
     }
 
     // Calculate path after elements render
-    const timer = setTimeout(calculatePath, 100)
+    const timer = setTimeout(calculatePath, 150)
     window.addEventListener('resize', calculatePath)
 
     return () => {
@@ -138,16 +140,20 @@ export default function LearningPath() {
             </div>
 
             <div className="journey-map" ref={journeyMapRef}>
-              <svg className="journey-path-svg" preserveAspectRatio="none" style={{width: '100%', height: '100%'}}>
-                {/* Draw connecting path line */}
+              {/* SVG Path Background */}
+              <svg 
+                ref={svgRef}
+                className="journey-path-svg" 
+                preserveAspectRatio="none"
+              >
                 {modules.length > 1 && (
                   <defs>
                     <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#00E5FF" />
-                      <stop offset="100%" stopColor="#39FF14" />
+                      <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.8" />
+                      <stop offset="100%" stopColor="#39FF14" stopOpacity="0.8" />
                     </linearGradient>
-                    <filter id="glow">
-                      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                    <filter id="pathGlow">
+                      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
                       <feMerge>
                         <feMergeNode in="coloredBlur"/>
                         <feMergeNode in="SourceGraphic"/>
@@ -155,71 +161,81 @@ export default function LearningPath() {
                     </filter>
                   </defs>
                 )}
-                
-                {/* Connecting curved path - calculated from card positions */}
                 {pathData && (
                   <path
                     d={pathData}
                     stroke="url(#pathGradient)"
-                    strokeWidth="12"
+                    strokeWidth="10"
                     fill="none"
-                    filter="url(#glow)"
+                    filter="url(#pathGlow)"
                     className="path-line"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 )}
               </svg>
 
-              <div className="journey-nodes">
+              {/* S-Path Node Grid */}
+              <div className="s-path-grid">
                 {modules.map((module, index) => {
                   const status = getModuleStatus(index)
                   const progress = getProgressPercentage(index)
+                  const isLeft = index % 2 === 0
 
                   return (
                     <div 
                       key={module.id}
-                      className="journey-node-wrapper"
+                      className={`s-path-item ${isLeft ? 's-left' : 's-right'}`}
                       ref={(el) => {
                         if (el) nodeRefs.current[index] = el
                       }}
                     >
+                      {/* Vertical Line Connector */}
+                      {index > 0 && <div className="node-connector"></div>}
+
+                      {/* Module Card */}
                       <div
-                        className={`journey-node node-${status}`}
+                        className={`module-card module-${status}`}
                         onClick={() => handleModuleClick(module.id, status)}
                         style={{ cursor: status === 'locked' ? 'not-allowed' : 'pointer' }}
                       >
+                        {/* Card Header with Badge */}
+                        <div className="card-header">
+                          <div className="card-number">Module {index + 1}</div>
+                          {status === 'completed' && <span className="status-badge completed">✓ Completed</span>}
+                          {status === 'current' && <span className="status-badge current">► Current</span>}
+                          {status === 'locked' && <span className="status-badge locked">🔒 Locked</span>}
+                        </div>
+
                         {/* Progress Ring */}
                         <div className="progress-ring-container">
-                          <svg className="progress-ring" viewBox="0 0 120 120">
-                            <circle className="progress-bg" cx="60" cy="60" r="50"/>
+                          <svg className="progress-ring" viewBox="0 0 100 100">
+                            <circle className="progress-bg" cx="50" cy="50" r="40"/>
                             <circle 
                               className="progress-fill" 
-                              cx="60" cy="60" r="50"
+                              cx="50" cy="50" r="40"
                               style={{ 
-                                strokeDasharray: `${(progress / 100) * 314.159} 314.159`,
-                                opacity: status === 'completed' ? 1 : 0.6
+                                strokeDasharray: `${(progress / 100) * 251.3} 251.3`,
                               }}
                             />
                           </svg>
-                          
-                          {/* Center Badge */}
-                          <div className="node-badge">
-                            {status === 'completed' && <span className="badge-icon">✓</span>}
-                            {status === 'current' && <span className="badge-icon pulse">▶</span>}
-                            {status === 'locked' && <span className="badge-icon">🔒</span>}
-                          </div>
+                          <div className="progress-text">{progress}%</div>
                         </div>
 
-                        {/* Node Info */}
-                        <div className="node-info">
-                          <h3 className="node-title">{module.title}</h3>
-                          <p className="node-progress">{progress}% Complete</p>
-                          {status === 'locked' && (
-                            <div className="lock-tooltip">
-                              Complete previous module to unlock
-                            </div>
-                          )}
+                        {/* Card Title and Description */}
+                        <h3 className="card-title">{module.title}</h3>
+                        <p className="card-subtitle">{progress}% Complete</p>
+
+                        {/* Card Actions */}
+                        <div className="card-actions">
                           {status === 'current' && (
-                            <button className="start-btn">Start Module</button>
+                            <button className="btn-primary">Continue Learning</button>
+                          )}
+                          {status === 'locked' && (
+                            <button className="btn-disabled">Complete Previous</button>
+                          )}
+                          {status === 'completed' && (
+                            <button className="btn-secondary">Review Module</button>
                           )}
                         </div>
                       </div>

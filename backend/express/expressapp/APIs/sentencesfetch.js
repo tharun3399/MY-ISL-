@@ -203,4 +203,39 @@ router.get('/words/:sentenceText', async (req, res) => {
   }
 });
 
+// GET /sentences/search?q=query -> search sentences across all topics
+router.get('/search', verifyToken, async (req, res) => {
+  try {
+    const query = req.query.q || '';
+
+    if (!query || query.trim().length === 0) {
+      return res.status(400).json({ ok: false, message: 'Search query required' });
+    }
+
+    const searchQuery = `%${query.toLowerCase()}%`;
+
+    const result = await db.query(
+      `SELECT s.id, s.sentence, s.topic_id, t.topic 
+       FROM sentences s 
+       JOIN topics t ON s.topic_id = t.id 
+       WHERE LOWER(s.sentence) LIKE $1 
+       LIMIT 20`,
+      [searchQuery]
+    );
+
+    return res.json({
+      ok: true,
+      results: result.rows,
+      count: result.rows.length
+    });
+  } catch (err) {
+    console.error('Sentence search error:', err);
+    return res.status(500).json({
+      ok: false,
+      message: 'Error searching sentences',
+      error: err.message
+    });
+  }
+});
+
 module.exports = router;

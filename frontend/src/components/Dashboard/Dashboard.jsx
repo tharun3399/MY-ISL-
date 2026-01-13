@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [searchResults, setSearchResults] = useState([])
   const [showSearchDropdown, setShowSearchDropdown] = useState(false)
   const [allModules, setAllModules] = useState([])
+  const [searchType, setSearchType] = useState('all') // 'all', 'modules', 'sentences'
   const [stats, setStats] = useState({
     dailyStreak: 0,
     totalXP: 0,
@@ -108,19 +109,47 @@ export default function Dashboard() {
       setSearchResults([])
       setShowSearchDropdown(false)
     } else {
-      const filtered = allModules.filter(module => {
-        const moduleName = (module.module_name || module.title || '').toLowerCase()
-        return moduleName.includes(query)
-      })
-      console.log('Search query:', query, 'Results:', filtered)
-      setSearchResults(filtered)
-      setShowSearchDropdown(true)
+      // Search in sentences via API
+      const searchSentences = async () => {
+        try {
+          const response = await axios.get(
+            `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/sentences/search`,
+            { params: { q: query }, withCredentials: true }
+          )
+          
+          if (response.data.ok) {
+            const sentenceResults = response.data.results.map(s => ({ 
+              ...s, 
+              type: 'sentence',
+              sentence_text: s.sentence,
+              topic_name: s.topic
+            }))
+            setSearchResults(sentenceResults)
+            console.log('Search results:', sentenceResults)
+            setShowSearchDropdown(true)
+          }
+        } catch (err) {
+          console.error('Error searching sentences:', err)
+          setSearchResults([])
+          setShowSearchDropdown(true)
+        }
+      }
+      
+      searchSentences()
     }
   }
 
   // Handle module click - navigate to that module
   const handleModuleClick = (module) => {
     navigate(`/module/${module.id}`)
+    setSearchQuery('')
+    setSearchResults([])
+    setShowSearchDropdown(false)
+  }
+
+  // Handle sentence navigation
+  const handleSentenceClick = (sentenceId, topicId) => {
+    navigate(`/topic/${topicId}/sentences`)
     setSearchQuery('')
     setSearchResults([])
     setShowSearchDropdown(false)
@@ -144,21 +173,34 @@ export default function Dashboard() {
               />
               {showSearchDropdown && searchResults.length > 0 && (
                 <div className="search-dropdown">
-                  {searchResults.map((module) => (
+                  {searchResults.map((result, idx) => (
                     <div 
-                      key={module.id} 
-                      className="search-result-item"
-                      onClick={() => handleModuleClick(module)}
+                      key={`${result.type}-${result.id || idx}`} 
+                      className={`search-result-item search-result-${result.type}`}
+                      onClick={() => {
+                        if (result.type === 'module') {
+                          handleModuleClick(result)
+                        } else if (result.type === 'sentence') {
+                          handleSentenceClick(result.id, result.topic_id)
+                        }
+                      }}
                     >
-                      <div className="search-result-name">{module.module_name || module.title}</div>
-                      <div className="search-result-module">{module.description || 'Module'}</div>
+                      <div className="search-result-badge">{result.type === 'sentence' ? '📝' : '📚'}</div>
+                      <div className="search-result-content">
+                        <div className="search-result-name">
+                          {result.type === 'sentence' ? result.sentence_text : (result.module_name || result.title)}
+                        </div>
+                        <div className="search-result-module">
+                          {result.type === 'sentence' ? `Topic: ${result.topic_name}` : (result.description || 'Module')}
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
               )}
               {showSearchDropdown && searchResults.length === 0 && searchQuery && (
                 <div className="search-dropdown">
-                  <div className="search-no-results">No lessons found</div>
+                  <div className="search-no-results">No words/sentences found</div>
                 </div>
               )}
             </div>

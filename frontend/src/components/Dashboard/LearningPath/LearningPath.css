@@ -1,4 +1,4 @@
-/* LearningPath.css - Clean Slate */
+/* ===== GAMIFIED JOURNEY MAP CSS ===== */
 
 * {
   box-sizing: border-box;
@@ -8,6 +8,7 @@
   display: flex;
   min-height: 100vh;
   width: 100%;
+  background: linear-gradient(135deg, #0B0F14 0%, #0E1420 100%);
 }
 
 @media (max-width: 480px) {
@@ -19,678 +20,585 @@
 .learning-path-container {
   flex: 1;
   width: 100%;
-  padding: 2rem;
+  padding: 3rem 2rem;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  background: #0B0F14;
   overflow-y: auto;
 }
 
 @media (max-width: 768px) {
   .learning-path-container {
-    padding: 1rem;
+    padding: 1.5rem 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .learning-path-container {
-    padding: 0.75rem;
+    padding: 1rem 0.75rem;
   }
 }
 
-/* Loading & Error */
+/* ===== LOADING & ERROR ===== */
 .loading-spinner {
   text-align: center;
-  padding: 2rem;
-  font-size: 16px;
-  color: #666;
+  padding: 3rem;
+  font-size: 18px;
+  color: #00E5FF;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 .error-message {
-  background: #fee;
-  color: #c33;
-  padding: 1rem;
-  border-radius: 4px;
-  margin: 1rem 0;
-  border-left: 4px solid #c33;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
 }
 
-/* Header */
-.learning-path-header {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-bottom: 3rem;
-  align-items: start;
+/* ===== JOURNEY HEADER ===== */
+.journey-header {
+  margin-bottom: 4rem;
+  text-align: center;
+  animation: fadeInDown 0.6s ease-out;
 }
 
-@media (max-width: 1024px) {
-  .learning-path-header {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
   }
-
-  .path-header-visual {
-    display: none;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@media (max-width: 768px) {
-  .learning-path-header {
-    margin-bottom: 2rem;
-  }
-}
-
-.path-header-content {
-  margin-bottom: 0;
-}
-
-.path-title {
-  font-size: 36px;
-  font-weight: 700;
-  color: #E5E7EB;
+.journey-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #00E5FF, #39FF14);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
   margin: 0 0 0.5rem 0;
 }
 
 @media (max-width: 768px) {
-  .path-title {
-    font-size: 28px;
+  .journey-title {
+    font-size: 2rem;
   }
 }
 
 @media (max-width: 480px) {
-  .path-title {
-    font-size: 24px;
+  .journey-title {
+    font-size: 1.5rem;
   }
 }
 
-.path-subtitle {
-  font-size: 14px;
-  color: #9CA3AF;
+.journey-subtitle {
+  font-size: 1.1rem;
+  color: #A0A0A0;
   margin: 0 0 1.5rem 0;
 }
 
-@media (max-width: 480px) {
-  .path-subtitle {
-    font-size: 14px;
-    margin-bottom: 1rem;
-  }
-}
-
-.path-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1.5rem;
-}
-
-@media (max-width: 480px) {
-  .path-stats {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-.stat-card {
-  background: #121826;
-  padding: 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #1F2937;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-}
-
-@media (max-width: 480px) {
-  .stat-card {
-    padding: 1rem;
-  }
-}
-
-.stat-label {
-  font-size: 12px;
-  color: #6B7280;
-  text-transform: uppercase;
-  font-weight: 600;
-  margin-bottom: 0.5rem !important;
-  display: block !important;
-}
-
-.stat-value {
-  font-size: 28px !important;
-  font-weight: 700 !important;
-  color: #E5E7EB !important;
-}
-
-@media (max-width: 480px) {
-  .stat-value {
-    font-size: 22px;
-  }
-}
-
-.path-header-visual {
+.journey-stats {
   display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.progress-circle {
-  width: 200px !important;
-  height: 200px !important;
-  border-radius: 50% !important;
-  background: conic-gradient(#00E5FF var(--progress), rgba(0, 229, 255, 0.1) 0) !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), 0 0 20px rgba(0, 229, 255, 0.25) !important;
-}
-
-@media (max-width: 768px) {
-  .progress-circle {
-    width: 150px;
-    height: 150px;
-  }
-}
-
-.progress-circle-inner {
-  width: 170px !important;
-  height: 170px !important;
-  border-radius: 50% !important;
-  background: #0E1420 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  flex-direction: column !important;
-  gap: 0.5rem !important;
-}
-
-@media (max-width: 768px) {
-  .progress-circle-inner {
-    width: 120px;
-    height: 120px;
-  }
-}
-
-.progress-percentage {
-  font-size: 42px !important;
-  font-weight: 700 !important;
-  color: #00E5FF !important;
-}
-
-@media (max-width: 768px) {
-  .progress-percentage {
-    font-size: 32px;
-  }
-}
-
-.progress-label {
-  font-size: 12px !important;
-  color: #6B7280 !important;
-  text-transform: uppercase !important;
-  font-weight: 600 !important;
-}
-
-/* Modules Grid */
-.modules-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
   gap: 2rem;
-  margin-bottom: 3rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
-@media (max-width: 1200px) {
-  .modules-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .modules-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .modules-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-}
-
-.module-card {
-  background: linear-gradient(135deg, #121826 0%, #0E1420 100%);
-  border-radius: 12px;
-  border: 2px solid #1F2937;
-  box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.4),
-    inset 0 0 20px rgba(0, 229, 255, 0.05);
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+.stat-item {
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  position: relative;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(0, 229, 255, 0.05);
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  border: 1px solid rgba(0, 229, 255, 0.2);
 }
 
-.module-card::before {
-  content: '';
+.stat-icon {
+  font-size: 1.5rem;
+}
+
+.stat-text {
+  color: #E5E7EB;
+  font-weight: 600;
+}
+
+/* ===== JOURNEY MAP ===== */
+/* ===== JOURNEY MAP CONTAINER ===== */
+.journey-map {
+  position: relative;
+  padding: 3rem 2rem;
+  background: rgba(14, 20, 32, 0.4);
+  border: 1px solid rgba(0, 229, 255, 0.1);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  /* Establish coordinate system for absolute SVG positioning */
+  overflow: hidden;
+}
+
+/* SVG Path - absolute positioning relative to journey-map */
+.journey-path-svg {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #00E5FF 0%, #39FF14 50%, #00E5FF 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.module-card:hover {
-  box-shadow: 
-    0 12px 40px rgba(0, 229, 255, 0.3),
-    inset 0 0 30px rgba(0, 229, 255, 0.1);
-  transform: translateY(-4px) scale(1.02);
-  border-color: #00E5FF;
-}
-
-.module-card:hover::before {
-  opacity: 1;
-}
-
-.module-header {
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
-  flex: 1;
-  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
   z-index: 1;
+  display: block;
 }
 
-.module-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, #00E5FF 50%, transparent 100%);
-  opacity: 0;
-  transition: opacity 0.4s ease;
+@media (max-width: 768px) {
+  .journey-path-svg {
+    display: none;
+  }
 }
 
-.module-card:hover .module-header::after {
-  opacity: 1;
+/* Path line animation */
+.path-line {
+  animation: pathDraw 2.5s ease-out forwards;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
-
-.module-header-left {
-  display: flex;
-  gap: 1.25rem;
-  flex: 1;
-  min-width: 0;
-  align-items: center;
+@keyframes pathDraw {
+  from {
+    stroke-dasharray: 1500;
+    stroke-dashoffset: 1500;
+    opacity: 0;
+  }
+  to {
+    stroke-dasharray: 1500;
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
 }
 
-.module-icon {
-  font-size: 48px;
-  flex-shrink: 0;
-  line-height: 1;
-  width: 52px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.15) 0%, rgba(57, 255, 20, 0.08) 100%);
-  border-radius: 10px;
-  border: 1px solid rgba(0, 229, 255, 0.2);
-  transition: all 0.4s ease;
-}
-
-.module-info {
+/* ===== JOURNEY NODES CONTAINER ===== */
+.journey-nodes {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  flex: 1;
-  min-width: 0;
-}
-
-.module-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: #FFFFFF;
-  margin: 0;
-  line-height: 1.4;
-  word-wrap: break-word;
-  background: linear-gradient(135deg, #E5E7EB 0%, #FFFFFF 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  transition: all 0.4s ease;
-}
-
-.module-description {
-  font-size: 10px;
-  color: #9CA3AF;
-  margin: 0;
-  line-height: 1.2;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
-.module-card:hover .module-icon {
-  background: linear-gradient(135deg, rgba(0, 229, 255, 0.3) 0%, rgba(57, 255, 20, 0.15) 100%);
-  border-color: #00E5FF;
-  box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
-  transform: scale(1.1) rotate(5deg);
-}
-
-.expand-btn {
-  width: 24px;
-  height: 24px;
-  border: 1px solid #1F2937;
-  background: transparent;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 10px;
-  color: #6B7280;
-  display: flex;
+  gap: 120px;
+  /* Align nodes to center horizontally */
   align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
 }
 
-.expand-btn:hover {
-  background: rgba(0, 229, 255, 0.08);
-  color: #00E5FF;
+@media (max-width: 768px) {
+  .journey-nodes {
+    gap: 80px;
+  }
 }
 
-.expand-btn.active {
-  transform: rotate(180deg);
-  background: rgba(0, 229, 255, 0.12);
-  color: #00E5FF;
+@media (max-width: 480px) {
+  .journey-nodes {
+    gap: 60px;
+  }
 }
 
-/* View Button */
-.view-btn {
-  width: 24px;
-  height: 24px;
-  border: none;
-  background: #00E5FF;
-  color: #0B0F14;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
+/* ===== JOURNEY NODE WRAPPER ===== */
+.journey-node-wrapper {
+  /* Center wrapper itself */
+  width: 100%;
   display: flex;
-  align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  font-weight: 600;
+  position: relative;
+  animation: fadeInUp 0.6s ease-out backwards;
 }
 
-.view-btn:hover {
-  background: #22F0FF;
-  transform: scale(1.05);
-}
-
-/* Lessons */
-.module-lessons {
-  padding: 1rem 1.5rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-top: 1px solid #1F2937;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
+@keyframes fadeInUp {
   from {
     opacity: 0;
-    max-height: 0;
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
-    max-height: 1000px;
+    transform: translateY(0);
   }
 }
 
-.lesson-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem;
-  background: #0E1420;
-  border-radius: 4px;
-  border: 1px solid #1F2937;
-  transition: all 0.2s ease;
-}
-
-.lesson-item:hover {
-  border-color: #00E5FF;
-  background: rgba(0, 229, 255, 0.08);
-}
-
-.lesson-checkbox {
-  flex-shrink: 0;
-}
-
-.lesson-checkbox input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  cursor: pointer;
-  accent-color: #00E5FF;
-}
-
-.lesson-info {
-  flex: 1;
+/* ===== JOURNEY NODE ===== */
+.journey-node {
+  /* Fixed width for all states - ensures alignment */
+  width: 280px;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  min-width: 0;
-}
-
-.lesson-title {
-  font-size: 12px;
-  font-weight: 600;
-  color: #E5E7EB;
-  margin: 0;
-}
-
-.lesson-meta {
-  display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 10px;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: rgba(14, 20, 32, 0.6);
+  border: 2px solid rgba(0, 229, 255, 0.2);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Node States */
+.node-completed {
+  border-color: #39FF14;
+  background: rgba(57, 255, 20, 0.08);
+  box-shadow: 0 0 20px rgba(57, 255, 20, 0.3),
+              inset 0 0 20px rgba(57, 255, 20, 0.1);
+}
+
+.node-current {
+  border-color: #00E5FF;
+  background: rgba(0, 229, 255, 0.1);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.4),
+              inset 0 0 20px rgba(0, 229, 255, 0.15);
+  animation: currentPulse 2s ease-in-out infinite;
+}
+
+@keyframes currentPulse {
+  0%, 100% {
+    box-shadow: 0 0 30px rgba(0, 229, 255, 0.4),
+                inset 0 0 20px rgba(0, 229, 255, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(0, 229, 255, 0.6),
+                inset 0 0 30px rgba(0, 229, 255, 0.25);
+  }
+}
+
+.node-locked {
+  border-color: rgba(107, 114, 128, 0.5);
+  background: rgba(107, 114, 128, 0.05);
+  opacity: 0.7;
+}
+
+.node-locked .node-title,
+.node-locked .node-progress {
   color: #6B7280;
 }
 
-.lesson-duration {
+/* Hover effects */
+.node-completed:hover,
+.node-current:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 40px rgba(0, 229, 255, 0.3);
+}
+
+.node-locked {
+  cursor: not-allowed;
+}
+
+/* ===== PROGRESS RING ===== */
+.progress-ring-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.progress-ring {
+  width: 100%;
+  height: 100%;
+  transform: scaleX(-1) rotateZ(-90deg);
+}
+
+.progress-bg {
+  stroke: rgba(0, 229, 255, 0.2);
+  fill: none;
+  stroke-width: 3;
+}
+
+.progress-fill {
+  stroke: #00E5FF;
+  fill: none;
+  stroke-width: 3;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.5s ease;
+}
+
+.node-completed .progress-fill {
+  stroke: #39FF14;
+}
+
+.node-locked .progress-fill {
+  stroke: #6B7280;
+}
+
+/* ===== NODE BADGE ===== */
+.node-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(57, 255, 20, 0.1));
+  border: 2px solid rgba(0, 229, 255, 0.5);
+  border-radius: 50%;
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
-.lesson-level {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 3px;
-  font-size: 10px;
+.node-completed .node-badge {
+  border-color: #39FF14;
+  background: rgba(57, 255, 20, 0.2);
+}
+
+.node-current .node-badge {
+  border-color: #00E5FF;
+  background: rgba(0, 229, 255, 0.3);
+}
+
+.node-locked .node-badge {
+  border-color: #6B7280;
+  background: rgba(107, 114, 128, 0.15);
+}
+
+.badge-icon {
+  color: #00E5FF;
+  text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+}
+
+.node-completed .badge-icon {
+  color: #39FF14;
+  text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+
+.badge-icon.pulse {
+  animation: badgePulse 1s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 5px rgba(0, 229, 255, 0.5));
+  }
+  50% {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.8));
+  }
+}
+
+/* ===== NODE INFO ===== */
+.node-info {
+  /* Full width for text centering grid */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.node-title {
+  /* Consistent sizing for alignment */
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #E5E7EB;
+  margin: 0;
+  line-height: 1.3;
+  width: 100%;
+}
+
+@media (max-width: 480px) {
+  .node-title {
+    font-size: 1rem;
+  }
+}
+
+.node-progress {
+  font-size: 0.9rem;
+  color: #A0A0A0;
+  margin: 0;
   font-weight: 600;
-  text-transform: uppercase;
-  color: white;
 }
 
-.lesson-level.beginner {
-  background: #10b981;
+.node-completed .node-progress {
+  color: #39FF14;
 }
 
-.lesson-level.intermediate {
-  background: #f59e0b;
+.lock-tooltip {
+  font-size: 0.85rem;
+  color: #F87171;
+  background: rgba(239, 68, 68, 0.1);
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  border-left: 2px solid #ef4444;
+  margin-top: 0.25rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.lesson-level.advanced {
-  background: #ef4444;
+/* ===== START BUTTON ===== */
+.start-btn {
+  background: linear-gradient(90deg, #00E5FF, #39FF14);
+  color: #0B0F14;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 15px rgba(0, 229, 255, 0.3);
+  /* Ensure button is centered in container */
+  align-self: center;
 }
 
-/* Tips */
-.learning-tips {
-  background: #121826;
-  border-radius: 8px;
-  padding: 2rem;
-  border: 1px solid #1F2937;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+.start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 25px rgba(0, 229, 255, 0.5);
+}
+
+.start-btn:active {
+  transform: translateY(0);
+}
+
+/* ===== JOURNEY TIPS ===== */
+.journey-tips {
+  margin-top: 4rem;
+  animation: fadeInUp 0.8s ease-out 0.3s both;
 }
 
 .tips-title {
-  font-size: 18px;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #E5E7EB;
   margin: 0 0 1.5rem 0;
 }
 
-.tips-list {
+.tips-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
-  list-style: none;
+}
+
+.tip-card {
+  background: rgba(14, 20, 32, 0.4);
+  border: 1px solid rgba(0, 229, 255, 0.1);
+  border-radius: 10px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.tip-card:hover {
+  border-color: rgba(0, 229, 255, 0.3);
+  background: rgba(0, 229, 255, 0.05);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 229, 255, 0.15);
+}
+
+.tip-icon {
+  font-size: 1.5rem;
+}
+
+.tip-card p {
   margin: 0;
-  padding: 0;
+  color: #A0A0A0;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
-.tip-item {
-  padding: 1rem;
-  background: rgba(0, 229, 255, 0.08);
-  border-left: 4px solid #00E5FF;
-  border-radius: 4px;
-  font-size: 13px;
-  line-height: 1.6;
-  color: #9CA3AF;
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .learning-path-header {
-    grid-template-columns: 1fr;
-  }
-
-  .modules-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  }
-
-  .path-stats {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .tips-list {
-    grid-template-columns: 1fr;
-  }
-}
-
+/* ===== RESPONSIVE DESIGN ===== */
 @media (max-width: 768px) {
-  .learning-path-container {
-    padding: 1rem;
+  .journey-node {
+    padding: 1.25rem;
+    margin: 0 auto;
   }
 
-  .modules-grid {
-    grid-template-columns: 1fr;
+  .journey-title {
+    font-size: 1.75rem;
+  }
+
+  .journey-stats {
     gap: 1rem;
-  }
-
-  .path-title {
-    font-size: 28px;
-  }
-
-  .path-stats {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-  }
-
-  /* .module-header {
-    flex-direction: column;
-    padding: 1rem;
-  } */
-
-  .module-header-right {
-    width: 100%;
-  }
-
-  .progress-circle {
-    width: 160px;
-    height: 160px;
-  }
-
-  .progress-circle-inner {
-    width: 135px;
-    height: 135px;
-  }
-
-  .progress-percentage {
-    font-size: 32px;
   }
 }
 
 @media (max-width: 480px) {
   .learning-path-container {
-    padding: 0.75rem;
-  }
-
-  .modules-grid {
-    gap: 0.75rem;
-  }
-
-  .path-title {
-    font-size: 22px;
-  }
-
-  .path-stats {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-  }
-
-  .stat-card {
     padding: 1rem;
   }
 
-  .stat-value {
-    font-size: 20px;
+  .journey-header {
+    margin-bottom: 2rem;
   }
 
-  .module-header {
-    padding: 0.75rem;
-    /* gap: 0.5rem; */
+  .journey-title {
+    font-size: 1.3rem;
   }
 
-  .module-icon {
-    font-size: 28px;
+  .journey-subtitle {
+    font-size: 1rem;
   }
 
-  .module-description {
-    display: none;
+  .journey-map {
+    padding: 1rem;
   }
 
-  .tips-list {
+  .journey-node {
+    max-width: 100%;
+    padding: 1rem;
+  }
+
+  .progress-ring-container {
+    width: 80px;
+    height: 80px;
+  }
+
+  .node-badge {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+
+  .tips-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .tip-item {
-    padding: 0.75rem;
-    font-size: 12px;
   }
 }
 
-/* Sidebar layout rules to prevent giant overlay */
-aside.sidebar {
-  box-sizing: border-box;
-  flex: 0 0 260px;        /* fixed sidebar width inside flex layout */
-  width: 260px;
-  position: relative;     /* or fixed/sticky if you want it to pin */
-  height: 100vh;          /* limit height to viewport */
-  max-height: 100vh;
-  overflow-y: auto;       /* allow scrolling inside sidebar */
-  overflow-x: hidden;
-  pointer-events: auto;
+/* ===== ACCESSIBILITY ===== */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== FOCUS STATES (Keyboard Navigation) ===== */
+.journey-node:focus-visible {
+  outline: 2px solid #00E5FF;
+  outline-offset: 4px;
+}
+
+.start-btn:focus-visible {
+  outline: 2px solid #0B0F14;
+  outline-offset: 2px;
+}
+
+/* ===== LEGACY STYLES (For backward compatibility) ===== */
+.learning-tips {
+  margin-top: 4rem;
+}
+
+.tips-list {
+  display: none;
+}
+
+.module-card,
+.modules-grid,
+.learning-path-header,
+.path-title,
+.path-subtitle,
+.path-stats {
+  display: none !important;
 }

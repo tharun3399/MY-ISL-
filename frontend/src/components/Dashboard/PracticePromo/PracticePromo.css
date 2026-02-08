@@ -5,7 +5,7 @@
   border-radius: 16px;
   padding: 2rem;
   color: #0a0e1a;
-  display: flex;
+  display: none !important;
   justify-content: space-between;
   align-items: center;
   gap: 2rem;

@@ -4,19 +4,23 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0e1a 0%, #1a1f3a 100%);
+  width: 100%;
+  background: #11212E;
+  background-attachment: fixed;
   padding: 2rem 0;
+  margin: 0;
 }
 
 
 .account-card {
-  background: linear-gradient(135deg, #121820 0%, #1a2332 100%);
+  background: #11212E;
   border-radius: 2rem;
   box-shadow: 0 8px 32px 0 rgba(0, 217, 255, 0.15), 0 1.5px 8px 0 rgba(0,0,0,0.4);
   padding: 2.8rem 2.2rem 2.2rem 2.2rem;
   min-width: 340px;
   max-width: 420px;
   width: 100%;
+  margin: auto;
   transition: box-shadow 0.2s, background 0.2s;
   backdrop-filter: blur(8px);
   border: 1.5px solid rgba(0, 217, 255, 0.1);
@@ -116,7 +120,7 @@
 .account-actions {
   display: flex;
   justify-content: center;
-  gap: 1.1rem;
+  gap: 2rem;
   margin-bottom: 0.7rem;
 }
 .account-btn {
@@ -128,6 +132,10 @@
   cursor: pointer;
   transition: background 0.2s, color 0.2s, box-shadow 0.2s;
   box-shadow: 0 1px 4px 0 rgba(99,102,241,0.07);
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .account-btn.edit {
   background: linear-gradient(90deg, #6366f1 0%, #38bdf8 100%);
@@ -143,6 +151,11 @@
   background: #f3f4f6;
   color: #22223b;
   border: 1.2px solid #cbd5e1;
+}
+.account-btn.logout {
+  background: #ef4444;
+  color: #fff;
+  letter-spacing: 0.01em;
 }
 .account-btn:disabled {
   opacity: 0.7;
@@ -174,7 +187,7 @@
 }
 
 .account-value {
-  color: #22223b;
+  color: #FFFFFF;
   font-weight: 600;
 }
 

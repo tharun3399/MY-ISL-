@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import PopupBox from '../Popup/PopupBox'
 import { useNavigate } from 'react-router-dom'
 import './VideoPage.css'
@@ -23,8 +23,24 @@ export default function VideoPage() {
   const [current, setCurrent] = useState(0)
   const [direction, setDirection] = useState('') // 'left' or 'right' for animation
   const [showPopup, setShowPopup] = useState(false)
+  const [showWelcome, setShowWelcome] = useState(true)
+  const [shouldPlayVideo, setShouldPlayVideo] = useState(false)
   const containerRef = useRef(null)
   const videoRef = useRef(null)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowWelcome(false)
+    }, 4900)
+    return () => clearTimeout(timer)
+  }, [])
+
+  useEffect(() => {
+    const videoTimer = setTimeout(() => {
+      setShouldPlayVideo(true)
+    }, 6400) // 4900 + 1500 = 6400ms total
+    return () => clearTimeout(videoTimer)
+  }, [])
 
   function goTo(idx) {
     if (idx === current) return
@@ -57,13 +73,17 @@ export default function VideoPage() {
 
   return (
     <div className="page-bg">
+      {showWelcome && (
+        <div className="welcome-banner">
+          <div className="welcome-content">
+            <h1 className="welcome-text">Welcome to the ISL Academy</h1>
+            <p className="welcome-subtitle">Powered by Speech Lab SSN</p>
+          </div>
+        </div>
+      )}
       <main className="vidcontainer" role="main">
         <section className="video-card">
           <header className="video-header">
-            <div className="video-topbar">
-              <div className="brand"> Indian Sign Language Academy</div>
-              <button className="nav-link-btn" onClick={() => navigate('/login')}>Sign In</button>
-            </div>
             <h1 className="title">Learn a New Sign Now!</h1>
           </header>
 
@@ -87,7 +107,7 @@ export default function VideoPage() {
                   ref={videoRef}
                   key={videos[current].src}
                   src={videos[current].src}
-                  autoPlay
+                  autoPlay={shouldPlayVideo}
                   muted
                   loop
                   playsInline

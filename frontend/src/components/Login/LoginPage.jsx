@@ -119,49 +119,43 @@ export default function LoginPage() {
 
   return (
     <div className="page-bg">
-      <div className="container">
-        <div className="card">
-          <div className="card-left">
-            <div className="brand">Indian Sign Language Academy</div>
-            <h1 className="title">Welcome back</h1>
-            <p className="subtitle">Sign in to continue to your dashboard</p>
+      <div className="login-box">
+        <h2 className="login-title">Welcome Back</h2>
+        <p className="login-subtitle">Sign in to your account</p>
 
-            <form className="form" onSubmit={handleLogin}>
-              <label className="label">Email</label>
+        <form className="form" onSubmit={handleLogin}>
               <input
-                className="input underline"
+                className="input"
                 type="email"
-                placeholder="you@company.com"
+                placeholder="Email Address"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
 
-              <div className="pw-row">
-                <div style={{ flex: 1 }}>
-                  <label className="label">Password</label>
-                  <br />
-                  <div className="password-input-wrapper">
-                    <input
-                      className="input underline password-input"
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Enter your password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <button
-                      className="password-toggle-btn"
-                      onClick={togglePasswordVisibility}
-                      type="button"
-                      title={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                      {showPassword ? '👁️' : '👁️‍🗨️'}
-                    </button>
-                  </div>
-                  <div className="input-help">Use at least 8 characters. Avoid common words.</div>
+              <div style={{ width: '100%' }}>
+                <div className="password-input-wrapper">
+                  <input
+                    className="input"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="Password"
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <button
+                    className="password-toggle-btn"
+                    onClick={togglePasswordVisibility}
+                    type="button"
+                    title={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? '👁️' : '🔒'}
+                  </button>
                 </div>
-                <button className="forgot" onClick={forgotPassword} type="button">Forgot?</button>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                  <div className="input-help">Use at least 8 characters. Avoid common words.</div>
+                  <button className="forgot" onClick={forgotPassword} type="button">Forgot?</button>
+                </div>
               </div>
 
               {error && <div style={{ color: 'red', margin: '8px 0' }}>{error}</div>}
@@ -169,39 +163,23 @@ export default function LoginPage() {
               <button type="submit" className="primary" disabled={loading}>
                 {loading ? 'Signing in…' : 'Sign in'}
               </button>
-            </form>
 
-            <div className="divider"><span>or</span></div>
+              <div className="divider"><span>or</span></div>
 
-            <div className="social-row">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => setError('Google login failed. Please try again.')}
-              />
-            </div>
+              <div className="google-login-wrapper">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => setError('Google login failed. Please try again.')}
+                />
+              </div>
 
-            <div className="footer">
-              Don't have an account?
-              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/register') }}>
-                Sign up
-              </a>
-            </div>
-          </div>
-
-          <div className="card-right">
-            <div className="right-inner">
-              <h2>New here?</h2>
-              <p>Learn ISL at your own pace with our interactive lessons and expert instructors.</p>
-              <button
-                className="ghost"
-                onClick={() => navigate('/register')}
-                type="button"
-              >
-                Create account
-              </button>
-            </div>
-          </div>
-        </div>
+              <div className="footer">
+                Don't have an account?
+                <a href="#" onClick={(e) => { e.preventDefault(); navigate('/register') }}>
+                  Sign up
+                </a>
+              </div>
+        </form>
       </div>
     </div>
   )

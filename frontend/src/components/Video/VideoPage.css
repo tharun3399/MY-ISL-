@@ -33,80 +33,90 @@
 
 /* Page background */
 .page-bg {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    radial-gradient(1200px 400px at 10% 10%, rgba(0,217,255,0.12), transparent),
-    radial-gradient(900px 600px at 90% 90%, rgba(255,0,110,0.1), transparent),
-    linear-gradient(180deg, #0a0e27 0%, #0f2130 100%);
-  background-size: 400% 400%;
-  animation: gradientShift 15s ease infinite;
-  padding: 32px 20px;
-  box-sizing: border-box;
-  position: relative;
-  overflow: hidden;
+  min-height: 100vh !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #11212E !important;
+  background-attachment: fixed !important;
+  padding: 32px 20px !important;
+  box-sizing: border-box !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
 
-/* Animated floating orbs */
-.page-bg::before {
-  content: '';
-  position: absolute;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(0,217,255,0.15) 0%, transparent 70%);
-  border-radius: 50%;
-  top: -100px;
-  left: 10%;
-  animation: floatLeft 20s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 1;
+.welcome-banner {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100vh !important;
+  background: #11212E !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 1000 !important;
+  animation: bannerFadeOut 2s ease-out 4s forwards !important;
 }
 
-.page-bg::after {
-  content: '';
-  position: absolute;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(circle, rgba(255,0,110,0.12) 0%, transparent 70%);
-  border-radius: 50%;
-  bottom: -50px;
-  right: 10%;
-  animation: floatRight 25s ease-in-out infinite;
-  pointer-events: none;
-  z-index: 1;
+.welcome-text {
+  font-size: 95px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  text-align: center !important;
+  letter-spacing: 2px !important;
+  max-width: 90% !important;
+  line-height: 1.4 !important;
+  animation: fadeInWord 0.8s ease-in, fadeOutWord 0.8s ease-out 4s forwards !important;
+}
+
+.welcome-content {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 16px !important;
+}
+
+.welcome-subtitle {
+  font-size: 50px !important;
+  font-weight: 400 !important;
+  color: #a8b3ff !important;
+  margin: 0 !important;
+  text-align: center !important;
+  letter-spacing: 1px !important;
+  animation: fadeInWord 0.8s ease-in, fadeOutWord 0.8s ease-out 4s forwards !important;
 }
 
 /* Container */
 .vidcontainer {
-  width: 100%;
-  max-width: 1200px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 40px;
+  width: 100% !important;
+  max-width: 1200px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0 !important;
 }
 
 /* Card */
 .video-card {
-  width: 100%;
-  padding: 20px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  box-shadow: 0 14px 40px rgba(2,6,23,0.55);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 100% !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  border: none !important;
 }
 
 /* Header */
 .video-topbar {
-  max-width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 500px;
+  max-width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 500px !important;
 }
 
 .brand{
@@ -126,46 +136,62 @@
 }*/
 
 .nav-link-btn {
-  padding: 10px 22px;
-  border-radius: 12px;
-  border: 1px solid rgba(0,217,255,0.25);
-  background: rgba(0,217,255,0.06);
-  color: rgba(0,217,255,0.95);
-  font-weight: 600;
-  cursor: pointer;
+  padding: 10px 22px !important;
+  border-radius: 12px !important;
+  background: rgba(0,217,255,0.06) !important;
+  color: rgba(0,217,255,0.95) !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
   width: 300px !important;
 }
 
 .title {
-  font-size: 36px;
-  font-weight: 700;
-  color: #fff;
-  margin: 10px 0 0;
-  text-align: center;
+  font-size: 36px !important;
+  font-weight: 700 !important;
+  color: #FFFFFF !important;
+  margin: 10px 0 0 !important;
+  text-align: center !important;
+  background: none !important;
+  background-clip: unset !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+}
+
+h1.title {
+  color: #FFFFFF !important;
+  background: none !important;
+  background-clip: unset !important;
+  -webkit-background-clip: unset !important;
+  -webkit-text-fill-color: unset !important;
+}
+
+/* Video Header */
+.video-header {
+  color: #FFD700 !important;
 }
 
 /* Player section */
 .video-player-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  width: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 0 !important;
+  width: 100% !important;
 }
 
 /* Slider with outside arrows */
 .video-slider {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 60px;
-  width: 100%;
-  position: relative;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 20px !important;
+  width: 100% !important;
+  position: relative !important;
 }
 
 /* Arrow style */
 .arrow-btn {
-  background: linear-gradient(135deg, #00E5FF 0%, #39FF14 100%) !important;
+  background: #00E5FF !important;
   color: #0B0F14 !important;
   border: none !important;
   border-radius: 50% !important;
@@ -181,38 +207,40 @@
   transition: transform .18s, box-shadow .18s !important;
   flex-shrink: 0 !important;
 }
-.arrow-btn:hover { transform: scale(1.06) !important; box-shadow: 0 0 24px rgba(0, 229, 255, 0.35) !important; }
-.left-arrow { position: absolute; left: 28px; top: 50%; transform: translateY(-50%); }
-.right-arrow { position: absolute; right: 28px; top: 50%; transform: translateY(-50%); }
+.arrow-btn:hover { box-shadow: 0 0 24px rgba(0, 229, 255, 0.35) !important; }
+.left-arrow { position: absolute; left: 110px; top: 50%; transform: translateY(-50%); }
+.right-arrow { position: absolute; right: 110px; top: 50%; transform: translateY(-50%); }
 
 /* Video player box (default square) */
 /* ---------- Replace your existing .video-player / .video-player video blocks with this ---------- */
 
 /* Player container: constrained width, centered, capped height (so it doesn't grow too tall) */
 .video-player {
-  width: 320px;
-  height: 320px;            /* desktop target width - change to 640 if you want smaller */
-  max-width: 40%;
-  margin: 0 auto;
-  border-radius: 16px;
-  overflow: hidden;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  object-fit: cover;
+  width: 500px !important;
+  height: 500px !important;
+  max-width: 40% !important;
+  margin: 0 auto !important;
+  overflow: hidden !important;
+  background: #34A853 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  object-fit: cover !important;
+  border: none !important;
+  border-radius: 24px !important;
 
   /* cap the height so very tall videos won't push the header offscreen */
-  max-height: 70vh;       /* player height will not exceed 65% of viewport height */
+  max-height: 70vh !important;       /* player height will not exceed 65% of viewport height */
 }
 
 /* Video element fills width and height without black bars */
 .video-player video {
-  width: 380px;
-  height: 380px;
-  object-fit: cover;   /* stretches to fill container without black bars */
-  display: block;
-  background: #000;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;   /* stretches to fill container without black bars */
+  display: block !important;
+  background: #000 !important;
+  border: none !important;
 }
 
 
@@ -229,41 +257,77 @@
   to { opacity: 1; transform: translateX(0); }
 }
 
+@keyframes fadeInWord {
+  from {
+    opacity: 0 !important;
+    transform: scale(0.5) !important;
+  }
+  to {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+  }
+}
+
+@keyframes fadeOutWord {
+  from {
+    opacity: 1 !important;
+    transform: scale(1) !important;
+  }
+  to {
+    opacity: 0 !important;
+    transform: scale(0.9) !important;
+  }
+}
+
+@keyframes bannerFadeOut {
+  0% {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  90% {
+    opacity: 0 !important;
+    visibility: visible !important;
+  }
+  100% {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+}
+
 /* Info box */
 .video-info {
-  text-align: center;
-  max-width: 680px;
+  text-align: center !important;
+  max-width: 680px !important;
 }
 .video-info h2 {
-  font-size: 28px;
-  color: rgba(0,217,255,0.95);
-  margin: 0 0 8px;
+  font-size: 52px !important;
+  color: #FFFFFF !important;
+  margin: 0 0 8px !important;
 }
 .video-info p {
-  color: rgba(200,220,255,0.85);
-  margin: 0;
-  font-size: 16px;
+  display: none !important;
 }
 
 /* Progress dots */
 .progress-dots {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
+  display: flex !important;
+  gap: 12px !important;
+  justify-content: center !important;
 }
 .dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: rgba(0,217,255,0.28);
-  cursor: pointer;
-  border: 1px solid rgba(0,217,255,0.18);
-  transition: transform .15s, background .15s;
+  width: 12px !important;
+  height: 12px !important;
+  border-radius: 50% !important;
+  background: rgba(0,217,255,0.28) !important;
+  cursor: pointer !important;
+  border: 1px solid rgba(0,217,255,0.18) !important;
+  transition: transform .15s, background .15s !important;
 }
 .dot.active {
-  background: #00d9ff;
-  transform: scale(1.2);
-  box-shadow: 0 0 12px rgba(0,217,255,0.32);
+  background: #00d9ff !important;
+  transform: scale(1.2) !important;
+  box-shadow: 0 0 12px rgba(0,217,255,0.32) !important;
 }
 
 /* responsive */

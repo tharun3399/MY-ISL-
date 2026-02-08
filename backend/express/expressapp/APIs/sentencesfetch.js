@@ -212,10 +212,25 @@ router.get('/search', verifyToken, async (req, res) => {
       return res.status(400).json({ ok: false, message: 'Search query required' });
     }
 
+    // Get user ID from token
+    const token = req.cookies.token;
+    const jwt = require('jsonwebtoken');
+    let userId = null;
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev-secret-change-this');
+      const userResult = await db.query('SELECT id FROM "userinfo" WHERE LOWER(email) = LOWER($1)', [decoded.email]);
+      if (userResult.rows.length > 0) {
+        userId = userResult.rows[0].id;
+      }
+    } catch (err) {
+      console.warn('Could not extract user ID from token');
+    }
+
     const searchQuery = `%${query.toLowerCase()}%`;
 
+    // First get all matching sentences
     const result = await db.query(
-      `SELECT s.id, s.sentence, s.topic_id, t.topic 
+      `SELECT s.id, s.sentence, s.topic_id, t.topic, t.lesson_id
        FROM sentences s 
        JOIN topics t ON s.topic_id = t.id 
        WHERE LOWER(s.sentence) LIKE $1 
@@ -223,10 +238,46 @@ router.get('/search', verifyToken, async (req, res) => {
       [searchQuery]
     );
 
+    // For each result, check if the topic is locked
+    let resultsWithLockStatus = [];
+    
+    if (userId) {
+      for (const row of result.rows) {
+        // Get the topic index within the lesson
+        const topicIndexResult = await db.query(
+          `SELECT COUNT(*) as prev_count FROM topics WHERE lesson_id = $1 AND id < $2`,
+          [row.lesson_id, row.topic_id]
+        );
+        const prevCount = parseInt(topicIndexResult.rows[0].prev_count) || 0;
+
+        // If it's the first topic (index 0), it's unlocked
+        if (prevCount === 0) {
+          resultsWithLockStatus.push({ ...row, is_locked: false });
+        } else {
+          // Check if all previous topics are completed
+          const completedResult = await db.query(
+            `SELECT COUNT(*) as completed_count FROM user_topic_progress 
+             WHERE user_id = $1 AND completed = true AND topic_id IN 
+             (SELECT id FROM topics WHERE lesson_id = $2 AND id < $3)`,
+            [userId, row.lesson_id, row.topic_id]
+          );
+          const completedCount = parseInt(completedResult.rows[0].completed_count) || 0;
+          const isLocked = completedCount !== prevCount;
+          resultsWithLockStatus.push({ ...row, is_locked: isLocked });
+        }
+      }
+    } else {
+      // No user, mark all as locked except first topic of each lesson
+      resultsWithLockStatus = result.rows.map(row => ({
+        ...row,
+        is_locked: true
+      }));
+    }
+
     return res.json({
       ok: true,
-      results: result.rows,
-      count: result.rows.length
+      results: resultsWithLockStatus,
+      count: resultsWithLockStatus.length
     });
   } catch (err) {
     console.error('Sentence search error:', err);

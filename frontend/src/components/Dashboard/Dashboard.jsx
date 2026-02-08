@@ -11,6 +11,7 @@ export default function Dashboard() {
   const user = authState?.user || {}
   const navigate = useNavigate()
   const [screenSize, setScreenSize] = useState('laptop')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [showSearchDropdown, setShowSearchDropdown] = useState(false)
@@ -122,7 +123,8 @@ export default function Dashboard() {
               ...s, 
               type: 'sentence',
               sentence_text: s.sentence,
-              topic_name: s.topic
+              topic_name: s.topic,
+              is_locked: s.is_locked || false // API now returns lock status
             }))
             setSearchResults(sentenceResults)
             console.log('Search results:', sentenceResults)
@@ -156,10 +158,31 @@ export default function Dashboard() {
   }
 
   return (
-    <div className={`dashboard dashboard-${screenSize}`}>
-      <Sidebar />
+    <div 
+      className={`dashboard dashboard-${screenSize} ${sidebarOpen ? 'sidebar-open' : ''}`}
+      onClick={(e) => {
+        // Close sidebar when clicking on the overlay
+        if (sidebarOpen && e.target === e.currentTarget) {
+          setSidebarOpen(false)
+        }
+      }}
+    >
+      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
       <div className="dashboard-content">
         <div className="dashboard-header">
+          {screenSize === 'phone' && (
+            <button 
+              className="sidebar-toggle-btn"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label="Toggle sidebar"
+            >
+              <span className="hamburger-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+              </span>
+            </button>
+          )}
           <h1 className="dashboard-title">Dashboard</h1>
           <div className="dashboard-header-actions">
             <div className="search-container" ref={searchContainerRef}>
@@ -176,19 +199,25 @@ export default function Dashboard() {
                   {searchResults.map((result, idx) => (
                     <div 
                       key={`${result.type}-${result.id || idx}`} 
-                      className={`search-result-item search-result-${result.type}`}
+                      className={`search-result-item search-result-${result.type} ${result.is_locked ? 'locked' : ''}`}
                       onClick={() => {
+                        // Don't navigate if locked
+                        if (result.is_locked) {
+                          return
+                        }
                         if (result.type === 'module') {
                           handleModuleClick(result)
                         } else if (result.type === 'sentence') {
                           handleSentenceClick(result.id, result.topic_id)
                         }
                       }}
+                      style={{ cursor: result.is_locked ? 'not-allowed' : 'pointer', opacity: result.is_locked ? 0.6 : 1 }}
                     >
-                      <div className="search-result-badge">{result.type === 'sentence' ? '📝' : '📚'}</div>
+                      <div className="search-result-badge">{result.is_locked ? '🔒' : (result.type === 'sentence' ? '📝' : '📚')}</div>
                       <div className="search-result-content">
                         <div className="search-result-name">
                           {result.type === 'sentence' ? result.sentence_text : (result.module_name || result.title)}
+                          {result.is_locked && <span className="locked-badge">LOCKED</span>}
                         </div>
                         <div className="search-result-module">
                           {result.type === 'sentence' ? `Topic: ${result.topic_name}` : (result.description || 'Module')}

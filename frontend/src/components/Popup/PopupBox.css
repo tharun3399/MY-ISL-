@@ -71,6 +71,7 @@
   margin-right: 12px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.16);
   transition: background .18s, color .18s;
+  min-width: 140px;
 }
 .signup-btn:hover {
   background: #0072ff;
@@ -82,12 +83,13 @@
   color: #fff;
   border: 2px solid #fff;
   border-radius: 14px;
-  padding: 10px 28px;
-  font-size: 1.05rem;
+  padding: 14px 32px;
+  font-size: 1.15rem;
   font-weight: 700;
   cursor: pointer;
   margin-top: 10px;
   transition: background .18s, color .18s;
+  min-width: 140px;
 }
 .close-btn:hover {
   background: #fff;

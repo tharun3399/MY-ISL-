@@ -2,12 +2,14 @@
 
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from '../Sidebar/Sidebar';
 import './Account.css';
 
 export default function Account() {
   const { user, setState, authenticated } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState({
     name: user?.name || '',
@@ -67,6 +69,22 @@ export default function Account() {
       setError(err.response?.data?.message || 'Failed to update profile');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/logout`,
+        {},
+        { withCredentials: true }
+      );
+      if (setState) {
+        setState({ authenticated: false, user: null, loading: false });
+      }
+      navigate('/login');
+    } catch (err) {
+      console.error('Logout error:', err);
     }
   };
 
@@ -149,9 +167,14 @@ export default function Account() {
                   </button>
                 </div>
               ) : (
-                <button className="account-btn edit" onClick={handleEdit}>
-                  Edit
-                </button>
+                <div className="account-actions">
+                  <button className="account-btn edit" onClick={handleEdit}>
+                    Edit
+                  </button>
+                  <button className="account-btn logout" onClick={handleLogout}>
+                    Logout
+                  </button>
+                </div>
               )}
               <span className="account-note">Thank you for being a valued member of ISL Academy!</span>
             </div>

@@ -153,7 +153,6 @@ export default function RegisterPage() {
     <div className="register-container">
       <div className="register-box">
         <h1 className="register-title">Create Account</h1>
-        <p className="register-subtitle">Join our community today</p>
 
         <form onSubmit={handleRegister} className="register-form">
           <div className="form-group">
@@ -211,7 +210,7 @@ export default function RegisterPage() {
                 type="button"
                 title={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? "👁️" : "👁️‍🗨️"}
+                {showPassword ? "👁️" : "🔒"}
               </button>
             </div>
           </div>
@@ -233,7 +232,7 @@ export default function RegisterPage() {
                 type="button"
                 title={showConfirmPassword ? "Hide password" : "Show password"}
               >
-                {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                {showConfirmPassword ? "👁️" : "🔒"}
               </button>
             </div>
           </div>

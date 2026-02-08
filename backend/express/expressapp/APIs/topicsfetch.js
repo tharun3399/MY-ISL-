@@ -427,6 +427,47 @@ router.get('/words/:topicName', verifyToken, async (req, res) => {
   }
 });
 
+// Helper function to check if a video URL is accessible and can be read
+const checkVideoAccessibility = async (url) => {
+  return new Promise((resolve) => {
+    const protocol = url.startsWith('https') ? https : http;
+    let bytesReceived = 0;
+    
+    const request = protocol.request(url, { method: 'GET' }, (res) => {
+      // Check status code and content-type
+      if (res.statusCode >= 200 && res.statusCode < 300 && 
+          (res.headers['content-type']?.includes('video') || res.statusCode === 200)) {
+        // Successfully got video response, now check if we can read it
+        let dataReceived = false;
+        
+        const onData = (chunk) => {
+          bytesReceived += chunk.length;
+          dataReceived = true;
+          // We only need to verify we can read some data, so destroy after getting some
+          if (bytesReceived > 1024) {
+            request.destroy();
+            resolve(true);
+          }
+        };
+        
+        res.on('data', onData);
+        res.on('end', () => {
+          resolve(dataReceived && bytesReceived > 0);
+        });
+      } else {
+        resolve(false);
+      }
+    });
+    
+    request.on('error', () => resolve(false));
+    request.setTimeout(5000, () => {
+      request.destroy();
+      resolve(false);
+    });
+    request.end();
+  });
+};
+
 // POST /topics/merge-videos/:topicName -> concatenate all available videos into one
 router.post('/merge-videos/:topicName', verifyToken, async (req, res) => {
   try {
@@ -444,6 +485,56 @@ router.post('/merge-videos/:topicName', verifyToken, async (req, res) => {
     console.log(`\n🎬 VIDEO MERGE REQUEST`);
     console.log(`Topic: ${topicName}`);
     console.log(`Videos to merge: ${videoUrls.length}`);
+    
+    // Check which videos are accessible
+    console.log('🔍 Checking video availability...');
+    const accessibilityResults = await Promise.all(
+      videoUrls.map(async (url, idx) => ({
+        url,
+        idx,
+        accessible: await checkVideoAccessibility(url)
+      }))
+    );
+    
+    const availableUrls = accessibilityResults
+      .filter(result => result.accessible)
+      .map(result => result.url);
+    
+    const unavailableUrls = accessibilityResults
+      .filter(result => !result.accessible)
+      .map(result => result.url);
+    
+    console.log(`✅ Available videos: ${availableUrls.length}`);
+    availableUrls.forEach((url, i) => {
+      console.log(`  ${i + 1}. ${url.substring(0, 80)}...`);
+    });
+    
+    if (unavailableUrls.length > 0) {
+      console.log(`❌ Unavailable videos: ${unavailableUrls.length}`);
+      unavailableUrls.forEach((url, i) => {
+        console.log(`  ${i + 1}. ${url.substring(0, 80)}...`);
+      });
+    }
+    
+    // If no videos available, return sequential playback with empty list
+    if (availableUrls.length === 0) {
+      console.warn('⚠️ No videos are accessible, returning sequential playback');
+      const mergedPlaylist = {
+        topicName,
+        videoUrls: [],
+        totalVideos: 0,
+        availableVideos: 0,
+        unavailableVideos: videoUrls.length,
+        playbackType: 'sequential_unavailable',
+        timestamp: new Date().toISOString()
+      };
+      
+      return res.json({ 
+        ok: true, 
+        message: 'No videos available for merge',
+        merged: mergedPlaylist
+      });
+    }
     
     // Check if FFmpeg is available
     const ffmpeg = require('fluent-ffmpeg');
@@ -493,23 +584,45 @@ router.post('/merge-videos/:topicName', verifyToken, async (req, res) => {
     
     if (!ffmpegAvailable) {
       console.warn('⚠️ FFmpeg not found, will use sequential playback instead');
-      // Fallback to sequential playback
+      // Fallback to sequential playback with only available videos
       const mergedPlaylist = {
         topicName,
-        videoUrls: videoUrls.filter(url => url && url.trim() !== ''),
-        totalVideos: videoUrls.length,
+        videoUrls: availableUrls,
+        totalVideos: availableUrls.length,
+        availableVideos: availableUrls.length,
+        unavailableVideos: unavailableUrls.length,
         playbackType: 'sequential',
         timestamp: new Date().toISOString()
       };
 
       return res.json({ 
         ok: true, 
-        message: 'Videos prepared for sequential playback (FFmpeg unavailable)',
+        message: `Videos prepared for sequential playback (FFmpeg unavailable). ${availableUrls.length} of ${videoUrls.length} videos available.`,
         merged: mergedPlaylist
       });
     }
 
-    // Try to concatenate with FFmpeg
+    // If only one video available, no need to merge - serve it directly
+    if (availableUrls.length === 1) {
+      console.log('ℹ️ Only one video available, skipping FFmpeg merge');
+      const mergedPlaylist = {
+        topicName,
+        videoUrls: availableUrls,
+        totalVideos: 1,
+        availableVideos: 1,
+        unavailableVideos: unavailableUrls.length,
+        playbackType: 'single_video',
+        timestamp: new Date().toISOString()
+      };
+      
+      return res.json({ 
+        ok: true, 
+        message: `Single video will be played (${availableUrls.length}/${videoUrls.length} available)`,
+        merged: mergedPlaylist
+      });
+    }
+    
+    // Try to concatenate with FFmpeg using only available videos
     const tempDir = path.join(__dirname, '../../../temp');
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });
@@ -521,8 +634,8 @@ router.post('/merge-videos/:topicName', verifyToken, async (req, res) => {
     console.log(`📁 Temp directory: ${tempDir}`);
     console.log(`📹 Output file: ${outputFile}`);
 
-    // Create concat demuxer file list
-    const concatContent = videoUrls
+    // Create concat demuxer file list with only available videos
+    const concatContent = availableUrls
       .map(url => {
         // Escape single quotes in URLs for FFmpeg concat demuxer
         const escapedUrl = url.replace(/'/g, "'\\''");
@@ -531,85 +644,136 @@ router.post('/merge-videos/:topicName', verifyToken, async (req, res) => {
       .join('\n');
 
     fs.writeFileSync(concatFile, concatContent, 'utf8');
-    console.log(`✅ Created concat file with ${videoUrls.length} videos`);
+    console.log(`✅ Created concat file with ${availableUrls.length} available videos`);
     console.log(`📋 Concat file content:\n${concatContent.substring(0, 200)}...`);
 
-    // Concatenate videos using FFmpeg
-    await new Promise((resolve, reject) => {
-      ffmpeg()
-        .input(concatFile)
-        .inputFormat('concat')
-        .inputOptions(['-protocol_whitelist', 'file,http,https,tcp,tls', '-safe', '0'])
-        .videoCodec('copy')
-        .audioCodec('copy')
-        .output(outputFile)
-        .on('start', (cmd) => {
-          console.log(`🚀 FFmpeg command: ${cmd}`);
-        })
-        .on('progress', (progress) => {
-          console.log(`⏳ Merging: ${progress.percent || 0}%`);
-        })
-        .on('end', () => {
-          console.log(`✅ Videos merged successfully: ${outputFile}`);
-          // Clean up concat file
-          fs.unlinkSync(concatFile);
-          resolve();
-        })
-        .on('error', (err) => {
-          console.error(`❌ FFmpeg error: ${err.message}`);
-          fs.unlinkSync(concatFile);
-          reject(err);
-        })
-        .run();
-    });
+    // Try to concatenate videos using FFmpeg
+    // Use -movflags +faststart to move moov atom to the beginning for streaming
+    let ffmpegMergeSuccess = false;
+    try {
+      await new Promise((resolve, reject) => {
+        ffmpeg()
+          .input(concatFile)
+          .inputFormat('concat')
+          .inputOptions(['-protocol_whitelist', 'file,http,https,tcp,tls', '-safe', '0'])
+          .outputOptions(['-c:v', 'copy', '-c:a', 'copy', '-movflags', '+faststart'])
+          .output(outputFile)
+          .on('start', (cmd) => {
+            console.log(`🚀 FFmpeg command: ${cmd}`);
+          })
+          .on('progress', (progress) => {
+            console.log(`⏳ Merging: ${progress.percent || 0}%`);
+          })
+          .on('end', () => {
+            console.log(`✅ Videos merged successfully: ${outputFile}`);
+            ffmpegMergeSuccess = true;
+            // Clean up concat file
+            try {
+              fs.unlinkSync(concatFile);
+            } catch (e) {
+              console.log('Note: concat file already deleted');
+            }
+            resolve();
+          })
+          .on('error', (err) => {
+            console.error(`❌ FFmpeg error: ${err.message}`);
+            try {
+              fs.unlinkSync(concatFile);
+            } catch (e) {
+              // Ignore
+            }
+            reject(err);
+          })
+          .run();
+      });
 
-    // Check if output file exists and return it
-    if (!fs.existsSync(outputFile)) {
-      throw new Error('Merge output file was not created');
-    }
+      // Validate output file exists and has reasonable size
+      if (!fs.existsSync(outputFile)) {
+        throw new Error('Merge output file was not created');
+      }
+      
+      const fileStats = fs.statSync(outputFile);
+      if (fileStats.size < 1000) {
+        throw new Error('Merged file is too small (< 1KB), likely corrupted');
+      }
+      
+      console.log(`📊 Merged video size: ${(fileStats.size / (1024 * 1024)).toFixed(2)} MB`);
 
-    const fileStats = fs.statSync(outputFile);
-    console.log(`📊 Merged video size: ${(fileStats.size / (1024 * 1024)).toFixed(2)} MB`);
+      // Generate a unique ID for this merged video
+      const videoId = `merged_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      const videoUrl = `/api/topics/stream/${videoId}`;
+      
+      // Store the file path mapping in memory (in production, use Redis or database)
+      if (!global.mergedVideos) {
+        global.mergedVideos = {};
+      }
+      global.mergedVideos[videoId] = outputFile;
+      
+      // Auto-cleanup after 1 hour
+      setTimeout(() => {
+        try {
+          if (fs.existsSync(outputFile)) {
+            fs.unlinkSync(outputFile);
+            console.log(`🗑️ Cleaned up merged video: ${outputFile}`);
+          }
+          delete global.mergedVideos[videoId];
+        } catch (e) {
+          console.error('Error cleaning up video:', e);
+        }
+      }, 3600000); // 1 hour
 
-    // Generate a unique ID for this merged video
-    const videoId = `merged_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const videoUrl = `/api/topics/stream/${videoId}`;
-    
-    // Store the file path mapping in memory (in production, use Redis or database)
-    if (!global.mergedVideos) {
-      global.mergedVideos = {};
-    }
-    global.mergedVideos[videoId] = outputFile;
-    
-    // Auto-cleanup after 1 hour
-    setTimeout(() => {
+      const mergedPlaylist = {
+        topicName,
+        videoUrls: [videoUrl],
+        totalVideos: availableUrls.length,
+        availableVideos: availableUrls.length,
+        unavailableVideos: unavailableUrls.length,
+        videoId: videoId,
+        fileSize: fileStats.size,
+        playbackType: 'merged_file',
+        timestamp: new Date().toISOString(),
+        expiresIn: 3600000 // 1 hour
+      };
+
+      return res.json({ 
+        ok: true, 
+        message: `Videos successfully merged with FFmpeg (${availableUrls.length}/${videoUrls.length} available)`,
+        merged: mergedPlaylist
+      });
+
+    } catch (ffmpegErr) {
+      console.warn(`⚠️ FFmpeg merge failed: ${ffmpegErr.message}, falling back to sequential playback`);
+      
+      // Clean up any partial file
       try {
         if (fs.existsSync(outputFile)) {
           fs.unlinkSync(outputFile);
-          console.log(`🗑️ Cleaned up merged video: ${outputFile}`);
         }
-        delete global.mergedVideos[videoId];
+        if (fs.existsSync(concatFile)) {
+          fs.unlinkSync(concatFile);
+        }
       } catch (e) {
-        console.error('Error cleaning up video:', e);
+        // Ignore cleanup errors
       }
-    }, 3600000); // 1 hour
+      
+      // Fallback to sequential playback with available videos
+      const mergedPlaylist = {
+        topicName,
+        videoUrls: availableUrls,
+        totalVideos: availableUrls.length,
+        availableVideos: availableUrls.length,
+        unavailableVideos: unavailableUrls.length,
+        playbackType: 'sequential_fallback',
+        fallbackReason: ffmpegErr.message,
+        timestamp: new Date().toISOString()
+      };
 
-    const mergedPlaylist = {
-      topicName,
-      videoUrls: [videoUrl],
-      totalVideos: videoUrls.length,
-      videoId: videoId,
-      fileSize: fileStats.size,
-      playbackType: 'merged_file',
-      timestamp: new Date().toISOString(),
-      expiresIn: 3600000 // 1 hour
-    };
-
-    return res.json({ 
-      ok: true, 
-      message: 'Videos successfully merged with FFmpeg',
-      merged: mergedPlaylist
-    });
+      return res.json({ 
+        ok: true, 
+        message: `FFmpeg merge unavailable, using sequential playback (${availableUrls.length}/${videoUrls.length} videos available)`,
+        merged: mergedPlaylist
+      });
+    }
 
   } catch (err) {
     console.error('Video merge error:', err);

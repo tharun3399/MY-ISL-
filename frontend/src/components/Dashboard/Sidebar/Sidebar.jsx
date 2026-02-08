@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
 import DashboardIcon from './icons/dashboard-monitor.png'
@@ -9,11 +9,17 @@ import UserIcon from './icons/user.png'
 import ISLIcon from './icons/icon.png'
 import './Sidebar.css'
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen = false, onClose = () => {} }) {
   const navigate = useNavigate()
   const { authState, logout } = useContext(AuthContext)
   const user = authState?.user || {}
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(isOpen)
+  const [isCollapsed, setIsCollapsed] = useState(false)
+
+  // Sync isOpen prop with menuOpen state
+  useEffect(() => {
+    setMenuOpen(isOpen)
+  }, [isOpen])
 
   const menuItems = [
     { icon: DashboardIcon, label: 'Dashboard', id: 'dashboard' },
@@ -34,6 +40,7 @@ export default function Sidebar() {
 
   const closeSidebarOnMobile = () => {
     setMenuOpen(false)
+    onClose()
   }
 
   const handleMenuClick = (itemId) => {
@@ -60,12 +67,25 @@ export default function Sidebar() {
   }
 
   return (
-    <aside className={`sidebar ${menuOpen ? 'open' : ''}`}>
+    <aside className={`sidebar ${menuOpen ? 'open' : ''} ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         <div className="logo">
           <img src={ISLIcon} alt="ISL Logo" className="isl-logo" style={{ width: 36, height: 36, marginRight: 8 }} />
           <span className="logo-name blink">ISL Academy</span>
         </div>
+        <button 
+          className="sidebar-collapse-btn" 
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        >
+          <svg className="collapse-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            {isCollapsed ? (
+              <polyline points="9 18 15 12 9 6"></polyline>
+            ) : (
+              <polyline points="15 18 9 12 15 6"></polyline>
+            )}
+          </svg>
+        </button>
       </div>
 
       <nav className="sidebar-nav" onClick={closeSidebarOnMobile}>

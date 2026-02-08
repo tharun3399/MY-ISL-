@@ -3,7 +3,6 @@ import WelcomeCard from '../WelcomeCard/WelcomeCard'
 import StatsCards from '../StatsCards/StatsCards'
 import LearningActivity from '../LearningActivity/LearningActivity'
 import CommunityRanks from '../CommunityRanks/CommunityRanks'
-import SkillBreakdown from '../SkillBreakdown/SkillBreakdown'
 import PracticePromo from '../PracticePromo/PracticePromo'
 import './DashboardContent.css'
 
@@ -29,9 +28,6 @@ export default function DashboardContent({ user, stats, screenSize }) {
         </div>
 
         <div className="dashboard-section-row">
-          <div className="dashboard-section-item">
-            <SkillBreakdown />
-          </div>
           <div className="dashboard-section-item">
             <PracticePromo />
           </div>

@@ -7,7 +7,7 @@
 }
 
 .stat-card {
-  background: #121826 !important;
+  background: rgba(18, 24, 38, 0.25) !important;
   border: 1px solid #1F2937 !important;
   border-radius: 14px !important;
   padding: 2rem !important;

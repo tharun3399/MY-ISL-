@@ -36,6 +36,9 @@ export const mergeVideosOnBackend = async (videoUrls, topicName, apiUrl) => {
     console.log(`═══════════════════════════════════════`)
     console.log(`Topic: ${topicName}`)
     console.log(`Sending ${videoUrls.length} videos to backend...`)
+    videoUrls.forEach((url, i) => {
+      console.log(`  ${i + 1}. ${url.substring(0, 80)}...`)
+    })
 
     const response = await fetch(`${apiUrl}/api/topics/merge-videos/${encodeURIComponent(topicName)}`, {
       method: 'POST',
@@ -57,7 +60,17 @@ export const mergeVideosOnBackend = async (videoUrls, topicName, apiUrl) => {
     }
 
     console.log(`✅ Backend merge successful!`)
-    console.log(`  Videos prepared: ${data.merged.totalVideos}`)
+    console.log(`📋 Response:`)
+    console.log(`  Total Videos: ${data.merged.totalVideos}`)
+    console.log(`  Available: ${data.merged.availableVideos || 'N/A'}`)
+    console.log(`  Unavailable: ${data.merged.unavailableVideos || 'N/A'}`)
+    console.log(`  Playback Type: ${data.merged.playbackType}`)
+    if (data.merged.videoUrls && data.merged.videoUrls.length > 0) {
+      console.log(`  URLs provided:`)
+      data.merged.videoUrls.forEach((url, i) => {
+        console.log(`    ${i + 1}. ${typeof url === 'string' ? url.substring(0, 80) : 'N/A'}...`)
+      })
+    }
     console.log(`═══════════════════════════════════════\n`)
 
     return {
@@ -68,6 +81,7 @@ export const mergeVideosOnBackend = async (videoUrls, topicName, apiUrl) => {
     }
   } catch (err) {
     console.error('❌ Backend merge error:', err.message)
+    console.error('Error details:', err)
     return {
       success: false,
       error: err.message

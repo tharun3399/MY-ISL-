@@ -1,12 +1,11 @@
 /* Sidebar.css - Left Navigation Sidebar */
 
 .sidebar {
-  width: 280px !important;
-  background: #0E1420 !important;
-  border-right: 1px solid #1F2937 !important;
+  width: 300px !important;
+  background: #11212E !important;
+  border-right: 1px solid #0f0f13 !important;
   display: flex !important;
   flex-direction: column !important;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
   transition: transform 0.3s ease-out !important;
   height: 100vh !important;
   position: fixed !important;
@@ -14,17 +13,20 @@
   left: 0 !important;
   z-index: 1000 !important;
   transform: translateX(-100%) !important;
+  overflow-y: auto;
 }
 
 .sidebar.open {
   transform: translateX(0) !important;
   display: flex !important;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
 }
 
 @media (min-width: 769px) {
   .sidebar {
     position: sticky !important;
     transform: translateX(0) !important;
+    box-shadow: none;
   }
 
   .sidebar.open {
@@ -34,30 +36,63 @@
 
 @media (max-width: 768px) {
   .sidebar {
-    width: 240px;
+    width: 280px;
   }
 }
 
 @media (max-width: 480px) {
   .sidebar {
-    width: 250px;
+    width: 100%;
+    max-width: 85vw;
   }
 }
 
 .sidebar-header {
-  padding: 1.5rem !important;
-  border-bottom: 1px solid #1F2937 !important;
+  padding: 1.5rem 2rem !important;
   display: flex !important;
   justify-content: space-between !important;
   align-items: center !important;
   position: relative !important;
   z-index: 10 !important;
+  gap: 1rem !important;
+  height: 80px !important;
 }
 
 @media (max-width: 768px) {
   .sidebar-header {
-    padding: 1rem;
+    padding: 1.5rem 2rem;
+    min-height: 70px;
   }
+}
+
+.sidebar-collapse-btn {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  border: 1px solid rgba(0, 229, 255, 0.2) !important;
+  color: #00E5FF !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease-out !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.sidebar-collapse-btn:hover {
+  background: rgba(0, 229, 255, 0.1) !important;
+  border-color: #00E5FF !important;
+  box-shadow: 0 0 12px rgba(0, 229, 255, 0.3) !important;
+  transform: scale(1.05) !important;
+}
+
+.collapse-icon {
+  width: 18px !important;
+  height: 18px !important;
+  color: #00E5FF !important;
+  transition: all 0.3s ease-out !important;
 }
 
 .logo {
@@ -366,12 +401,7 @@
 }
 
 .sidebar-footer {
-  padding: 1.5rem !important;
-  border-top: 1px solid #1F2937 !important;
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 1rem !important;
-  background: rgba(0, 0, 0, 0.3) !important;
+  display: none !important;
 }
 
 .user-card {
@@ -670,4 +700,82 @@
     padding: 0.6rem 0.8rem;
     font-size: 12px;
   }
+}
+/* Collapsed Sidebar State */
+.sidebar.collapsed {
+  width: 80px !important;
+}
+
+.sidebar.collapsed .logo-name {
+  display: none !important;
+}
+
+.sidebar.collapsed .menu-text {
+  display: none !important;
+}
+
+.sidebar.collapsed .user-info {
+  display: none !important;
+}
+
+.sidebar.collapsed .user-name,
+.sidebar.collapsed .user-email {
+  display: none !important;
+}
+
+.sidebar.collapsed .user-card {
+  width: auto !important;
+  justify-content: center !important;
+  padding: 0.75rem !important;
+}
+
+.sidebar.collapsed .user-avatar {
+  margin: 0 !important;
+}
+
+.sidebar.collapsed .logout-btn {
+  width: 100% !important;
+  padding: 0.5rem !important;
+  font-size: 11px !important;
+}
+
+.sidebar.collapsed .menu-label {
+  display: none !important;
+}
+
+.sidebar.collapsed .menu-link {
+  justify-content: center !important;
+  padding: 1rem !important;
+  margin: 0 !important;
+}
+
+.sidebar.collapsed .menu-icon {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.sidebar.collapsed .menu-dot {
+  display: none !important;
+}
+
+.sidebar.collapsed .sidebar-nav {
+  padding: 1rem 0 !important;
+}
+
+.sidebar.collapsed .menu-section {
+  margin-bottom: 1rem !important;
+}
+
+.sidebar.collapsed .sidebar-header {
+  padding: 1.5rem 0.75rem !important;
+  justify-content: center !important;
+}
+
+.sidebar.collapsed .logo {
+  margin: 0 !important;
+}
+
+.sidebar.collapsed .isl-logo {
+  display: none !important;
+  margin-right: 0 !important;
 }

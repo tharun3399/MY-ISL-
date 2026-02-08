@@ -15,6 +15,7 @@ const lessonFetchRoute = require('./APIs/lesssonfetch');
 const loginRegRoute = require('./APIs/loginreg');
 const topicsFetchRoute = require('./APIs/topicsfetch');
 const sentencesFetchRoute = require('./APIs/sentencesfetch');
+const quizFetchRoute = require('./APIs/quizfetch');
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
@@ -78,6 +79,8 @@ app.use('/api/lessons', lessonFetchRoute);
 app.use('/api/topics', topicsFetchRoute);
 // sentences routes will be available at /api/sentences
 app.use('/api/sentences', sentencesFetchRoute);
+// quiz routes will be available at /api/quiz
+app.use('/api/quiz', quizFetchRoute);
 // auth routes (register/login) available at /api/auth
 app.use('/api/auth', loginRegRoute);
 
@@ -155,6 +158,11 @@ async function start() {
         ALTER TABLE IF EXISTS "userinfo"
         ADD COLUMN IF NOT EXISTS email VARCHAR(255)
       `);
+      
+      // Run migrations
+      const addQuizFieldsMigration = require('./migrations/add_quiz_fields');
+      await addQuizFieldsMigration();
+      
       console.log("START(): schema update success");
     } catch (dbErr) {
       console.warn("START(): DB CONNECTION WARNING - Server will still start but DB features may not work");

@@ -51,41 +51,51 @@ export default function LearningPath() {
     const calculatePath = () => {
       if (!journeyMapRef.current || nodeRefs.current.length < 2 || !svgRef.current) return
 
-      const mapRect = journeyMapRef.current.getBoundingClientRect()
-      const svgRect = svgRef.current.getBoundingClientRect()
-      let pathD = ''
-
-      for (let i = 0; i < nodeRefs.current.length - 1; i++) {
-        if (!nodeRefs.current[i] || !nodeRefs.current[i + 1]) continue
-
-        const node1 = nodeRefs.current[i]
-        const node2 = nodeRefs.current[i + 1]
+      try {
+        const container = journeyMapRef.current
+        const svg = svgRef.current
         
-        const rect1 = node1.getBoundingClientRect()
-        const rect2 = node2.getBoundingClientRect()
+        // Set SVG dimensions to match container
+        const rect = container.getBoundingClientRect()
+        svg.setAttribute('viewBox', `0 0 ${rect.width} ${rect.height}`)
+        
+        let pathD = ''
 
-        // Convert to SVG coordinates
-        const x1 = rect1.left - svgRect.left + rect1.width / 2
-        const y1 = rect1.top - svgRect.top + rect1.height / 2
-        const x2 = rect2.left - svgRect.left + rect2.width / 2
-        const y2 = rect2.top - svgRect.top + rect2.height / 2
+        for (let i = 0; i < nodeRefs.current.length - 1; i++) {
+          if (!nodeRefs.current[i] || !nodeRefs.current[i + 1]) continue
 
-        const distance = y2 - y1
-        const midY = (y1 + y2) / 2
+          const node1 = nodeRefs.current[i]
+          const node2 = nodeRefs.current[i + 1]
+          
+          const rect1 = node1.getBoundingClientRect()
+          const rect2 = node2.getBoundingClientRect()
+          const containerRect = container.getBoundingClientRect()
 
-        if (i === 0) {
-          pathD = `M ${x1} ${y1}`
+          // Calculate relative positions within container
+          const x1 = rect1.left - containerRect.left + rect1.width / 2
+          const y1 = rect1.top - containerRect.top + rect1.height / 2
+          const x2 = rect2.left - containerRect.left + rect2.width / 2
+          const y2 = rect2.top - containerRect.top + rect2.height / 2
+
+          const distance = y2 - y1
+          const midY = (y1 + y2) / 2
+
+          if (i === 0) {
+            pathD = `M ${x1} ${y1}`
+          }
+
+          // Create smooth S-curve connecting nodes
+          pathD += ` C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`
         }
 
-        // Create smooth S-curve connecting nodes
-        pathD += ` C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`
+        setPathData(pathD)
+      } catch (err) {
+        console.error('Error calculating path:', err)
       }
-
-      setPathData(pathD)
     }
 
-    // Calculate path after elements render
-    const timer = setTimeout(calculatePath, 150)
+    // Calculate path after elements render with slight delay
+    const timer = setTimeout(calculatePath, 200)
     window.addEventListener('resize', calculatePath)
 
     return () => {
@@ -94,9 +104,68 @@ export default function LearningPath() {
     }
   }, [modules, loading])
 
-  const handleModuleClick = (moduleId, status) => {
+  // Setup Intersection Observer for scroll animations (runs once)
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.2,
+      rootMargin: '0px 0px -50px 0px'
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        // Only animate if not already animated
+        if (entry.isIntersecting && !entry.target.hasAttribute('data-animated')) {
+          const delay = index * 0.1
+          entry.target.style.setProperty('--animation-delay', `${delay}s`)
+          entry.target.classList.add('scroll-fade-in')
+          entry.target.setAttribute('data-animated', 'true')
+          observer.unobserve(entry.target)
+        }
+      })
+    }, observerOptions)
+
+    // Observe all scrollable elements
+    const observeElements = () => {
+      const pathItems = document.querySelectorAll('.s-path-item:not([data-animated])')
+      const headerElements = document.querySelectorAll('.journey-header:not([data-animated]), .journey-title:not([data-animated]), .journey-subtitle:not([data-animated]), .journey-stats:not([data-animated])')
+      const tipCards = document.querySelectorAll('.tip-card:not([data-animated])')
+      
+      pathItems.forEach((item) => observer.observe(item))
+      headerElements.forEach((el) => observer.observe(el))
+      tipCards.forEach((card) => observer.observe(card))
+    }
+
+    // Add small delay to ensure DOM is ready
+    const timer = setTimeout(observeElements, 100)
+
+    return () => {
+      clearTimeout(timer)
+      observer.disconnect()
+    }
+  }, [])
+
+  const handleModuleClick = async (moduleId, status) => {
     if (status !== 'locked') {
-      navigate(`/module/${moduleId}/topics`)
+      try {
+        // Fetch topics for this module
+        const response = await axios.get(
+          `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/topics/lesson/${moduleId}`,
+          { withCredentials: true }
+        )
+        
+        if (response.data.ok && response.data.topics && response.data.topics.length > 0) {
+          const firstTopic = response.data.topics[0]
+          // Navigate directly to the first topic's sentences page
+          navigate(`/topic/${firstTopic.id}/sentences`)
+        } else {
+          // Fallback to topics list if no topics found
+          navigate(`/module/${moduleId}/topics`)
+        }
+      } catch (err) {
+        console.error('Error fetching topics:', err)
+        // Fallback to topics list on error
+        navigate(`/module/${moduleId}/topics`)
+      }
     }
   }
 
@@ -124,10 +193,10 @@ export default function LearningPath() {
         {error && <div className="error-message">Error: {error}</div>}
         {!loading && !error && (
           <>
-            <div className="journey-header">
-              <h1 className="journey-title">🗺️ Your Learning Journey</h1>
-              <p className="journey-subtitle">Master Indian Sign Language one checkpoint at a time</p>
-              <div className="journey-stats">
+            <div className="journey-header scroll-animate">
+              <h1 className="journey-title scroll-animate">🗺️ Your Learning Journey</h1>
+              <p className="journey-subtitle scroll-animate">Master Indian Sign Language one checkpoint at a time</p>
+              <div className="journey-stats scroll-animate">
                 <div className="stat-item">
                   <span className="stat-icon">✓</span>
                   <span className="stat-text">{completedModules.size} Completed</span>
@@ -143,8 +212,18 @@ export default function LearningPath() {
               {/* SVG Path Background */}
               <svg 
                 ref={svgRef}
-                className="journey-path-svg" 
+                className="journey-path-svg"
+                viewBox="0 0 1000 3000"
                 preserveAspectRatio="none"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  pointerEvents: 'none',
+                  zIndex: 1
+                }}
               >
                 {modules.length > 1 && (
                   <defs>
@@ -165,7 +244,7 @@ export default function LearningPath() {
                   <path
                     d={pathData}
                     stroke="url(#pathGradient)"
-                    strokeWidth="10"
+                    strokeWidth="12"
                     fill="none"
                     filter="url(#pathGlow)"
                     className="path-line"
@@ -185,7 +264,7 @@ export default function LearningPath() {
                   return (
                     <div 
                       key={module.id}
-                      className={`s-path-item ${isLeft ? 's-left' : 's-right'}`}
+                      className={`s-path-item ${isLeft ? 's-left' : 's-right'} scroll-animate`}
                       ref={(el) => {
                         if (el) nodeRefs.current[index] = el
                       }}
@@ -245,22 +324,22 @@ export default function LearningPath() {
               </div>
             </div>
 
-            <div className="journey-tips">
-              <h3 className="tips-title">💡 Pro Tips</h3>
+            <div className="journey-tips scroll-animate">
+              <h3 className="tips-title scroll-animate">💡 Pro Tips</h3>
               <div className="tips-grid">
-                <div className="tip-card">
+                <div className="tip-card scroll-animate">
                   <span className="tip-icon">🎯</span>
                   <p>Complete each module sequentially for the best learning outcome</p>
                 </div>
-                <div className="tip-card">
+                <div className="tip-card scroll-animate">
                   <span className="tip-icon">⏰</span>
                   <p>Spend 15-30 minutes daily on your learning journey</p>
                 </div>
-                <div className="tip-card">
+                <div className="tip-card scroll-animate">
                   <span className="tip-icon">🎮</span>
                   <p>Use practice mode to master signs with AI feedback</p>
                 </div>
-                <div className="tip-card">
+                <div className="tip-card scroll-animate">
                   <span className="tip-icon">🏆</span>
                   <p>Unlock achievements as you progress through modules</p>
                 </div>

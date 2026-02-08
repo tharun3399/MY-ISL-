@@ -14,7 +14,6 @@ export default function TopicsPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [completedTopics, setCompletedTopics] = useState({})
-  const [expandedTopic, setExpandedTopic] = useState(null)
 
   useEffect(() => {
     const fetchTopics = async () => {
@@ -65,6 +64,9 @@ export default function TopicsPage() {
     }
   }, [moduleId])
 
+
+
+
   const handleTopicClick = (topicId) => {
     navigate(`/topic/${topicId}/sentences`)
   }
@@ -100,25 +102,7 @@ export default function TopicsPage() {
     }
   }
 
-  const getLevelColor = (level) => {
-    switch(level) {
-      case 'Beginner': return '#10b981'
-      case 'Intermediate': return '#f59e0b'
-      case 'Advanced': return '#ef4444'
-      case 'Expert': return '#8b5cf6'
-      default: return '#6b7280'
-    }
-  }
 
-  const getLevelBgColor = (level) => {
-    switch(level) {
-      case 'Beginner': return 'rgba(16, 185, 129, 0.1)'
-      case 'Intermediate': return 'rgba(245, 158, 11, 0.1)'
-      case 'Advanced': return 'rgba(239, 68, 68, 0.1)'
-      case 'Expert': return 'rgba(139, 92, 246, 0.1)'
-      default: return 'rgba(107, 114, 128, 0.1)'
-    }
-  }
 
   const getCompletionPercentage = () => {
     if (topics.length === 0) return 0
@@ -183,36 +167,44 @@ export default function TopicsPage() {
         </div>
 
         <div className="topics-list">
-          <h2 className="topics-heading">Topics in This Module</h2>
+          <h2 className="topics-heading">Progression Map</h2>
           {topics.length === 0 ? (
             <div className="no-topics">No topics available for this module</div>
           ) : (
-            <div className="topics-grid">
-              {topics.map((topic, index) => (
-                <div
-                  key={topic.id}
-                  className={`topic-card ${completedTopics[topic.id] ? 'completed' : ''}`}
-                  onClick={() => handleTopicClick(topic.id)}
-                >
-                  <div className="topic-number">{index + 1}</div>
-                  
-                  <div className="topic-content">
-                    <div className="topic-header-row">
-                      <h3 className="topic-title">{topic.topic}</h3>
-                      <button
-                        className={`complete-button ${completedTopics[topic.id] ? 'completed' : ''}`}
-                        onClick={(e) => handleTopicComplete(topic.id, e)}
-                        title={completedTopics[topic.id] ? 'Mark as incomplete' : 'Mark as complete'}
-                      >
-                        {completedTopics[topic.id] ? '✓' : '○'}
-                      </button>
+            <div className="level-map">
+              {topics.map((topic, index) => {
+                const isCompleted = completedTopics[topic.id]
+                const isUnlocked = index === 0 || completedTopics[topics[index - 1]?.id]
+                const status = isCompleted ? 'completed' : isUnlocked ? 'unlocked' : 'locked'
+                
+                return (
+                  <div
+                    key={topic.id}
+                    className={`topic-card ${status}`}
+                    onClick={() => isUnlocked && handleTopicClick(topic.id)}
+                    role="button"
+                    tabIndex={isUnlocked ? 0 : -1}
+                  >
+                    <div className="topic-number">{index + 1}</div>
+                    <div className="topic-info">
+                      <h3 className="topic-name">{topic.topic}</h3>
+                      <p className="topic-status">
+                        {status === 'completed' && '✓ Completed'}
+                        {status === 'unlocked' && '→ Available'}
+                        {status === 'locked' && '🔒 Locked'}
+                      </p>
                     </div>
-
-                    <div className="topic-meta">
-                    </div>
+                    <button
+                      className={`topic-button ${status}`}
+                      onClick={(e) => handleTopicComplete(topic.id, e)}
+                      disabled={status === 'locked'}
+                      title={isCompleted ? 'Mark as incomplete' : 'Mark as complete'}
+                    >
+                      {isCompleted ? '✓' : '○'}
+                    </button>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           )}
         </div>

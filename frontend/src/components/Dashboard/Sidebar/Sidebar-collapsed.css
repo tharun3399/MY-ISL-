@@ -1,0 +1,77 @@
+/* Collapsed Sidebar State */
+.sidebar.collapsed {
+  width: 80px !important;
+}
+
+.sidebar.collapsed .logo-name {
+  display: none !important;
+}
+
+.sidebar.collapsed .menu-text {
+  display: none !important;
+}
+
+.sidebar.collapsed .user-info {
+  display: none !important;
+}
+
+.sidebar.collapsed .user-name,
+.sidebar.collapsed .user-email {
+  display: none !important;
+}
+
+.sidebar.collapsed .user-card {
+  width: auto !important;
+  justify-content: center !important;
+  padding: 0.75rem !important;
+}
+
+.sidebar.collapsed .user-avatar {
+  margin: 0 !important;
+}
+
+.sidebar.collapsed .logout-btn {
+  width: 100% !important;
+  padding: 0.5rem !important;
+  font-size: 11px !important;
+}
+
+.sidebar.collapsed .menu-label {
+  display: none !important;
+}
+
+.sidebar.collapsed .menu-link {
+  justify-content: center !important;
+  padding: 1rem !important;
+  margin: 0 !important;
+}
+
+.sidebar.collapsed .menu-icon {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.sidebar.collapsed .menu-dot {
+  display: none !important;
+}
+
+.sidebar.collapsed .sidebar-nav {
+  padding: 1rem 0 !important;
+}
+
+.sidebar.collapsed .menu-section {
+  margin-bottom: 1rem !important;
+}
+
+.sidebar.collapsed .sidebar-header {
+  padding: 1.5rem 0.75rem !important;
+  justify-content: center !important;
+}
+
+.sidebar.collapsed .logo {
+  margin: 0 !important;
+}
+
+.sidebar.collapsed .isl-logo {
+  margin-right: 0 !important;
+}

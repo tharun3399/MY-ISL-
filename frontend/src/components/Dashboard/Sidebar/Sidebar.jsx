@@ -33,6 +33,10 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
     { icon: UserIcon, label: 'Account', id: 'account' }
   ]
 
+  const vidlearnItems = [
+    { icon: LearningIcon, label: 'VidLearn', id: 'vidlearn' }
+  ]
+
   const handleLogout = () => {
     logout()
     navigate('/login')
@@ -60,6 +64,9 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
         break
       case 'account':
         navigate('/account')
+        break
+      case 'vidlearn':
+        navigate('/vidlearn')
         break
       default:
         break
@@ -111,6 +118,23 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
           <h3 className="menu-label">SYSTEM</h3>
           <ul className="menu-list">
             {systemItems.map(item => (
+              <li key={item.id} className="menu-item">
+                <a href="#" className="menu-link" onClick={e => {
+                  e.preventDefault();
+                  handleMenuClick(item.id);
+                }}>
+                  <img src={item.icon} alt={item.label} className="menu-icon" />
+                  <span className="menu-text" >{item.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="menu-section">
+          <h3 className="menu-label">VIDLEARN</h3>
+          <ul className="menu-list">
+            {vidlearnItems.map(item => (
               <li key={item.id} className="menu-item">
                 <a href="#" className="menu-link" onClick={e => {
                   e.preventDefault();

@@ -19,9 +19,9 @@ const quizFetchRoute = require('./APIs/quizfetch');
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 5000;
-const FRONTEND = process.env.FRONTEND_ORIGIN || 'http://localhost:5174';
+const FRONTEND_ORIGINS = process.env.FRONTEND_ORIGIN ? process.env.FRONTEND_ORIGIN.split(',').map(o => o.trim()) : ['http://localhost:5174'];
 
-console.log('SERVER: config', { PORT, FRONTEND });
+console.log('SERVER: config', { PORT, FRONTEND_ORIGINS });
 
 // CORS configuration
 const corsOptions = {
@@ -31,7 +31,7 @@ const corsOptions = {
       'http://localhost:5174',
       'http://localhost:5175',
       'http://localhost:3000',
-      FRONTEND
+      ...FRONTEND_ORIGINS
     ];
     // if no origin (e.g. curl, server-to-server) allow it
     if (!origin || allowedOrigins.includes(origin)) return callback(null, true);

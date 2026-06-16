@@ -13,6 +13,7 @@
 
 .dashboard {
   display: flex !important;
+  width: 100% !important;
   height: 100vh !important;
   background: #11212E !important;
   background-attachment: fixed !important;
@@ -22,6 +23,7 @@
   position: relative;
 }
 
+/* Mobile: Show overlay when sidebar is open */
 .dashboard.sidebar-open::before {
   content: '';
   position: fixed;
@@ -35,8 +37,8 @@
 
 @media (max-width: 480px) {
   .dashboard {
-    flex-direction: column;
-    height: auto;
+    flex-direction: row;
+    height: 100vh;
     min-height: 100vh;
   }
 }
@@ -47,6 +49,59 @@
   flex-direction: column;
   overflow: hidden;
   width: 100%;
+  margin-left: 0;
+  transition: margin-left 0.3s ease-out, width 0.3s ease-out !important;
+}
+
+/* Desktop: Sidebar visible by default, content adjusts width */
+@media (min-width: 769px) {
+  .dashboard {
+    position: relative;
+  }
+  
+  .dashboard::before {
+    display: none !important;
+  }
+  
+  .dashboard-content {
+    margin-left: 300px;
+    width: calc(100% - 300px);
+  }
+  
+  /* When sidebar is collapsed on desktop */
+  .dashboard.dashboard-laptop .sidebar.collapsed + .dashboard-content {
+    margin-left: 100px;
+    width: calc(100% - 100px);
+  }
+}
+
+/* Tablet: Sidebar hidden by default, overlays when open */
+@media (min-width: 481px) and (max-width: 768px) {
+  .dashboard {
+    position: relative;
+  }
+  
+  .dashboard-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .dashboard.sidebar-open .dashboard-content {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+  }
+}
+
+/* Mobile: Sidebar always hidden, overlays when open */
+@media (max-width: 480px) {
+  .dashboard {
+    position: relative;
+  }
+  
+  .dashboard-content {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 
 @media (max-width: 768px) {

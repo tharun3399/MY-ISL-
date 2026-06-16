@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider } from './context/AuthContext'
+import { SidebarProvider } from './context/SidebarContext'
 import RequireAuth from './components/RequireAuth'
 
 import LoginPage from './components/Login/LoginPage'
@@ -31,7 +32,8 @@ export default function App() {
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <AuthProvider>
           <ThemeProvider>
-            <Routes>
+            <SidebarProvider>
+              <Routes>
               {/* public */}
               <Route path='/' element={<VideoPage />} />
               <Route path="/VideoPage" element={<VideoPage />} />
@@ -61,7 +63,7 @@ export default function App() {
               {/* catch-all: unknown paths → send to login (or change to '/' if you prefer) */}
               <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
-          </ThemeProvider>
+            </SidebarProvider>
         </AuthProvider>
       </BrowserRouter>
     </GoogleOAuthProvider>

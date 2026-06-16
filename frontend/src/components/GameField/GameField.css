@@ -2,9 +2,11 @@
 
 .gamefield-wrapper {
   display: flex;
+  width: 100%;
   height: 100vh;
   background: linear-gradient(135deg, #0a0e1a 0%, #1a1f3a 100%);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  position: relative;
 }
 
 .gamefield-container {
@@ -14,6 +16,38 @@
   background: linear-gradient(135deg, rgba(11, 15, 20, 0.85) 0%, rgba(14, 20, 32, 0.85) 100%), 
               url('../Dashboard/LearningPath/Topics/BG%20Topics.jpg') center / cover no-repeat !important;
   background-attachment: fixed !important;
+  margin-left: 0;
+  transition: margin-left 0.3s ease-out, width 0.3s ease-out !important;
+}
+
+/* Desktop: Sidebar visible by default */
+@media (min-width: 769px) {
+  .gamefield-container {
+    margin-left: 300px;
+    width: calc(100% - 300px);
+  }
+}
+
+/* Tablet: Sidebar overlays when open */
+@media (min-width: 481px) and (max-width: 768px) {
+  .gamefield-container {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .gamefield-wrapper.sidebar-open .gamefield-container {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+  }
+}
+
+/* Mobile: Sidebar overlays when open */
+@media (max-width: 480px) {
+  .gamefield-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 1.5rem;
+  }
 }
 
 /* Header */

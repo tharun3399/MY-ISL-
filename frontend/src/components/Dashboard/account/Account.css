@@ -1,4 +1,52 @@
 
+.account-wrapper {
+  display: flex;
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%);
+  position: relative;
+  transition: margin-left 0.3s ease-out, width 0.3s ease-out;
+}
+
+.account-content {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 0;
+  transition: margin-left 0.3s ease-out, width 0.3s ease-out;
+}
+
+/* Desktop: Sidebar visible by default */
+@media (min-width: 769px) {
+  .account-content {
+    margin-left: 300px;
+    width: calc(100% - 300px);
+  }
+}
+
+/* Tablet: Sidebar overlays when open */
+@media (min-width: 481px) and (max-width: 768px) {
+  .account-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .account-wrapper.sidebar-open .account-content {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+  }
+}
+
+/* Mobile: Sidebar overlays when open */
+@media (max-width: 480px) {
+  .account-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 1.5rem;
+  }
+}
+
 .account-page {
   display: flex;
   justify-content: center;

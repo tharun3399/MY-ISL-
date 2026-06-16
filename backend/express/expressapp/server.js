@@ -166,8 +166,9 @@ async function start() {
       console.log("START(): schema update success");
     } catch (dbErr) {
       console.warn("START(): DB CONNECTION WARNING - Server will still start but DB features may not work");
-      console.warn("START(): Make sure Railway environment variables are set:");
-      console.warn("  - PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE");
+      console.warn("START(): Make sure your Render/Postgres environment variables are set:");
+      console.warn("  - DATABASE_URL (preferred on Render) or PGHOST, PGPORT, PGUSER, PGPASSWORD, PGDATABASE");
+      console.warn("  - Set NODE_ENV=production on Render to enable SSL for the database connection");
       console.warn("Error:", dbErr.message);
     }
 

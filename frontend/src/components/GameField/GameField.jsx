@@ -1,11 +1,13 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
+import { SidebarContext } from '../../context/SidebarContext'
 import Sidebar from '../Dashboard/Sidebar/Sidebar'
 import './GameField.css'
 
 export default function GameField() {
   const { user } = useContext(AuthContext)
+  const { sidebarOpen, screenSize } = useContext(SidebarContext)
   const navigate = useNavigate()
   const [selectedGame, setSelectedGame] = useState(null)
 
@@ -48,7 +50,7 @@ export default function GameField() {
   }
 
   return (
-    <div className="gamefield-wrapper">
+    <div className={`gamefield-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Sidebar />
       <div className="gamefield-container">
         {/* Header */}

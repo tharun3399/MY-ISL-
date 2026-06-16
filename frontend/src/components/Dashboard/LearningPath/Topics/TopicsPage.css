@@ -7,6 +7,7 @@
               url('./BG%20Topics.jpg') center / cover no-repeat;
   background-attachment: fixed;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  position: relative;
 }
 
 .topics-main-content {
@@ -14,6 +15,38 @@
   padding: 40px 30px;
   overflow-y: auto;
   overflow-x: hidden;
+  margin-left: 0;
+  transition: margin-left 0.3s ease-out, width 0.3s ease-out !important;
+}
+
+/* Desktop: Sidebar visible by default */
+@media (min-width: 769px) {
+  .topics-main-content {
+    margin-left: 300px;
+    width: calc(100% - 300px);
+  }
+}
+
+/* Tablet: Sidebar overlays when open */
+@media (min-width: 481px) and (max-width: 768px) {
+  .topics-main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+  
+  .topics-page-container.sidebar-open .topics-main-content {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+  }
+}
+
+/* Mobile: Sidebar overlays when open */
+@media (max-width: 480px) {
+  .topics-main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 20px 1rem;
+  }
 }
 
 /* ===== HEADER ===== */

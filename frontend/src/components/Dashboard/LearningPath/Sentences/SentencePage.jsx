@@ -38,6 +38,10 @@ export default function SentencePage() {
   const [isMergingVideo, setIsMergingVideo] = useState(false)
   const [currentMergedSentenceIndex, setCurrentMergedSentenceIndex] = useState(null)
   const [currentMergedVideoIndex, setCurrentMergedVideoIndex] = useState(0)
+  const [mergedVideoErrorCount, setMergedVideoErrorCount] = useState(0)
+  const [showWordNameOverlay, setShowWordNameOverlay] = useState(false)
+  const [currentWordName, setCurrentWordName] = useState('')
+  const [mergedViewWordVideos, setMergedViewWordVideos] = useState([])
   const mergedVideoRef = useRef(null)
   
   // Quiz state
@@ -57,7 +61,8 @@ export default function SentencePage() {
   const generateSolutionChoices = () => {
     if (sentences.length === 0 || wordVideos.length === 0) return []
     
-    const correctAnswer = wordVideos[0]?.word_name || ''
+    // Use the CURRENT video being displayed, not the first one
+    const correctAnswer = wordVideos[currentVideoIndex]?.word_name || ''
     const choices = new Set([correctAnswer])
     
     // Get current sentence index
@@ -141,14 +146,14 @@ export default function SentencePage() {
     }
   }, [topicId])
 
-  // Generate solution choices when sentence or word videos change
+  // Generate solution choices when sentence, word videos, or video index change
   useEffect(() => {
     const choices = generateSolutionChoices()
     setSolutionChoices(choices)
     setSelectedChoice(null)
     setIsAnswered(false)
     setIsCorrect(false)
-  }, [selectedSentenceId, wordVideos])
+  }, [selectedSentenceId, wordVideos, currentVideoIndex])
 
   // Check if all sentences are completed
   useEffect(() => {
@@ -342,8 +347,30 @@ export default function SentencePage() {
         return
       }
 
+      // Get words from sentence and reorder videos to match sentence word order
+      const sentenceWords = currentSentence.sentence.toLowerCase().split(/\s+/).filter(w => w.length > 0)
+      
+      // Create a map of word -> video for quick lookup
+      const wordVideoMap = {}
+      wordVideos.forEach(video => {
+        const wordName = video.word_name.toLowerCase()
+        if (!wordVideoMap[wordName]) {
+          wordVideoMap[wordName] = []
+        }
+        wordVideoMap[wordName].push(video)
+      })
+      
+      // Reorder videos to match sentence word order
+      const orderedVideos = []
+      sentenceWords.forEach(word => {
+        const cleanWord = word.replace(/[.,!?;:]/g, '') // Remove punctuation
+        if (wordVideoMap[cleanWord] && wordVideoMap[cleanWord].length > 0) {
+          orderedVideos.push(wordVideoMap[cleanWord].shift()) // Get first instance
+        }
+      })
+      
       // Prepare video URLs in sentence word order
-      const videoUrls = wordVideos
+      let videoUrls = orderedVideos
         .filter(video => video && video.video_name)
         .map(video => `https://pub-2d19b53b556b4755a69be5d1e59da23a.r2.dev/${video.video_name}`)
 
@@ -352,54 +379,35 @@ export default function SentencePage() {
         return
       }
 
-      // Store the original word video URLs as fallback
+      // Don't validate - let the video player handle playback
+      // The video element will naturally handle missing/inaccessible videos
+      console.log(`📋 Using ${videoUrls.length} videos for sequential playback`)
+      console.log('Videos in order:')
+      videoUrls.forEach((url, i) => {
+        console.log(`  ${i + 1}. ${url.substring(0, 70)}...`)
+      })
+
+      // Store video URLs for playback
       setMergedVideoUrls(videoUrls)
+      setMergedViewWordVideos(orderedVideos)
       setCurrentMergedVideoIndex(0)
-
-      // Call backend to merge videos
-      const result = await mergeVideosOnBackend(
-        videoUrls,
-        currentSentence.sentence,
-        import.meta.env.VITE_API_URL || 'http://localhost:5000'
-      )
-
-      if (result.success && result.merged) {
-        console.log('Merge result:', result.merged)
+      setCurrentMergedSentenceIndex(sentenceIndex)
+      setMergedVideoErrorCount(0) // Reset error count for new video
+      setShowMergedView(true)
+      
+      // Show first word name
+      if (orderedVideos.length > 0) {
+        setCurrentWordName(orderedVideos[0].word_name)
+        setShowWordNameOverlay(true)
+      }
+      
+      // Wait for word name animation (3 seconds), then play first video
+      setTimeout(() => {
+        setShowWordNameOverlay(false)
+        setMergedVideoUrl(videoUrls[0])
         
-        // Prepare video URLs
-        let mergedUrl = null
-        let playlistUrls = videoUrls // Default fallback
-        
-        // Check the playback type
-        if (result.merged.playbackType === 'merged_file' && result.merged.videoUrls && result.merged.videoUrls.length > 0) {
-          // FFmpeg successfully merged multiple videos
-          mergedUrl = result.merged.videoUrls[0]
-          console.log('✅ Using merged video file:', mergedUrl)
-        } else if (result.merged.playbackType === 'single_video' && result.merged.videoUrls && result.merged.videoUrls.length > 0) {
-          // Only one video available, play it directly
-          mergedUrl = result.merged.videoUrls[0]
-          console.log('ℹ️ Playing single available video:', mergedUrl)
-        } else if (result.merged.videoUrls && result.merged.videoUrls.length > 0) {
-          // Sequential playback mode - use returned video URLs (already verified as available)
-          playlistUrls = result.merged.videoUrls
-          mergedUrl = playlistUrls[0]
-          console.log(`⚠️ Using ${result.merged.playbackType === 'sequential_fallback' ? 'fallback' : 'sequential'} playback with ${playlistUrls.length} available videos`)
-        } else {
-          // No URLs returned - use original word video URLs
-          playlistUrls = videoUrls
-          mergedUrl = playlistUrls[0]
-          console.log('⚠️ Using word videos in sequence:', playlistUrls.length, 'videos')
-        }
-        
-        setMergedVideoUrls(playlistUrls)
-        setMergedVideoUrl(mergedUrl)
-        setCurrentMergedSentenceIndex(sentenceIndex)
-        setShowMergedView(true)
-        
-        // Wait for video element to render, then load and play
         setTimeout(() => {
           if (mergedVideoRef.current) {
-            mergedVideoRef.current.load()
             const playPromise = mergedVideoRef.current.play()
             if (playPromise !== undefined) {
               playPromise.catch(err => {
@@ -407,8 +415,8 @@ export default function SentencePage() {
               })
             }
           }
-        }, 300)
-      }
+        }, 100)
+      }, 3300) // 300ms delay for element render + 3000ms for animation
       
       setIsMergingVideo(false)
     } catch (err) {
@@ -425,15 +433,41 @@ export default function SentencePage() {
   }
 
   const handleMergedVideoEnded = () => {
-    // If using sequential playback (FFmpeg not available), advance to next word
+    // If using sequential playback, advance to next word
     if (mergedVideoUrls.length > 1 && currentMergedVideoIndex < mergedVideoUrls.length - 1) {
-      setCurrentMergedVideoIndex(currentMergedVideoIndex + 1)
-      setMergedVideoUrl(mergedVideoUrls[currentMergedVideoIndex + 1])
-      setTimeout(() => {
-        if (mergedVideoRef.current) {
-          mergedVideoRef.current.play().catch(err => console.log('Video play failed:', err))
-        }
-      }, 100)
+      const nextIndex = currentMergedVideoIndex + 1
+      console.log(`▶️ Playing next video (${nextIndex + 1}/${mergedVideoUrls.length})`)
+      
+      // Show word name overlay for next video (video player stays visible but paused)
+      if (mergedViewWordVideos.length > nextIndex) {
+        setCurrentWordName(mergedViewWordVideos[nextIndex].word_name)
+        setShowWordNameOverlay(true)
+        
+        // Wait for animation to complete (3 seconds), then load and play next video
+        setTimeout(() => {
+          setShowWordNameOverlay(false)
+          setCurrentMergedVideoIndex(nextIndex)
+          setMergedVideoUrl(mergedVideoUrls[nextIndex])
+          
+          setTimeout(() => {
+            if (mergedVideoRef.current) {
+              mergedVideoRef.current.play().catch(err => console.log('Video play failed:', err))
+            }
+          }, 100)
+        }, 3000)
+      } else {
+        // No word name available, play directly
+        setCurrentMergedVideoIndex(nextIndex)
+        setMergedVideoUrl(mergedVideoUrls[nextIndex])
+        setTimeout(() => {
+          if (mergedVideoRef.current) {
+            mergedVideoRef.current.play().catch(err => console.log('Video play failed:', err))
+          }
+        }, 100)
+      }
+    } else {
+      // All videos in playlist played, ready to move to next sentence or quiz
+      console.log('✅ All videos in sentence complete')
     }
   }
 
@@ -509,7 +543,8 @@ export default function SentencePage() {
   const handleChoiceSelect = (choice) => {
     if (isAnswered) return
     
-    const correctAnswer = wordVideos[0]?.word_name || 'Gesture'
+    // Get the correct answer from the CURRENT video being displayed
+    const correctAnswer = wordVideos[currentVideoIndex]?.word_name || 'Gesture'
     // Normalize both for comparison: remove punctuation, convert to lowercase, trim whitespace
     const normalizedChoice = choice.toLowerCase().trim()
     const normalizedCorrect = correctAnswer.toLowerCase().trim().replace(/[.,!?;:]/g, '')
@@ -519,6 +554,12 @@ export default function SentencePage() {
     setSelectedChoice(choice)
     setIsAnswered(true)
     setIsCorrect(isCorrectChoice)
+  }
+
+  const handleRetry = () => {
+    setSelectedChoice(null)
+    setIsAnswered(false)
+    setIsCorrect(false)
   }
 
   if (loading) {
@@ -551,21 +592,21 @@ export default function SentencePage() {
       {showMergedView && mergedVideoUrl && (
         <div className="sentence-content-wrapper">
           <div className="sentence-page-header">
-            <h2 style={{ fontSize: '20px', fontWeight: '600', color: '#00E5FF', margin: '0', flex: '1' }}>
-              Sentence Video: {sentences[currentMergedSentenceIndex]?.sentence || 'Sentence'}
-            </h2>
-            <button className="back-btn" onClick={() => setShowMergedView(false)}>
+            <button className="back-btn" onClick={() => {
+              setShowMergedView(false)
+              setMergedVideoErrorCount(0)
+            }}>
               ← Back to Words
             </button>
           </div>
 
           <div className="sentence-main-layout">
             <div className="gesture-question-section">
-              <h3>Full Sentence Video</h3>
+              <h3 style={{ color: '#00E5FF' }}>Sentence Video: {sentences[currentMergedSentenceIndex]?.sentence || 'Sentence'}</h3>
             </div>
             
             {/* Merged Video Player */}
-            <div className="video-container">
+            <div className="video-container" style={{ backgroundColor: showWordNameOverlay ? '#000000' : 'rgba(14, 20, 32, 0.3)' }}>
               {mergedVideoUrl && (
                 <video 
                   ref={mergedVideoRef}
@@ -575,15 +616,54 @@ export default function SentencePage() {
                   onEnded={handleMergedVideoEnded}
                   onLoadedData={() => console.log('✅ Merged video loaded successfully')}
                   onError={(e) => {
-                    console.error('❌ Merged video error:', e.target.error)
-                    // If merged video fails, fall back to sequential playback
-                    if (mergedVideoUrls.length > 0) {
-                      console.log('⚠️ Falling back to sequential playback')
-                      setMergedVideoUrl(mergedVideoUrls[0])
-                      setCurrentMergedVideoIndex(0)
+                    console.error('❌ Video playback error:', e.target.error)
+                    // Try next available video in the playlist
+                    if (mergedVideoUrls && currentMergedVideoIndex < mergedVideoUrls.length - 1) {
+                      const nextIndex = currentMergedVideoIndex + 1
+                      console.log(`⚠️ Skipping to next video (${nextIndex + 1}/${mergedVideoUrls.length})`)
+                      
+                      // Show word name overlay for next video (video player stays visible but paused)
+                      if (mergedViewWordVideos.length > nextIndex) {
+                        setCurrentWordName(mergedViewWordVideos[nextIndex].word_name)
+                        setShowWordNameOverlay(true)
+                        
+                        // Wait for animation, then load next video
+                        setTimeout(() => {
+                          setShowWordNameOverlay(false)
+                          setCurrentMergedVideoIndex(nextIndex)
+                          setMergedVideoUrl(mergedVideoUrls[nextIndex])
+                        }, 3000)
+                      } else {
+                        setCurrentMergedVideoIndex(nextIndex)
+                        setMergedVideoUrl(mergedVideoUrls[nextIndex])
+                      }
+                    } else {
+                      console.error('❌ No more videos available')
+                      // Auto-close merged view after delay
+                      setTimeout(() => {
+                        setShowMergedView(false)
+                        setMergedVideoErrorCount(0)
+                      }, 2000)
                     }
                   }}
                 />
+              )}
+              {/* Word Name Overlay */}
+              {showWordNameOverlay && (
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  color: '#00E5FF',
+                  fontSize: '48px',
+                  fontWeight: 'bold',
+                  textAlign: 'center',
+                  animation: 'wordNameFadeInOut 3s ease-in-out forwards',
+                  zIndex: 10
+                }}>
+                  {currentWordName}
+                </div>
               )}
               {isMergingVideo && (
                 <div style={{ 
@@ -606,6 +686,7 @@ export default function SentencePage() {
               <button 
                 className="nav-button next-button"
                 onClick={handleMergedVideoNext}
+                disabled={currentMergedVideoIndex < mergedVideoUrls.length - 1}
                 style={{ width: '100%' }}
               >
                 {currentMergedSentenceIndex < sentences.length - 1 ? 'Next Sentence →' : 'Complete & Quiz →'}
@@ -662,6 +743,34 @@ export default function SentencePage() {
                   </button>
                 ))}
               </div>
+              
+              {/* Feedback Message */}
+              {isAnswered && !isCorrect && (
+                <div className="answer-feedback" style={{
+                  marginTop: '8px',
+                  textAlign: 'center',
+                  padding: '10px',
+                  borderRadius: '8px'
+                }}>
+                  <button 
+                    className="retry-btn"
+                    onClick={handleRetry}
+                    style={{
+                      padding: '10px 24px',
+                      backgroundColor: '#00E5FF',
+                      color: '#0B0F14',
+                      border: 'none',
+                      borderRadius: '6px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    Try Again
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Navigation Buttons */}
@@ -676,11 +785,15 @@ export default function SentencePage() {
               <button 
                 className="nav-button next-button"
                 onClick={handleNextVideo}
-                disabled={isMergingVideo || sentences.length === 0 || !isAnswered}
+                disabled={isMergingVideo || sentences.length === 0 || !isAnswered || (isAnswered && !isCorrect)}
               >
-                {currentVideoIndex === wordVideos.length - 1 && isAnswered
+                {!isAnswered 
+                  ? 'Answer First' 
+                  : !isCorrect
+                  ? 'Incorrect - Try Again'
+                  : currentVideoIndex === wordVideos.length - 1 && isAnswered
                   ? isMergingVideo ? 'Merging Videos...' : 'View Sentence →'
-                  : !isAnswered ? 'Answer First' : 'Next Word →'}
+                  : 'Next Word →'}
               </button>
             </div>
           </div>

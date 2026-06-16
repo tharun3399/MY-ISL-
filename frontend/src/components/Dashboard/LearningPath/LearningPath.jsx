@@ -1,21 +1,20 @@
 import React, { useState, useContext, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
+import { SidebarContext } from '../../../context/SidebarContext'
 import Sidebar from '../Sidebar/Sidebar'
 import axios from 'axios'
 import './LearningPath.css'
 
 export default function LearningPath() {
   const { user } = useContext(AuthContext)
+  const { sidebarOpen, screenSize } = useContext(SidebarContext)
   const navigate = useNavigate()
   const [modules, setModules] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [completedModules, setCompletedModules] = useState(new Set())
-  const [pathData, setPathData] = useState('')
   const nodeRefs = useRef([])
-  const journeyMapRef = useRef(null)
-  const svgRef = useRef(null)
 
   // Fetch modules from API on component mount
   useEffect(() => {
@@ -45,64 +44,6 @@ export default function LearningPath() {
     }
     fetchModules()
   }, [])
-
-  // Recalculate path on module change and window resize
-  useEffect(() => {
-    const calculatePath = () => {
-      if (!journeyMapRef.current || nodeRefs.current.length < 2 || !svgRef.current) return
-
-      try {
-        const container = journeyMapRef.current
-        const svg = svgRef.current
-        
-        // Set SVG dimensions to match container
-        const rect = container.getBoundingClientRect()
-        svg.setAttribute('viewBox', `0 0 ${rect.width} ${rect.height}`)
-        
-        let pathD = ''
-
-        for (let i = 0; i < nodeRefs.current.length - 1; i++) {
-          if (!nodeRefs.current[i] || !nodeRefs.current[i + 1]) continue
-
-          const node1 = nodeRefs.current[i]
-          const node2 = nodeRefs.current[i + 1]
-          
-          const rect1 = node1.getBoundingClientRect()
-          const rect2 = node2.getBoundingClientRect()
-          const containerRect = container.getBoundingClientRect()
-
-          // Calculate relative positions within container
-          const x1 = rect1.left - containerRect.left + rect1.width / 2
-          const y1 = rect1.top - containerRect.top + rect1.height / 2
-          const x2 = rect2.left - containerRect.left + rect2.width / 2
-          const y2 = rect2.top - containerRect.top + rect2.height / 2
-
-          const distance = y2 - y1
-          const midY = (y1 + y2) / 2
-
-          if (i === 0) {
-            pathD = `M ${x1} ${y1}`
-          }
-
-          // Create smooth S-curve connecting nodes
-          pathD += ` C ${x1} ${midY}, ${x2} ${midY}, ${x2} ${y2}`
-        }
-
-        setPathData(pathD)
-      } catch (err) {
-        console.error('Error calculating path:', err)
-      }
-    }
-
-    // Calculate path after elements render with slight delay
-    const timer = setTimeout(calculatePath, 200)
-    window.addEventListener('resize', calculatePath)
-
-    return () => {
-      clearTimeout(timer)
-      window.removeEventListener('resize', calculatePath)
-    }
-  }, [modules, loading])
 
   // Setup Intersection Observer for scroll animations (runs once)
   useEffect(() => {
@@ -186,7 +127,7 @@ export default function LearningPath() {
   }
 
   return (
-    <div className="learning-path-wrapper">
+    <div className={`learning-path-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Sidebar />
       <div className="learning-path-container">
         {loading && <div className="loading-spinner">Loading your journey...</div>}
@@ -208,54 +149,8 @@ export default function LearningPath() {
               </div>
             </div>
 
-            <div className="journey-map" ref={journeyMapRef}>
-              {/* SVG Path Background */}
-              <svg 
-                ref={svgRef}
-                className="journey-path-svg"
-                viewBox="0 0 1000 3000"
-                preserveAspectRatio="none"
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  pointerEvents: 'none',
-                  zIndex: 1
-                }}
-              >
-                {modules.length > 1 && (
-                  <defs>
-                    <linearGradient id="pathGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.8" />
-                      <stop offset="100%" stopColor="#39FF14" stopOpacity="0.8" />
-                    </linearGradient>
-                    <filter id="pathGlow">
-                      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                      <feMerge>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                      </feMerge>
-                    </filter>
-                  </defs>
-                )}
-                {pathData && (
-                  <path
-                    d={pathData}
-                    stroke="url(#pathGradient)"
-                    strokeWidth="12"
-                    fill="none"
-                    filter="url(#pathGlow)"
-                    className="path-line"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                )}
-              </svg>
-
-              {/* S-Path Node Grid */}
-              <div className="s-path-grid">
+            {/* S-Path Grid */}
+            <div className="s-path-grid">
                 {modules.map((module, index) => {
                   const status = getModuleStatus(index)
                   const progress = getProgressPercentage(index)
@@ -322,7 +217,6 @@ export default function LearningPath() {
                   )
                 })}
               </div>
-            </div>
 
             <div className="journey-tips scroll-animate">
               <h3 className="tips-title scroll-animate">💡 Pro Tips</h3>

@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
+import { SidebarContext } from '../../context/SidebarContext'
 import Sidebar from './Sidebar/Sidebar'
 import DashboardContent from './DashboardContent/DashboardContent'
 import axios from 'axios'
@@ -8,10 +9,9 @@ import './Dashboard.css'
 
 export default function Dashboard() {
   const { authState } = useContext(AuthContext)
+  const { sidebarOpen, toggleSidebar, screenSize } = useContext(SidebarContext)
   const user = authState?.user || {}
   const navigate = useNavigate()
-  const [screenSize, setScreenSize] = useState('laptop')
-  const [sidebarOpen, setSidebarOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState([])
   const [showSearchDropdown, setShowSearchDropdown] = useState(false)
@@ -79,29 +79,6 @@ export default function Dashboard() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Handle window resize for responsive design
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setScreenSize('phone')
-      } else if (window.innerWidth < 1024) {
-        setScreenSize('tablet')
-      } else {
-        setScreenSize('laptop')
-      }
-    }
-
-    window.addEventListener('resize', handleResize)
-    // Set initial screen size
-    handleResize()
-    
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const handleScreenModeChange = (mode) => {
-    setManualScreenMode(mode)
-    setScreenSize(mode)
-  }
   const handleSearchChange = (e) => {
     const query = e.target.value.toLowerCase()
     setSearchQuery(query)
@@ -160,20 +137,14 @@ export default function Dashboard() {
   return (
     <div 
       className={`dashboard dashboard-${screenSize} ${sidebarOpen ? 'sidebar-open' : ''}`}
-      onClick={(e) => {
-        // Close sidebar when clicking on the overlay
-        if (sidebarOpen && e.target === e.currentTarget) {
-          setSidebarOpen(false)
-        }
-      }}
     >
-      <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      <Sidebar />
       <div className="dashboard-content">
         <div className="dashboard-header">
           {screenSize === 'phone' && (
             <button 
               className="sidebar-toggle-btn"
-              onClick={() => setSidebarOpen(!sidebarOpen)}
+              onClick={toggleSidebar}
               aria-label="Toggle sidebar"
             >
               <span className="hamburger-menu">

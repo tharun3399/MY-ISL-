@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
+import { SidebarContext } from '../../context/SidebarContext'
 import Sidebar from '../Dashboard/Sidebar/Sidebar'
 import { io } from 'socket.io-client'
 import './GamePlayArea.css'
 
 export default function LiveGames() {
   const { user } = useContext(AuthContext)
+  const { sidebarOpen, screenSize } = useContext(SidebarContext)
   const navigate = useNavigate()
   const [socket, setSocket] = useState(null)
   const [gameState, setGameState] = useState('lobby') // lobby, joining, playing, results
@@ -97,7 +99,7 @@ export default function LiveGames() {
 
   if (gameState === 'lobby') {
     return (
-      <div className="gameplay-wrapper">
+      <div className={`gameplay-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <Sidebar />
         <div className="gameplay-container">
           <div className="game-lobby">
@@ -145,7 +147,7 @@ export default function LiveGames() {
 
   if (gameState === 'joining') {
     return (
-      <div className="gameplay-wrapper">
+      <div className={`gameplay-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <Sidebar />
         <div className="gameplay-container">
           <div className="game-queue">
@@ -165,7 +167,7 @@ export default function LiveGames() {
 
   if (gameState === 'playing' && currentQuestion) {
     return (
-      <div className="gameplay-wrapper">
+      <div className={`gameplay-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <Sidebar />
         <div className="gameplay-container">
           <div className="game-playing">
@@ -215,7 +217,7 @@ export default function LiveGames() {
     const yourScore = leaderboard.find(p => p.userId === user?.id)?.score || 0
 
     return (
-      <div className="gameplay-wrapper">
+      <div className={`gameplay-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <Sidebar />
         <div className="gameplay-container">
           <div className="game-results">

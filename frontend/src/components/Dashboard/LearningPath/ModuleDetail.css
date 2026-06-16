@@ -4,11 +4,12 @@
   display: flex;
   min-height: 100vh;
   width: 100%;
+  position: relative;
 }
 
 @media (max-width: 768px) {
   .module-detail-wrapper {
-    flex-direction: column;
+    flex-direction: row;
   }
 }
 
@@ -21,16 +22,37 @@
               url('../Topics/BG%20Topics.jpg') center / cover no-repeat !important;
   background-attachment: fixed !important;
   overflow-y: auto;
+  margin-left: 0;
+  transition: margin-left 0.3s ease-out, width 0.3s ease-out !important;
 }
 
-@media (max-width: 768px) {
+/* Desktop: Sidebar visible by default */
+@media (min-width: 769px) {
   .module-detail-container {
-    padding: 1rem;
+    margin-left: 300px;
+    width: calc(100% - 300px);
   }
 }
 
+/* Tablet: Sidebar overlays when open */
+@media (min-width: 481px) and (max-width: 768px) {
+  .module-detail-container {
+    margin-left: 0;
+    width: 100%;
+    padding: 1rem;
+  }
+  
+  .module-detail-wrapper.sidebar-open .module-detail-container {
+    margin-left: 280px;
+    width: calc(100% - 280px);
+  }
+}
+
+/* Mobile: Sidebar overlays when open */
 @media (max-width: 480px) {
   .module-detail-container {
+    margin-left: 0;
+    width: 100%;
     padding: 0.75rem;
   }
 }

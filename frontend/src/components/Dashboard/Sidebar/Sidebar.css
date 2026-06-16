@@ -6,7 +6,7 @@
   border-right: 1px solid #0f0f13 !important;
   display: flex !important;
   flex-direction: column !important;
-  transition: transform 0.3s ease-out !important;
+  transition: transform 0.3s ease-out, width 0.3s ease-out !important;
   height: 100vh !important;
   position: fixed !important;
   top: 0 !important;
@@ -16,17 +16,16 @@
   overflow-y: auto;
 }
 
-.sidebar.open {
-  transform: translateX(0) !important;
-  display: flex !important;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
-}
-
+/* Desktop: Sidebar visible by default */
 @media (min-width: 769px) {
   .sidebar {
     position: sticky !important;
+    top: 0 !important;
+    height: 100vh !important;
     transform: translateX(0) !important;
     box-shadow: none;
+    z-index: 100;
+    flex-shrink: 0;
   }
 
   .sidebar.open {
@@ -34,16 +33,34 @@
   }
 }
 
-@media (max-width: 768px) {
+/* Tablet: Sidebar fixed, slides from left */
+@media (min-width: 481px) and (max-width: 768px) {
   .sidebar {
+    position: fixed;
+    transform: translateX(-100%);
     width: 280px;
+    transition: transform 0.3s ease-out;
+  }
+
+  .sidebar.open {
+    transform: translateX(0) !important;
+    display: flex !important;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
   }
 }
 
+/* Mobile: Sidebar full width, slides from left */
 @media (max-width: 480px) {
   .sidebar {
     width: 100%;
     max-width: 85vw;
+    transform: translateX(-100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0) !important;
+    display: flex !important;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
   }
 }
 

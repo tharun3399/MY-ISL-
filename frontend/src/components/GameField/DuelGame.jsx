@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
+import { SidebarContext } from '../../context/SidebarContext'
 import Sidebar from '../Dashboard/Sidebar/Sidebar'
 import { io } from 'socket.io-client'
 import './GamePlayArea.css'
 
 export default function DuelGame() {
   const { user } = useContext(AuthContext)
+  const { sidebarOpen, screenSize } = useContext(SidebarContext)
   const navigate = useNavigate()
   const [socket, setSocket] = useState(null)
   const [gameState, setGameState] = useState('lobby') // lobby, queue, playing, results
@@ -154,7 +156,7 @@ export default function DuelGame() {
 
   if (gameState === 'lobby') {
     return (
-      <div className="gameplay-wrapper">
+      <div className={`gameplay-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <Sidebar />
         <div className="gameplay-container">
           <div className="game-lobby">
@@ -202,7 +204,7 @@ export default function DuelGame() {
 
   if (gameState === 'queue') {
     return (
-      <div className="gameplay-wrapper">
+      <div className={`gameplay-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <Sidebar />
         <div className="gameplay-container">
           <div className="game-queue">
@@ -222,7 +224,7 @@ export default function DuelGame() {
     const timerColor = timeLeft <= 3 ? '#ef4444' : timeLeft <= 5 ? '#f59e0b' : '#10b981'
 
     return (
-      <div className="gameplay-wrapper">
+      <div className={`gameplay-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <Sidebar />
         <div className="gameplay-container">
           <div className="game-playing">
@@ -280,7 +282,7 @@ export default function DuelGame() {
   // Fallback for playing state while waiting for first question
   if (gameState === 'playing' && !currentQuestion) {
     return (
-      <div className="gameplay-wrapper">
+      <div className={`gameplay-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <Sidebar />
         <div className="gameplay-container">
           <div className="game-queue">
@@ -303,7 +305,7 @@ export default function DuelGame() {
     const isTie = winner === 'tie'
 
     return (
-      <div className="gameplay-wrapper">
+      <div className={`gameplay-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <Sidebar />
         <div className="gameplay-container">
           <div className="game-results">

@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
+import { SidebarContext } from '../../../context/SidebarContext'
 import DashboardIcon from './icons/dashboard-monitor.png'
 import LearningIcon from './icons/lesson.png'
 import PracticeIcon from './icons/practice.png'
@@ -12,14 +13,8 @@ import './Sidebar.css'
 export default function Sidebar({ isOpen = false, onClose = () => {} }) {
   const navigate = useNavigate()
   const { authState, logout } = useContext(AuthContext)
+  const { sidebarOpen, toggleCollapse, isCollapsed, closeSidebar, screenSize } = useContext(SidebarContext)
   const user = authState?.user || {}
-  const [menuOpen, setMenuOpen] = useState(isOpen)
-  const [isCollapsed, setIsCollapsed] = useState(false)
-
-  // Sync isOpen prop with menuOpen state
-  useEffect(() => {
-    setMenuOpen(isOpen)
-  }, [isOpen])
 
   const menuItems = [
     { icon: DashboardIcon, label: 'Dashboard', id: 'dashboard' },
@@ -43,8 +38,7 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
   }
 
   const closeSidebarOnMobile = () => {
-    setMenuOpen(false)
-    onClose()
+    closeSidebar()
   }
 
   const handleMenuClick = (itemId) => {
@@ -74,7 +68,7 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
   }
 
   return (
-    <aside className={`sidebar ${menuOpen ? 'open' : ''} ${isCollapsed ? 'collapsed' : ''}`}>
+    <aside className={`sidebar ${sidebarOpen ? 'open' : ''} ${isCollapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
         <div className="logo">
           <img src={ISLIcon} alt="ISL Logo" className="isl-logo" style={{ width: 36, height: 36, marginRight: 8 }} />
@@ -82,7 +76,7 @@ export default function Sidebar({ isOpen = false, onClose = () => {} }) {
         </div>
         <button 
           className="sidebar-collapse-btn" 
-          onClick={() => setIsCollapsed(!isCollapsed)}
+          onClick={toggleCollapse}
           title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         >
           <svg className="collapse-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

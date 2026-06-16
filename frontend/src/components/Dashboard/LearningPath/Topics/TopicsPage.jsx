@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../../context/AuthContext'
+import { SidebarContext } from '../../../../context/SidebarContext'
 import Sidebar from '../../Sidebar/Sidebar'
 import axios from 'axios'
 import './TopicsPage.css'
@@ -9,6 +10,7 @@ export default function TopicsPage() {
   const { moduleId } = useParams()
   const navigate = useNavigate()
   const { user } = useContext(AuthContext)
+  const { sidebarOpen, screenSize } = useContext(SidebarContext)
   const [module, setModule] = useState(null)
   const [topics, setTopics] = useState([])
   const [loading, setLoading] = useState(true)
@@ -133,7 +135,7 @@ export default function TopicsPage() {
   }
 
   return (
-    <div className="topics-page-container">
+    <div className={`topics-page-container ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Sidebar />
       <div className="topics-main-content">
         <div className="topics-header">

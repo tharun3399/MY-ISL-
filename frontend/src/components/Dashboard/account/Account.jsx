@@ -2,6 +2,7 @@
 
 import React, { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../../context/AuthContext';
+import { SidebarContext } from '../../../context/SidebarContext';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from '../Sidebar/Sidebar';
@@ -9,6 +10,7 @@ import './Account.css';
 
 export default function Account() {
   const { user, setState, authenticated } = useContext(AuthContext);
+  const { sidebarOpen, screenSize } = useContext(SidebarContext);
   const navigate = useNavigate();
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState({
@@ -89,9 +91,9 @@ export default function Account() {
   };
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', background: 'linear-gradient(135deg, #e0e7ff 0%, #f0fdfa 100%)' }}>
+    <div className={`account-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Sidebar />
-      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <div className="account-content">
         <div className="account-page">
           <div className="account-card premium-shadow">
             <div className="account-header">

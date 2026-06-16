@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../../context/AuthContext'
+import { SidebarContext } from '../../../context/SidebarContext'
 import Sidebar from '../Sidebar/Sidebar'
 import axios from 'axios'
 import './ModuleDetail.css'
@@ -9,6 +10,7 @@ export default function ModuleDetail() {
   const { moduleId } = useParams()
   const navigate = useNavigate()
   const { user } = useContext(AuthContext)
+  const { sidebarOpen, screenSize } = useContext(SidebarContext)
   const [module, setModule] = useState(null)
   const [topics, setTopics] = useState([])
   const [loading, setLoading] = useState(true)
@@ -147,7 +149,7 @@ export default function ModuleDetail() {
   const moduleProgress = topics.length > 0 ? Math.round((completedCount / topics.length) * 100) : 0
 
   return (
-    <div className="module-detail-wrapper">
+    <div className={`module-detail-wrapper ${sidebarOpen ? 'sidebar-open' : ''}`}>
       <Sidebar />
       <div className="module-detail-container">
         <button className="back-btn" onClick={() => navigate('/learning-path')}>
